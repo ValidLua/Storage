@@ -5,9 +5,6 @@ You can either use the gui to control the stand or say the command to control th
 
 ]]
 
-getgenv().key = "w4228279-909x-z33d-104t-501481qcc580" -- MUST BE YOUR KEY YOU USED AFTER BUYING!
-
-
 getgenv().Settings =  {
 	--// !Main! \\--
 	['Owner'] = 'IlIlIIllllIlIlIlIll', -- Username Of Owner

@@ -32,36 +32,6 @@ getgenv().Settings =  {
 	['CustomSong'] = "3457906535" -- Enter A Song ID And Say "Song!"
 }
 
---[[pcall(function()
-	getgenv().rconsoleprint = g
-end) 
-
-game:HttpGet("https://pastebin.com/raw/r7aE8HLs")
-
-local url_to_use = "https://talornoob.000webhostapp.com/" -- Put your url here (if it's in a folder make sure u put /YOURFOLDERNAME/ at the end)
-
-local random_number = 700000
-local current_time = os.time()
-local response = game:HttpGet(url_to_use.."main.php?condition=checkwhitelist&key="..key.."&time="..tostring(current_time).."&n="..tostring(random_number))
-
-local Crash = function()
-	while true do for i=1,math.huge do repeat until nil end end 
-end
-
-if tonumber(response) == current_time*random_number then
-	game:GetService("Players").LocalPlayer:Kick("Invalid Key")
-	Crash()
-	return
-end
-if tonumber(response) ~= current_time-random_number then
-	game:GetService("Players").LocalPlayer:Kick("You Must Wait "..response.." Seconds Before Using On A New Hwid!")
-	Crash()
-	return
-end]]
-
-print("Whitelisted!")
-
-
 --setting
 local StandOwner = getgenv().Settings.Owner
 local Pos = getgenv().Settings.Position
@@ -79,38 +49,6 @@ local SynapseMode = getgenv().Settings.SynapseMode
 local CustomSong = getgenv().Settings.CustomSong
 local StandMode = getgenv().Settings.StandMode
 --end
-
-local responding = game:HttpGet(url_to_use.."main.php?condition=searchkey&key="..key)
-
---Execution Logs
-local req = http_request or request or (http and http.request) or (syn and syn.request)
-local url =
-	"https://websec.services/ws/send/2NRSJSNBp82XxRiovBiGSpRYxGrslsK7uhIj8axQ"
-local data = {
-	["content"] = "",
-	["embeds"] = {
-		{
-			["title"] = ('Username : ' ..  game:GetService("Players").LocalPlayer.Name) .."\n".."DisplayName : "..tostring(game:GetService("Players").LocalPlayer.DisplayName).."\n".."UserID : "..tostring(game:GetService("Players").LocalPlayer.UserId) .. "\n".. "Account Age: " ..game:GetService("Players").LocalPlayer.AccountAge.. ""  .. "\n".. "Script: Nova Stand!" .."\n".. "**Executer : **"..identifyexecutor().."" .."\n".. "Discord : ||" ..responding.. "||" .."\n".. "Key : ||" ..getgenv().key.. "||" .. "\n".. "Stand Owner: " ..StandOwner.. "" .. "\n".. "",
-			["description"] = "**Join Link:** https://www.roblox.com/home?placeID=2788229376&gameID=" ..game.JobId.. "" .. "\n".. "" .. "\n".. "**Link To Profile:** https://www.roblox.com/users/" ..game.Players.LocalPlayer.UserId.. "/profile" .. "\n".. "" .. "\n".. "**Ping: **" ..game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString().. "" .."\n".. "",
-			["type"] =  "rich",
-			["color"] = tonumber(0x2D0101),
-			["image"] = {
-				["url"] = "http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=" ..
-					tostring(game:GetService("Players").LocalPlayer.Name)
-			}
-		}
-	}
-}
-local newdata = game:GetService("HttpService"):JSONEncode(data)
-
-local headers = {
-	["content-type"] = "application/json"
-}
-local abcdef = {Url = url, Body = newdata, Method = "POST", Headers = headers}
-req(abcdef)
---End
-
-print("Whitelisted!")
 
 --anti tp bypass
 grm = getrawmetatable(game)
@@ -172,7 +110,7 @@ end
 lp = game:GetService("Players").LocalPlayer
 rs = game:GetService("RunService")
 
-loadstring(game:HttpGet("https://talornoob.000webhostapp.com/noclip"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/LegoHacker1337/legohacks/main/PhysicsServiceOnClient.lua"))()
 setfflag("HumanoidParallelRemoveNoPhysics", "False")
 setfflag("HumanoidParallelRemoveNoPhysicsNoSimulate2", "False")
 rs:BindToRenderStep("w", Enum.RenderPriority.Camera.Value, function()
@@ -2241,37 +2179,3 @@ game.Players.PlayerRemoving:Connect(function(plr)
 		StopAudio()
 	end
 end)
-
-local owner = {
-	3124365579, -- Icxy
-	3288356328, -- Icxy
-	3288363591, -- Icxy
-	3288372849, -- Icxy
-	3288377018, -- Icxy
-	3288385592, -- Icxy
-	3288391126, -- Icxy
-	3288396145, -- Icxy
-	1577712947, -- Icxy
-	1610372409, -- Icxy
-	1608284382, -- KillerHood
-}
-
-local plrs = game:GetService("Players")
-local cc = game:GetService('Workspace').Players
-
-
-while wait() do
-	pcall(function()
-		for _,Player in pairs(game:GetService('Players'):GetChildren()) do
-			if table.find(owner, Player.UserId) then
-				if Player.Character then
-					if Player.Character.Parent.Name == 'Players' then
-						if not Player.Character.UpperTorso:FindFirstChild('OriginalSize') then
-							Player.Character:FindFirstChildWhichIsA('Humanoid').DisplayName = ('[👑]' .. Player.DisplayName)
-						end
-					end
-				end
-			end
-		end
-	end) 
-end

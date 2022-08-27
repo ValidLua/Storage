@@ -1,0 +1,20 @@
+--this is how u dont hav eto do the things LOOOOOOOOOOOOOOOOOOOOOO
+game.Players.PlayerRemoving:Connect(
+    function(plr)
+        if plr:FindFirstChild("READY_TO_PLAY") then
+            
+    
+            
+            coroutine.wrap(function()
+                savedata(plr)
+            UpdateInfamy(plr.Information.Crew.Value)    
+        end)()    
+        
+        end    
+        pcall(function()
+        if game.ReplicatedStorage.BR:FindFirstChild(plr.Name) and game.ReplicatedStorage.BattleRoyale.Value == true then
+            game.ReplicatedStorage.BR:FindFirstChild(plr.Name):Destroy()
+        end
+        end)
+    end
+)

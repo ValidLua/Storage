@@ -1,0 +1,122 @@
+repeat task.wait() until script.Parent.Parent:IsA("Player")
+script.Name = "Camera"
+script:Destroy()
+
+local Library = {
+    Break = false, 
+    Whitelisted = false,
+    Connections = {}
+}
+
+local Client = game:GetService("Players").LocalPlayer
+local MainEvent = game:GetService("ReplicatedStorage"):WaitForChild("MainRemote")
+
+Library.Connection = function(Type, Callback)
+    local Connection = Type:Connect(Callback)
+    
+    Library.Connections[#Library.Connections + 1] = Connection
+    
+    return Connection
+end
+
+Library.Disconnect = function()
+    Library.Break = true
+    for Index, Connection in pairs(Library.Connections) do
+        Connection:Disconnect()
+    end
+end
+
+Library.Alive = function()
+    if Client and Client.Character and Client.Character:FindFirstChild("Humanoid") ~= nil and Client.Character:FindFirstChild("HumanoidRootPart") ~= nil then
+        return true
+    end
+end
+
+_G.CameraLocal = {}
+local Break = false
+local IsWhitelisted = false
+
+local Loaded, Humanoid = Client.Character:WaitForChild("I_LOADED_I"), Client.Character:WaitForChild("Humanoid")
+task.spawn(function()
+    while wait() do
+        if Break then break end
+        if IsAlive() then
+            task.spawn(function()
+                if workspace.Gravity < 180 or workspace.Gravity > 200 then
+                    MainEvent:FireServer("MousePos", "6!")
+                elseif (Client.Character.Humanoid:GetState() == Enum.HumanoidStateType.StrafingNoPhysics) and Loaded.Ragdoll.Value == false then
+                    MainEvent:FireServer("MousePos", "5!")
+                elseif Client.Character.RightHand.Size.X >= 4 or Client.Character.LeftHand.Size.X >= 4 or Client.Character.RightHand.Size.Y >= 4 or Client.Character.LeftHand.Size.Y >= 4 or Client.Character.RightHand.Size.Z >= 4 or Client.Character.LeftHand.Size.Z >= 4 then
+                    MainEvent:FireServer("MousePos", "4!")
+                elseif Client.Character.Humanoid.WalkSpeed > 36 then		
+                    MainEvent:FireServer("MousePos", "3!")
+                elseif Client.Character.Humanoid.HipHeight > 4 then
+                    MainEvent:FireServer("MousePos", "2!")
+                elseif Client.Character.Humanoid.JumpPower > 60 then
+                    MainEvent:FireServer("MousePos", "1!")
+                end
+            end)
+            task.spawn(function()
+                for i, Child in pairs(Client.Character:GetDescandants()) do
+                    if Child:IsA("BodyGyro") or Child:IsA("BodyPosition") or Child:IsA("BodyVelocity") or Child:IsA("BodyAngularVelocity") then 
+                        if Child.Name ~= tostring(game.JobId .. math.ceil(game.PlaceId * game.GameId * 0.5)) .. "A-C" .. game.GameId and _G.CameraLocal[Child] == nil then
+                            if Child.Name ~= "N/A_S" then							
+                                Child:Destroy()
+                            else
+                                MainEvent:FireServer("MousePos", "Focus!")
+                            end
+                        elseif not _G.CameraLocal[Child] then
+                            Child.Name = Child.ClassName
+                            _G.CameraLocal[Child] = "Whitelisted!"
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+Library.Connection(Character.UpperTorso:GetPropertyChangedSignal("CanCollide"), function()
+    task.wait()
+    MainEvent:FireServer("MousePos", "12!")
+end)
+
+Library.Connection(Character.HumanoidRootPart:GetPropertyChangedSignal("Position"), function()
+    task.wait()
+    if not Library.Whitelisted then
+        MainEvent:FireServer("MousePos", "11!")
+    end
+end)
+
+Library.Connection(Character.Humanoid.StateChanged, function(Old, New) 
+    if Old == Enum.HumanoidStateType.Jumping and New == Enum.HumanoidStateType.Jumping then
+        MainEvent:FireServer("MousePos", "10!")
+    elseif Old == Enum.HumanoidStateType.Freefall and New == Enum.HumanoidStateType.Jumping then
+        MainEvent:FireServer("MousePos", "8!")
+    end
+end)
+
+Library.Connection(Character.Humanoid.Changed, function()
+    task.wait()
+    if Character:FindFirstChildOfClass("Humanoid").Name ~= "Humanoid" then
+        MainEvent:FireServer("MousePos", "9!")
+    end
+end)
+
+Library.Connection(workspace.ChildAdded, function(Child)
+    task.wait()
+    if Child:IsA("Weld") then
+        MainEvent:FireServer("MousePos", "7!")
+    end
+end)
+
+Library.Connection(Character.ChildRemoved, function(Child)
+    task.wait()
+    if Child.Name == "Head" then
+        Library.Disconnect()
+    end
+end)
+
+Library.Connection(Character.Humanoid.Died, function()
+    Library.Disconnect()
+end)

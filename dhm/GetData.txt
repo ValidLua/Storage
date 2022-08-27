@@ -1,0 +1,23 @@
+function GetData(Level, Crew, KillFX, Armor, Blood, Tag, Star, X, Z, K, heros, Inventory, RRR)
+local DefaultData = {
+["DataCore"] = 
+        {
+                ["Level"] = Level,
+                ["Crew"] = Crew,
+                ["KillFX"] = KillFX,
+                ["Armor"] =Armor,
+                ["Blood"] = Blood,
+                ["Tag"] = Tag,
+                ["StarPlayer"] = Star,
+                ["SavedTools"] = X,
+                ["Muscle"] = Z,
+                ["Ray"] = K,
+                ["Boxing"] = heros,
+                ["Inventory"] = Inventory,
+                ["Ranked"] = RRR
+        }
+    
+    }
+
+return DefaultData
+end

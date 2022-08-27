@@ -1,0 +1,15 @@
+function savedata(plr)
+    local success, err = pcall(function()
+        myDataStore:UpdateAsync(plr.UserId .. "-Data", function(oldValue)
+            local thing = nil
+            local TablR    = {}
+            for i, v in pairs(plr.Information.Armory:GetChildren()) do
+                Get4Values(v, nil, TablR)
+            end
+            thing = TablR
+            local NewData = GetData(thing ~= nil and plr.Information.Streaks.Value or 0, plr.Information.Crew.Value, plr.Information.KillFX.Value, plr.Information.Armor.Value, plr.Information.BloodEnabled.Value, plr.Information.Tag.Value, plr.Information.StarPlayer.Value, thing, plr.Information.Muscle.Value, ColorToTable(plr.Information.RayColor.Value), plr.Information.Boxing.Value, SaveInventory(plr.Information.Inventory), plr.Information.Ranked.Value)
+            print('Saved data.')
+            return NewData
+        end)
+    end)
+end    

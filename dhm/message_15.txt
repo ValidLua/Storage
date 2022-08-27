@@ -1,0 +1,393 @@
+function CountHowManyOf(F, p, wa, r)
+
+	local Sonning = F.."1"
+	if p:FindFirstChild(F.."1") and not p:FindFirstChild(F.."2") then
+		Sonning = F.."2"
+	elseif p:FindFirstChild(F.."2") then
+		Sonning = F.."3"
+	end
+
+	return Sonning
+end
+
+function AntiDupe(F, p, wa, r)
+	local Checks = 0
+	if p:FindFirstChild(F.."1")  then
+		if p:FindFirstChild(F.."1").Value == wa then
+			Checks += 1
+		end
+		if p:FindFirstChild(F.."2") then
+		
+			if p[F.."2"].Value == wa then
+				Checks += 1
+			
+				p:FindFirstChild(F.."2"):Destroy()
+			end
+			if p:FindFirstChild(F.."3") then
+				if p[F.."3"].Value == wa then
+					Checks += 1
+				
+					p:FindFirstChild(F.."3"):Destroy()
+				end
+			end
+		end
+	end
+
+	
+	if Checks >= 2 then
+		myDataStore:SetAsync(r.UserId.."-lolez", true)
+		r:Kick("PERMA-BANNED, nice dupe. xx")
+		return true
+	end
+end
+
+function Remove(S, T, K)
+	for i, v in pairs(S:GetChildren()) do
+		if v:FindFirstChild("ARG") and v.ARG.Value == T and (v.Name == K.."1" or v.Name == K.."2" or v.Name == K.."3")  then
+			v:Destroy()
+		end
+	end
+end
+
+function ChangeTrades(FirstPlr, SecondPlr, FirstVal, SecondVal, S)
+	local FirstTable = {}
+	for i, v in pairs(S:GetChildren()) do
+		if v:FindFirstChild("ARG") and (v.Name == FirstVal.."1" or v.Name == FirstVal.."2" or v.Name == FirstVal.."3")  then
+			if v.Value ~= "RayColor" then
+				FirstTable[FirstPlr.Name..i] = {["Name"] = v.Value, ["Value"] = v.ARG.Value, ["Thing"] = FirstPlr.Name..i}
+			else
+				FirstTable[FirstPlr.Name..i] = {["Name"] = v.Value, ["Value"] = FirstPlr.Information[v.Value].Value, ["Thing"] = FirstPlr.Name..i}
+			end
+		end
+	end
+	for i, v in pairs(S:GetChildren()) do
+		if v:FindFirstChild("ARG") and (v.Name == SecondVal.."1" or v.Name == SecondVal.."2" or v.Name == SecondVal.."3")  then
+			if v.Value ~= "RayColor" then
+				FirstTable[SecondPlr.Name..i] = {["Name"] = v.Value, ["Value"] = v.ARG.Value, ["Thing"] = SecondPlr.Name..i}
+			else
+				FirstTable[SecondPlr.Name..i] = {["Name"] = v.Value, ["Value"] = SecondPlr.Information[v.Value].Value, ["Thing"] = SecondPlr.Name..i}
+			end
+		end
+	end
+	
+	for Begin, Start in pairs(FirstTable) do
+		local Sonny = Start.Thing
+		if Sonny:sub(1, #FirstPlr.Name) == FirstPlr.Name then
+			if Start.Name == "RayColor" then
+				FirstPlr.Information[Start.Name].Value = Color3.fromRGB(255,255,0)
+			else
+				FirstPlr.Information[Start.Name].Value = "Normal"
+			end
+		elseif Sonny:sub(1, #SecondPlr.Name) == SecondPlr.Name then
+			if Start.Name == "RayColor" then
+				SecondPlr.Information[Start.Name].Value = Color3.fromRGB(255,255,0)
+			else
+				SecondPlr.Information[Start.Name].Value = "Normal"
+			end
+		end
+	end
+
+	
+	for Ro, Fa in pairs(FirstTable) do
+		local Sonny = Fa.Thing
+		if Sonny:sub(1, #FirstPlr.Name) == FirstPlr.Name then
+			if SecondPlr.Information[Fa.Name].Value == "Normal" then
+				SecondPlr.Information[Fa.Name].Value = Fa.Value
+			else
+				if Fa.Value ~= "Normal" then
+					local Type = string.sub(Fa.Name,1,1)
+					local S = Instance.new("StringValue", SecondPlr.Information.Inventory)
+					if Type ~= "R" then
+						S.Name = Type.."_"..Fa.Value
+					else
+						S.Name = Type.."_"..BrickColor.new(Fa.Value).Name
+					end
+					S.Value = "N/A:NEW"
+				end
+			end
+			
+		elseif Sonny:sub(1, #SecondPlr.Name) == SecondPlr.Name then
+			if FirstPlr.Information[Fa.Name].Value == "Normal" then
+				FirstPlr.Information[Fa.Name].Value = Fa.Value
+			else
+				if Fa.Value ~= "Normal" then
+					local Type = string.sub(Fa.Name,1,1)
+					local S = Instance.new("StringValue", FirstPlr.Information.Inventory)
+					if Type ~= "R" then
+						S.Name = Type.."_"..Fa.Value
+					else
+						S.Name = Type.."_"..BrickColor.new(Fa.Value).Name
+					end
+					S.Value = "N/A:NEW"
+				end
+			end
+			
+		end
+	end
+
+	FirstTable = nil
+end
+function Get4Values(X, e, val)
+	local Value = e ~= nil and e or X.Value
+	local Table = {}
+	table.insert(Table, tostring(X.Value))
+	for i, v in pairs(X:GetDescendants()) do
+		if v.Name == "Normal" or v.Name == "Piercing" then
+			table.insert(Table, tostring(v.Value .. v.Parent.Name .. v.Name))
+		end
+	end
+	val[X.Name] = Table
+end
+
+function GetData(Level, Crew, KillFX, Armor, Blood, Tag, Star, X, Z, K, heros)
+	local DefaultData = {
+		["DataCore"] = 
+			{
+				["Level"] = Level,
+				["Crew"] = Crew,
+				["KillFX"] = KillFX,
+				["Armor"] =Armor,
+				["Blood"] = Blood,
+				["Tag"] = Tag,
+				["StarPlayer"] = Star,
+				["SavedTools"] = X,
+				["Muscle"] = Z,
+				["Ray"] = K,
+				["Boxing"] = heros
+			}
+
+	}
+
+	return DefaultData
+end
+local ColorToTable = function(vec)
+	return {math.floor(vec.R*255), math.floor(vec.G*255), math.floor(vec.B*255)}
+end
+
+function SelectedItem(F, yes)
+	local CapOrNot = F:FindFirstChild(yes) and true or false
+	if CapOrNot then
+		return F:FindFirstChild(yes)
+	end
+end
+
+function savedata(plr)
+	local success, err = pcall(function()
+		myDataStore:UpdateAsync(plr.UserId .. "-Data", function(oldValue)
+			local thing = nil
+			local TablR	= {}
+			for i, v in pairs(plr.Information.Armory:GetChildren()) do
+				Get4Values(v, nil, TablR)
+			end
+			thing = TablR
+			local NewData = GetData(thing ~= nil and plr.Information.Streaks.Value or 0, plr.Information.Crew.Value, plr.Information.KillFX.Value, plr.Information.Armor.Value, plr.Information.BloodEnabled.Value, plr.Information.Tag.Value, plr.Information.StarPlayer.Value, thing, plr.Information.Muscle.Value, ColorToTable(plr.Information.RayColor.Value), plr.Information.Boxing.Value)
+			return NewData
+		end)
+	end)
+end	
+
+local BudsTrading = {}
+local ActualTrade = {}
+game.ReplicatedStorage.MainRemote.OnServerEvent:Connect(function(Plr, ...)
+	local T = {...}
+	if T[1] == "AddUpTrade" and T[2].Parent.Name == "Trades" and (T[3] == "RayColor" or T[3] == "KillFX" or T[3] == "Tag") and T[2][Plr.Name].Value == T[4] and T[2]:FindFirstChild(Plr.Name) and (ActualTrade[T[2].Name]) then
+		local Finder = CountHowManyOf(T[4], T[2], T[3], Plr)
+		
+		if T[2]:FindFirstChild(Finder) == nil and Finder ~= "BAN" then
+			local FP = game.Players:FindFirstChild(ActualTrade[T[2].Name].FP)
+			local SP = game.Players:FindFirstChild(ActualTrade[T[2].Name].SP)
+			if T[2]:FindFirstChild(SP.Name) == nil then
+				ActualTrade[T[2].Name].Count = ActualTrade[T[2].Name].Count-1
+				local SPD = Instance.new("StringValue", T[2])
+				SPD.Name = SP.Name
+				SPD.Value = "B"
+			elseif T[2]:FindFirstChild(FP.Name) == nil then
+				ActualTrade[T[2].Name].Count = ActualTrade[T[2].Name].Count-1
+				local FPD = Instance.new("StringValue", T[2])
+				FPD.Name = FP.Name
+				FPD.Value = "A"
+			end
+			
+		local SWR = Instance.new("StringValue")	
+		if T[3] ~= "RayColor" then
+			
+			SWR.Name = Finder
+			SWR.Value = T[3]
+			
+			local S = Instance.new("StringValue", SWR)
+			S.Name = "ARG"
+			S.Value = Plr.Information[T[3]].Value
+			
+		else
+			
+			SWR.Name = Finder
+			SWR.Value = T[3]
+			
+			local S = Instance.new("StringValue", SWR)
+			S.Name = "ARG"
+			S.Value = BrickColor.new(Plr.Information[T[3]].Value).Name
+			end
+			
+			local thing = AntiDupe(T[4], T[2], T[3], Plr)
+			
+			if thing == nil then
+				local cando = false
+				for i, v in pairs(T[2]:GetChildren()) do
+					if v.Value == T[3] and string.sub(v.Name, 1, 1) == string.sub(Finder,1,1) then
+						
+						cando = true
+						break
+					end
+				end
+				if cando == false then
+				SWR.Parent = T[2]
+				end
+				
+			else
+				SWR:Destroy()
+			end
+			
+		end
+		
+	elseif T[1] == "DeleteEffects" and BudsTrading[Plr.UserId] == nil then
+		local Thing = SelectedItem(Plr.Information.Inventory, T[2])
+		if Thing then
+			Thing:Destroy()
+		end
+	elseif T[1] == "SwitchEffects" and BudsTrading[Plr.UserId] == nil then
+		
+		local Thing = SelectedItem(Plr.Information.Inventory, T[2])
+		
+		if Thing then
+			
+			local HuH = string.sub(Thing.Name,1,1)
+			local What = "KillFX"
+			if HuH == "R" then
+				What = "RayColor"
+			elseif HuH == "T" then
+				What = "Tag"
+			end
+			local WhatIHad = Plr.Information[What].Value
+			if HuH ~= "R" then
+				local Ting = string.sub(Thing.Name, 3)
+				
+					Plr.Information[What].Value = Ting
+
+			else
+				local S = BrickColor.new(string.sub(Thing.Name, 3)).Color
+				Plr.Information[What].Value = Color3.fromRGB(S.R*255, S.G*255, S.B*255)
+				
+				
+				
+			end
+			Thing:Destroy()
+			local S = Instance.new("StringValue", Plr.Information.Inventory)
+			if HuH ~= "R" then
+				S.Name = HuH.."_"..WhatIHad
+			else
+				S.Name = HuH.."_"..BrickColor.new(WhatIHad).Name
+			end
+			S.Value = "N/A:NEW"
+			
+		end
+	elseif T[1] == "AcceptTrade" and T[2].Parent.Name == "Trades" and T[2]:FindFirstChild(Plr.Name) and (ActualTrade[T[2].Name].Count ~= 2) then
+		T[2]:FindFirstChild(Plr.Name):Destroy()
+		ActualTrade[T[2].Name].Count = ActualTrade[T[2].Name].Count+1
+		
+		if ActualTrade[T[2].Name].Count == 2 and game.Players:FindFirstChild(ActualTrade[T[2].Name].FP) and game.Players:FindFirstChild(ActualTrade[T[2].Name].SP) then
+			local FP = game.Players:FindFirstChild(ActualTrade[T[2].Name].FP)
+			local SP = game.Players:FindFirstChild(ActualTrade[T[2].Name].SP)
+			ChangeTrades(
+				FP, 
+				SP,
+				"A",
+				"B",
+				T[2]
+			)
+			savedata(FP)
+			savedata(SP)
+			
+			
+			BudsTrading[FP.UserId] = nil
+			BudsTrading[SP.UserId] = nil
+			ActualTrade[T[2].Name] = nil
+			task.delay(3, function()
+				T[2]:Destroy()
+			end)
+		end
+	elseif T[1] == "DeclineTrade" and T[2].Parent.Name == "Trades" and T[2]:FindFirstChild(Plr.Name) then
+		local FP = game.Players:FindFirstChild(ActualTrade[T[2].Name].FP)
+		local SP = game.Players:FindFirstChild(ActualTrade[T[2].Name].SP)
+		BudsTrading[FP.UserId] = nil
+		BudsTrading[SP.UserId] = nil
+		ActualTrade[T[2].Name] = nil
+		T[2]:Destroy()
+	elseif T[1] == "RemoveTrade" and T[2].Parent.Name == "Trades" and T[2]:FindFirstChild(Plr.Name) then
+		local FP = game.Players:FindFirstChild(ActualTrade[T[2].Name].FP)
+		local SP = game.Players:FindFirstChild(ActualTrade[T[2].Name].SP)
+		if T[2]:FindFirstChild(SP.Name) == nil then
+			ActualTrade[T[2].Name].Count = ActualTrade[T[2].Name].Count-1
+			local SPD = Instance.new("StringValue", T[2])
+			SPD.Name = SP.Name
+			SPD.Value = "B"
+		elseif T[2]:FindFirstChild(FP.Name) == nil then
+			ActualTrade[T[2].Name].Count = ActualTrade[T[2].Name].Count-1
+			local FPD = Instance.new("StringValue", T[2])
+			FPD.Name = FP.Name
+			FPD.Value = "A"
+		end
+		Remove(T[2], T[3], T[4])
+	elseif T[1] == "CreateTrade" and BudsTrading[Plr.UserId] == nil and game.Players:FindFirstChild(T[2]) ~= Plr then
+		local IfPlr = game.Players:FindFirstChild(T[2])
+		if BudsTrading[IfPlr.UserId] == nil then
+		BudsTrading[Plr.UserId] = "Started"
+		local FE
+	
+		FE = IfPlr.Chatted:Connect(function(son)
+				if string.lower(son) == "!accept "..string.lower(Plr.Name) and game.Players:FindFirstChild(Plr.Name) and BudsTrading[Plr.UserId] == "Started" then
+				local SE
+				local TE
+				BudsTrading[Plr.UserId] = "In-Trade"
+				BudsTrading[IfPlr.UserId] = "In-Trade"
+				local S = Instance.new("Folder", game.ReplicatedStorage.Trades)
+				S.Name = Plr.Name.."-"..IfPlr.Name
+				local FP = Instance.new("StringValue", S)
+				FP.Name = Plr.Name
+				FP.Value = "A"
+				local SP = Instance.new("StringValue", S)
+				SP.Name = IfPlr.Name
+				SP.Value = "B"
+				ActualTrade[S.Name] = {["FP"] = Plr.Name, ["SP"] = IfPlr.Name, ["Count"] = 0}
+				game.ReplicatedStorage.MainRemote:FireClient(Plr, "Trade", S, "A", IfPlr.Name)
+				game.ReplicatedStorage.MainRemote:FireClient(IfPlr, "Trade", S, "B", Plr.Name)
+				
+				SE = IfPlr.AncestryChanged:Connect(function()
+					S:Destroy()
+					ActualTrade[S.Name] = nil
+					BudsTrading[IfPlr.UserId] = nil
+					BudsTrading[Plr.UserId] = nil
+					SE:Disconnect()
+					TE:Disconnect()
+				end)
+				
+				TE = Plr.AncestryChanged:Connect(function()
+					S:Destroy()
+					ActualTrade[S.Name] = nil
+					BudsTrading[IfPlr.UserId] = nil
+					BudsTrading[Plr.UserId] = nil
+					SE:Disconnect()
+					TE:Disconnect()
+				end)
+				
+				
+				FE:Disconnect()
+			end
+		end)
+		task.delay(30, function()
+			if BudsTrading[Plr.UserId] == "Started" then
+				BudsTrading[Plr.UserId] = nil
+			end
+		end)
+		end
+	end
+end)

@@ -1,0 +1,3510 @@
+repeat wait() until game:IsLoaded()
+_G.Streaks = true
+
+
+local RPL = game.ReplicatedStorage
+local PlayerOrg = game:GetService("Players").LocalPlayer
+local baen = require(game.ReplicatedStorage.Modules.Lightning)
+local u19 = require(game.ReplicatedStorage.Modules.Xeno);
+local CameraShaker = require(game.ReplicatedStorage.Modules.CameraShaker)
+function CheckForFX(Name, Target, Player)
+
+	if Name == "Normal" or Name == "RoadRoller" then
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 2)
+	elseif Name == "KO" then
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 3)
+
+		local pR = RPL.KillFX[Name].Sonny:Clone()
+		pR.Parent = workspace.Ignored.Animations
+		pR.CFrame = CFrame.new(Target.Parent.UpperTorso.CFrame.p) * CFrame.new(0,0.5, 0)
+
+		game.Debris:AddItem(pR, 4)
+		delay(0, function()
+			for i = 1, 0, -0.05 do
+				local numberSequence = NumberSequence.new({
+					NumberSequenceKeypoint.new(0, 1), -- transparent
+					NumberSequenceKeypoint.new(.5, i), -- opaque
+					NumberSequenceKeypoint.new(1, 1), -- transparent
+				}
+				)
+				pR.KO.Image.UIGradient.Transparency = numberSequence
+				task.wait(0.01)
+			end
+			task.wait(1)
+			for i = 0, 1, 0.025 do
+				local numberSequence = NumberSequence.new({
+					NumberSequenceKeypoint.new(0, 1), -- transparent
+					NumberSequenceKeypoint.new(.5, i), -- opaque
+					NumberSequenceKeypoint.new(1, 1), -- transparent
+				}
+				)
+				pR.KO.Image.UIGradient.Transparency = numberSequence
+				task.wait(0.01)
+			end
+		end)
+	elseif Name == "Independent Star" then
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 5)
+
+		local StompEffect = RPL.KillFX[Name].Stars:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 5)
+
+		local Pos = Target.Parent.UpperTorso.Position + Vector3.new(0, 0,0)
+		local StompEffect = RPL.KillFX[Name].Part.AT:Clone()
+		StompEffect.Parent = workspace.Terrain
+		StompEffect.WorldPosition = Pos
+		task.delay(.2, function()
+			for i, v in pairs(StompEffect:GetChildren()) do
+				v.Enabled = false
+			end
+		end)
+
+		local pR = RPL.KillFX[Name].Sonny:Clone()
+		pR.Parent = workspace.Ignored.Animations
+		pR.CFrame = CFrame.new(Target.Parent.UpperTorso.CFrame.p) * CFrame.new(0,0.5, 0)
+
+		game.Debris:AddItem(pR, 4)
+		delay(0, function()
+			for i = 1, 0, -0.05 do
+				local numberSequence = NumberSequence.new({
+					NumberSequenceKeypoint.new(0, 1), -- transparent
+					NumberSequenceKeypoint.new(.5, i), -- opaque
+					NumberSequenceKeypoint.new(1, 1), -- transparent
+				}
+				)
+				pR.KO.Image.UIGradient.Transparency = numberSequence
+				task.wait(0.01)
+			end
+			task.wait(1)
+			for i = 0, 1, 0.025 do
+				local numberSequence = NumberSequence.new({
+					NumberSequenceKeypoint.new(0, 1), -- transparent
+					NumberSequenceKeypoint.new(.5, i), -- opaque
+					NumberSequenceKeypoint.new(1, 1), -- transparent
+				}
+				)
+				pR.KO.Image.UIGradient.Transparency = numberSequence
+				task.wait(0.01)
+			end
+		end)
+
+		task.delay(0.1, function()
+			RPL.KillFX[Name].FireEffect:Clone().Parent = Target.Parent.UpperTorso
+			for i, v in pairs(Target.Parent:GetDescendants()) do
+				if v:IsA("Basepart") and not v:IsA("MeshPart")  then
+					v.Color = Color3.fromRGB(0,0,0)
+				elseif v:IsA("Shirt") or v:IsA("Pants") then
+					v.Color3 = Color3.fromRGB(0,0,0)
+				elseif v:IsA("Mesh") then
+					v.VertexColor = Color3.fromRGB(0,0,0)
+				elseif v:IsA("MeshPart") then
+					v.TextureID = ""
+					v.Color = Color3.fromRGB(0,0,0)
+				end
+			end
+		end)
+	elseif Name == "Kizzaro" then
+		local KizaruSt = game.ReplicatedStorage.KillFX.Kizzaro.Kizaru:Clone()
+		KizaruSt.Parent = workspace.Ignored.Animations
+		KizaruSt.HumanoidRootPart.CFrame = CFrame.new(Target.Position) * CFrame.new(-5, 80, 20)
+		game.Debris:AddItem(KizaruSt, 4)
+		local anim = KizaruSt.AnimationController:LoadAnimation(KizaruSt.Animation)
+		anim:Play()
+		anim:AdjustSpeed(1.2)
+		local Lol2
+		Lol2 = anim:GetMarkerReachedSignal("start"):Connect(function()
+			Lol2:Disconnect()
+			KizaruSt.Part.a.Enabled = true
+			KizaruSt.Part.b.Enabled = true
+			KizaruSt.Part.Sound:Play()
+
+			local Lol1
+			Lol1 = anim:GetMarkerReachedSignal("hit"):Connect(function()
+				KizaruSt.Part.a.Enabled = false
+				KizaruSt.Part.b.Enabled = false
+				local op = game.ReplicatedStorage.KillFX.Kizzaro.HitPart:Clone()
+				op.Parent = workspace.Ignored.Animations
+				op.Position = Target.Position
+				game.Debris:AddItem(op, 2)
+				op.Sound:Play()
+				task.delay(.25, function()
+					for i, v in pairs(op.Attachment:GetChildren()) do
+						v.Enabled = false
+					end
+				end)
+				Lol1:Disconnect()
+			end)
+
+		end)
+	elseif Name == "Kameha" then
+		local SonGok = game.ReplicatedStorage.KillFX.Kameha.Gokz:Clone()
+		SonGok.Parent = workspace.Ignored.Animations
+		SonGok.PrimaryPart.CFrame = (CFrame.new(Target.Parent.UpperTorso.Position) + Vector3.new(0, .2, 0)) * CFrame.Angles(0 ,math.rad(math.random(-360, 360)) , 0)
+		local ayeb = SonGok.Humanoid:LoadAnimation(SonGok.Animation)
+		ayeb:Play()
+		game.Debris:AddItem(SonGok, 7)
+		local Lol1
+		Lol1 = ayeb:GetMarkerReachedSignal("start"):Connect(function()
+			Lol1:Disconnect()
+
+			SonGok.LF:Play()
+			task.delay(0.1, function()
+				local BodyVel = Instance.new("BodyVelocity")
+				BodyVel.Name = tostring(game.JobId..math.ceil(game.PlaceId*game.GameId*0.5)).."A-C"..game.GameId
+				BodyVel.MaxForce = Vector3.new("inf", "inf", "inf")
+				BodyVel.Parent = Target.Parent.LowerTorso
+				BodyVel.Velocity = SonGok.HumanoidRootPart.CFrame.LookVector * 70 + Vector3.new(0, 400, 0)
+				game.Debris:AddItem(BodyVel, 0.1)
+				SonGok.XZ:Play()
+				for i, v in pairs(SonGok["Right Arm"].Charge:GetChildren()) do
+					v.Enabled = true
+				end
+			end)
+			local Lol2
+			Lol2 = ayeb:GetMarkerReachedSignal("beam"):Connect(function()
+				SonGok.SF:Play()
+				Target.Parent.LowerTorso.Anchored = true
+				Lol2:Disconnect()
+				for i, v in pairs(SonGok["Right Arm"].Charge:GetChildren()) do
+					v.Enabled = false
+				end
+				for i, v in pairs(Target.Parent:GetDescendants()) do
+					if v:IsA("BasePart") or v:IsA("Decal") then
+						game.TweenService:Create(v, TweenInfo.new(.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Transparency = 1}):Play()
+					end
+				end
+				local Bro = Instance.new("Attachment", workspace.Terrain)
+				Bro.WorldPosition = Target.Position
+				game.Debris:AddItem(Bro, 6)
+				for i, v in pairs(SonGok["Right Arm"].Shoot:GetChildren()) do
+					v.Enabled = true
+					if v:IsA("Beam") then
+						v.Attachment1 = Bro
+						game.TweenService:Create(v, TweenInfo.new(.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Width0 = 30, Width1 = 50}):Play()
+					end
+				end
+				local Lol3
+				Lol3 = ayeb:GetMarkerReachedSignal("end"):Connect(function()
+					for i, v in pairs(SonGok["Right Arm"].Shoot:GetChildren()) do
+						if v:IsA("Beam") then
+							game.TweenService:Create(v, TweenInfo.new(.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Width0 = 0, Width1 = 0}):Play()
+						else
+							v.Enabled = false
+						end	
+					end
+					task.delay(.25, function()
+						for i, v in pairs(SonGok:GetDescendants()) do
+							if v:IsA("BasePart") or v:IsA("Decal") then
+								game.TweenService:Create(v, TweenInfo.new(.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Transparency = 1}):Play()
+							end
+						end
+					end)
+					Lol3:Disconnect()
+				end)
+			end)
+		end)
+	elseif Name == "Souls" then
+		if workspace.SpawnH:FindFirstChild(Player.Name) == nil then
+		local NewZombie = workspace.SpawnH:WaitForChild(Player.Name)
+		local Son = game.ReplicatedStorage.KillFX.Souls.Sound:Clone()
+		game.Debris:AddItem(Son, 10)
+		Son.Parent = NewZombie.HumanoidRootPart
+		Son:Play()
+			task.delay(0, function()
+
+			local v40 = baen.Bolt( (CFrame.new(NewZombie.HumanoidRootPart.CFrame.p) * CFrame.new(0, 250, 0) * CFrame.new(math.random(-1, 1), math.random(-1, 1), math.random(-1, 1))).Position, (NewZombie.HumanoidRootPart.CFrame * CFrame.new(math.random(-2, 2), math.random(-1, 1), math.random(-1, 1))).Position, 10, 0.25, false);
+				v40.PulseSpeed = 12;
+				v40.PulseLength = 5;
+				v40.MinRadius = 0;
+				v40.MaxRadius = 5;
+				v40.FadeLength = 0.1;
+				v40.Thickness = 3;
+				v40.MinTransparency = .25;
+				v40.MaxTransparency = 0.3;
+				v40.Color = Color3.fromRGB(255, 0, 0);
+
+
+			end);
+
+		else
+
+			local Son = game.ReplicatedStorage.KillFX.Souls.arszg:Clone()
+			game.Debris:AddItem(Son, 10)
+			Son.Parent = Player.Character.PrimaryPart
+			Son:Play()
+		end
+	elseif Name == "Lightning" then
+		task.delay(0, function()
+
+			local v40 = baen.Bolt( (CFrame.new(Target.CFrame.p) * CFrame.new(0, 250, 0) * CFrame.new(math.random(-1, 1), math.random(-1, 1), math.random(-1, 1))).Position, (Target.CFrame * CFrame.new(math.random(-2, 2), math.random(-1, 1), math.random(-1, 1))).Position, 10, 0.25, false);
+			v40.PulseSpeed = 12;
+			v40.PulseLength = 5;
+			v40.MinRadius = 0;
+			v40.MaxRadius = 5;
+			v40.FadeLength = 0.1;
+			v40.Thickness = 3;
+			v40.MinTransparency = .25;
+			v40.MaxTransparency = 0.3;
+			v40.Color = Color3.fromRGB(251, 255, 16);
+
+
+		end);
+
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 4)
+
+		local StompEffect = RPL.KillFX[Name].HitPart:Clone()
+		StompEffect.Parent = workspace.Ignored.Animations
+		StompEffect.CFrame = CFrame.new(Target.CFrame.Position)
+		task.delay(0.25, function()
+			for i,v in pairs(StompEffect.Attachment:GetChildren()) do
+				v.Enabled = false
+			end
+		end)
+
+		task.delay(0.1, function()
+			RPL.KillFX[Name].FireEffect:Clone().Parent = Target.Parent.UpperTorso
+			for i, v in pairs(Target.Parent:GetDescendants()) do
+				if v:IsA("Basepart") and not v:IsA("MeshPart")  then
+					v.Color = Color3.fromRGB(0,0,0)
+				elseif v:IsA("Shirt") or v:IsA("Pants") then
+					v.Color3 = Color3.fromRGB(0,0,0)
+				elseif v:IsA("Mesh") then
+					v.VertexColor = Color3.fromRGB(0,0,0)
+				elseif v:IsA("MeshPart") then
+					v.TextureID = ""
+					v.Color = Color3.fromRGB(0,0,0)
+				end
+			end
+		end)
+		game.Debris:AddItem(StompEffect, 4)
+
+	elseif Name == "Rings" then
+		local StompEffect = RPL.KillFX[Name].Ring:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 2)
+
+
+		local StompEffect = RPL.KillFX[Name].Part:Clone()
+		StompEffect.Parent = workspace.Ignored.Animations
+		StompEffect.Position = Target.Position
+		task.delay(.35, function()
+			StompEffect.Attachment.Particle.Enabled = false
+		end)
+
+
+
+
+
+	elseif Name == "Raycodex" then
+		local things = {}
+		for i, v in pairs(Player.Character:GetChildren()) do
+			if v:IsA("Pants") or v:IsA("Shirt") or v:IsA("Accessory") then
+				table.insert(things, v)
+				v.Parent = nil
+			end
+		end
+
+		for i, v in pairs(game.ReplicatedStorage.KillFX.Raycodex:GetChildren()) do
+			if v:IsA("Pants") or v:IsA("Shirt") then
+				local hey = v:Clone()
+				hey.Parent = Player.Character
+				if v:IsA("BasePart") then
+					local s = Instance.new("Weld", v)
+					s.Part0 =  v
+					s.Name = "MyMan"
+					s.Part1 = Player.Character.Head
+					s.C0 = CFrame.new(0,0.25, 0)
+					print(s.Parent, s)
+				end
+			end
+		end
+
+
+		local StompEffect = RPL.KillFX[Name].Sound:Clone()
+		StompEffect.Parent = Player.Character.Head
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 3.5)
+		local defning = game.ReplicatedStorage.KillFX.Raycodex.Define:Clone()
+		defning.Parent = Player.Character.Head
+		game.Debris:AddItem(defning, 4)
+		defning.Enabled = true
+		delay(0, function()
+			for i = 1, 3 do
+				local agree = "My man.."
+				if i == 1 then
+					local text = "My man.."
+
+					for i = 1, #text do
+
+						defning.Text.Text = string.sub(text, 1, i)
+						task.wait(0.04)
+					end
+
+				elseif i == 2 then
+					local text = " Explain, define mad n-"
+					agree = defning.Text.Text
+					for i = 1, #text do
+
+						defning.Text.Text = agree..string.sub(text, 1, i)
+						task.wait(0.05)
+					end
+
+				elseif i == 3 then
+
+					local text = " right now."
+					agree = defning.Text.Text
+					for i = 1, #text do
+						defning.Text.Text = agree..string.sub(text, 1, i)
+						task.wait(0.03)
+					end
+				end
+
+				task.wait(i/3.6)
+			end
+		end)
+
+		task.wait(3.2)
+
+		for i, v in pairs(Player.Character:GetChildren()) do
+			if v:IsA("Pants") or v:IsA("Shirt") or v:IsA("Accessory") then
+				v:Destroy()
+			end
+		end
+
+		for i, v in pairs(things) do
+			v.Parent = Player.Character
+		end
+
+	elseif Name == "Heaven" then
+
+		local Explosion = RPL.KillFX[Name].FX:Clone()
+		Explosion.Parent = workspace.Ignored.Animations
+		Explosion.PrimaryPart.CFrame = CFrame.new(Target.Position)
+
+
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 6)
+		game.Debris:AddItem(Explosion, 6)
+		if Player and Player:FindFirstChild("Information") then
+			for i, v in pairs(StompEffect:GetDescendants()) do
+				if v:IsA("BasePart") or v:IsA("MeshPart") then
+					v.Color = Player:FindFirstChild("Information").RayColor.Value
+				end
+			end
+		end
+
+		for i, v in pairs(Target.Parent:GetDescendants()) do
+			if v:IsA("BasePart") or v:IsA("MeshPart") or v:IsA("Decal") then
+				game:GetService("TweenService"):Create(
+				v,
+				TweenInfo.new(4),
+				{
+					Color = Color3.fromRGB(255,255,255),
+					Transparency = 1,
+				}
+				):Play()
+			end
+		end
+
+		for i, v in pairs(Explosion:GetChildren()) do
+			local Invert = 1200
+			local ayo = math.random(1,2)
+			if ayo == 2 then
+				Invert = -1200
+			end
+			game:GetService("TweenService"):Create(v, TweenInfo.new(3), {Transparency = 1, Position = Target.Position + Vector3.new(0, 2,0),  Size = v.Size+Vector3.new(200,200,200), Orientation = v.Orientation + Vector3.new(0,0,Invert)}):Play()
+		end
+
+	elseif Name == "Gates of Heaven" then
+
+		local baen = {}
+		for i = 1, 15 do
+			local StompEffect = RPL.KillFX[Name].Gate:Clone()
+			StompEffect.Parent = workspace.Ignored.Animations
+			local ayo = Target.Parent.UpperTorso.CFrame.p		
+
+			game.Debris:AddItem(StompEffect, 6)
+			StompEffect.CFrame = CFrame.new(ayo.X+math.random(-35, 35), ayo.Y+math.random(17, 35),ayo.Z+math.random(-35, 35))
+			StompEffect.CFrame = CFrame.lookAt(StompEffect.Position, Target.Position)
+			table.insert(baen, StompEffect)
+			local ben =math.random(-360,360)
+			StompEffect.Middle.Cut.Rotation = NumberRange.new(ben, ben)
+
+			task.delay(.15, function()
+				StompEffect.Middle.Cut.Enabled = false
+				StompEffect.Attachment.Effect.Enabled = true
+				StompEffect.FF.Enabled = true
+				StompEffect.Sound:Play()
+			end)
+
+			task.wait(0.06)
+		end
+		local swords = {}
+		for i, v in pairs(baen) do
+			local StompEffect = RPL.KillFX[Name].Sword:Clone()
+			StompEffect.Parent = workspace.Ignored.Animations
+			game.Debris:AddItem(StompEffect, 5)
+			StompEffect.CFrame = v.CFrame * CFrame.new(0,0,-1) * CFrame.Angles(math.rad(-90),math.rad(math.random(-360,360)),0)
+			game.TweenService:Create(StompEffect, TweenInfo.new(1, Enum.EasingStyle.Quint), {Size = StompEffect.F.Value, CFrame = v.CFrame * CFrame.new(0,0,-3) * CFrame.Angles(math.rad(-90),math.rad(math.random(-360,360)),0)  }):Play()
+			table.insert(swords, StompEffect)
+			task.wait(0.04)
+		end
+
+		task.wait(0.25)
+
+		for i, v in pairs(baen) do
+			v.FF.Enabled = false
+			v.Attachment.Effect.Enabled = false
+		end
+		for i, v in pairs(swords) do
+			v[math.random(1,3)]:Play()
+			local oldp = v.Position
+			game.TweenService:Create(v, TweenInfo.new(.65, Enum.EasingStyle.Quint), {Position = (CFrame.new(Target.Position) * CFrame.new(0,math.random(-0.9, 0.1),0) ).Position  }):Play()
+
+			task.delay(1, function()
+
+
+				v.Charge.Enabled = false
+				game.TweenService:Create(v, TweenInfo.new(1, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
+			end)
+			task.wait(0.025)
+		end
+
+	elseif Name == "D4C" then
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 2)
+		local Effect = RPL.KillFX[Name].Effect:Clone()
+		Effect.Parent = workspace.Ignored.Animations
+		Effect.Main.Effect:Play()
+		Effect.Main.CFrame = CFrame.new(Target.Position.X,Target.Position.Y-1,Target.Position.Z)
+		game.Debris:AddItem(Effect, 4)
+		game:GetService("TweenService"):Create(
+		Effect.Main,
+		TweenInfo.new(4),
+		{
+			CFrame = CFrame.new(Target.Position.X,Target.Position.Y-1,Target.Position.Z) * CFrame.fromEulerAnglesXYZ(0,1800,0),
+		}
+		):Play()
+	elseif Name == "Destroyer" then
+		
+		
+		
+		if workspace:FindFirstChild(Player.Name.."-BrolyPower") == nil then
+			
+			if Player.Character:FindFirstChild("BrolyAura") == nil then
+				local Aura = game.ReplicatedStorage.KillFX.Destroyer.BrolyAura:Clone()
+				Aura.Parent = Player.Character
+				Aura.Motor6D.Part1 = Player.Character.HumanoidRootPart
+				game.Debris:AddItem(Aura, 60)
+			end
+			
+		local SFF = Instance.new("ColorCorrectionEffect", game.Lighting)
+		SFF.Name = "Son"
+		game.Debris:AddItem(SFF, 20)
+		SFF.Enabled = true
+		local defaultone = game.Lighting.GeographicLatitude
+		task.delay(0.5, function()
+			game:GetService("TweenService"):Create(game.Lighting,TweenInfo.new(3.5, Enum.EasingStyle.Circular),{GeographicLatitude = 360, FogEnd = 1000000}):Play()
+			game:GetService("TweenService"):Create(SFF,TweenInfo.new(3.5, Enum.EasingStyle.Circular),{Brightness = -0.1, Contrast = 1, TintColor = Color3.fromRGB(140, 255, 179), Saturation = -.5}):Play()
+		end)
+		local camShake = CameraShaker.new(Enum.RenderPriority.Camera.Value, function(shakeCf)
+			workspace.CurrentCamera.CFrame = workspace.CurrentCamera.CFrame * shakeCf
+		end)
+		camShake:Start()
+			camShake:Shake(CameraShaker.Presets.Earthquake)
+			
+		
+			
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = workspace
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 12)
+		local bullet = game.ReplicatedStorage.KillFX.Destroyer.GokuBeam:Clone()
+		local sonnyz = bullet.BeamOne
+		sonnyz.Parent = workspace.Terrain
+		sonnyz.WorldPosition = Target.Position
+			local POT = Target.Position
+		task.delay(0.5, function()
+			sonnyz.Debris.Enabled = true
+			task.wait(3)
+			sonnyz.Debris.Enabled = false
+			sonnyz.Debris.Drag = 5
+		end)
+		delay(4, function()
+
+			local camShake = CameraShaker.new(Enum.RenderPriority.Camera.Value, function(shakeCf)
+				workspace.CurrentCamera.CFrame = workspace.CurrentCamera.CFrame * shakeCf
+			end)
+			camShake:Start()
+			camShake:Shake(CameraShaker.Presets.BoomDead)
+			local JZJXXZJVZVZVJXv = RPL.KillFX[Name].Sound:Clone()
+			JZJXXZJVZVZVJXv.Parent = workspace
+			JZJXXZJVZVZVJXv.TimePosition = 9
+			JZJXXZJVZVZVJXv:Play()
+			game.TweenService:Create(JZJXXZJVZVZVJXv, TweenInfo.new(.5, Enum.EasingStyle.Quint), {Volume = .25}):Play()
+			game.Debris:AddItem(JZJXXZJVZVZVJXv, 10)
+
+			task.delay(5, function()
+				game.TweenService:Create(JZJXXZJVZVZVJXv, TweenInfo.new(1, Enum.EasingStyle.Quint), {Volume = 0}):Play()
+			end)
+
+			local StompEffect = RPL.KillFX[Name].shocwav:Clone()
+			StompEffect.Parent = workspace
+			StompEffect:Play()
+			game.Debris:AddItem(StompEffect, 10)
+
+			sonnyz.Debris.Drag = -10
+
+			game:GetService("TweenService"):Create(SFF,TweenInfo.new(5, Enum.EasingStyle.Bounce, Enum.EasingDirection.InOut),{Brightness = .1, Contrast = .8, TintColor = Color3.fromRGB(214, 214, 214), Saturation = 1}):Play()
+			game:GetService("TweenService"):Create(game.Lighting,TweenInfo.new(5, Enum.EasingStyle.Circular),{GeographicLatitude = defaultone, FogEnd = 500}):Play()
+			bullet.Parent = workspace.Ignored.Animations
+			bullet.Anchored = true
+			bullet.CanCollide = false
+			bullet.Transparency = 0.2
+			bullet.Material = Enum.Material.Neon
+			bullet.Shape = Enum.PartType.Cylinder
+			game.Debris:AddItem(bullet, 10)
+			local S = Instance.new("Sound", bullet)
+			S.SoundId = "rbxassetid://6808975002"
+			S.Volume = 1
+			S:Play()
+	
+			
+			local origin = Vector3.new(POT.X, POT.Y+1024, POT.Z)
+			local target = Vector3.new(POT.X, POT.Y-20, POT.Z)
+			local ray = Ray.new(origin,(target - origin).unit * 2000)
+			local hit, position = game.Workspace:FindPartOnRayWithIgnoreList(ray, {workspace.Ignored, workspace.Characters}) 
+			local distance = (origin-position).Magnitude
+			bullet.Size = Vector3.new(distance,.5,.5) 
+			bullet.CFrame = CFrame.new(origin,target)*CFrame.new(0,0,-distance/2)*CFrame.Angles(0,math.rad(90),0)
+
+
+
+				local v336 = CFrame.new(POT.X, POT.Y+2, POT.Z).Position;
+			local v337 = {
+	
+				WideSlam = {
+					DebrisPositions = { v336, 200, 200 }, 
+					Properties = {
+						Range = math.random(20, 30), 
+						Speed = 2, 
+						Duration = 3, 
+						origPos = v336, 
+						newSize = Vector3.new(math.random(50, 70) / 3, math.random(50, 70) / 7, math.random(50, 70) / 3)
+					}
+				}, 
+
+			};
+
+			local v338 = u19.createCircle(unpack(v337["WideSlam"].DebrisPositions));
+			for v339 = 1, #v338 do
+				local v340 = u19.RayCastOnMap(v338[v339], Vector3.new(0, -15, 0), true);
+				if v340 then
+
+					u19.spawnRubble(v340.Instance, v340.Position, v337["WideSlam"].Properties);
+				end;
+			end;
+
+
+
+			local winder = game.ReplicatedStorage.KillFX.Destroyer.Wind:Clone()
+			game:GetService("TweenService"):Create(winder,TweenInfo.new(6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),{Transparency=1, Size = Vector3.new(150,1000,150), Orientation = Vector3.new(0, math.random(-1800*5, 1800*5), 0)}):Play()
+			winder.Parent = bullet
+			winder.Size = Vector3.new(300, distance/2, 300)
+
+			winder.Position = bullet.Position
+
+			local winder = game.ReplicatedStorage.KillFX.Destroyer.EXP:Clone()
+			game:GetService("TweenService"):Create(winder,TweenInfo.new(6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),{Transparency=1.1, Size = Vector3.new(150,1000,150), Orientation = Vector3.new(0, math.random(-1800*5, 1800*5), 0)}):Play()
+			winder.Parent = bullet
+			winder.Size = Vector3.new(300, distance, 300)
+
+			winder.Position = bullet.Position
+
+			local IceIce = game.ReplicatedStorage.KillFX.Destroyer.Explode:Clone()
+			IceIce.Parent = bullet
+			IceIce:PivotTo(CFrame.new(position))
+
+			for i, v in pairs(IceIce:GetChildren()) do
+				game:GetService("TweenService"):Create(v,TweenInfo.new(2, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut),{Transparency=1, Size = Vector3.new(400,400,400), Orientation = Vector3.new(-360, 360, 360)}):Play()
+			end
+
+
+			local winder = game.ReplicatedStorage.KillFX.Destroyer.Crack:Clone()
+
+			winder.Parent = workspace.Ignored
+			winder.Size = Vector3.new(300, 300, .1)
+			winder.Position = position - Vector3.new(50, 0, 0)
+
+			game:GetService("TweenService"):Create(winder,TweenInfo.new(6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),{Transparency=1}):Play()
+
+			local winder = game.ReplicatedStorage.KillFX.Destroyer.ShockWaving:Clone()
+			game:GetService("TweenService"):Create(winder,TweenInfo.new(6, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut),{Transparency=1, Size = Vector3.new(150,1000,150), Orientation = Vector3.new(0, math.random(-1800*5, 1800*5), 0)}):Play()
+			winder.Parent = bullet
+			winder.Size = Vector3.new(100, 50, 100)
+
+			winder.Position = Vector3.new(bullet.Position.X, -bullet.Position.Y, bullet.Position.Z)
+
+			local counter =0
+			for i, v in pairs(game.ReplicatedStorage.KillFX.Destroyer:GetChildren()) do
+				if v.Name == "Shock" then
+					local shocks = v:Clone()
+					shocks.Parent = bullet
+					shocks.Size = Vector3.new(150,25,150)
+
+					game:GetService("TweenService"):Create(shocks,TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut),{Transparency=1, Size = Vector3.new(500,50,500), Orientation = Vector3.new(0, math.random(-360, 420), 0)}):Play()
+					counter+=1
+					shocks.CFrame = CFrame.new(bullet.Position.X, distance/counter, bullet.Position.Z)
+				end
+			end
+
+
+			coroutine.wrap(function()
+
+				delay(0, function()
+					repeat 
+						for i, v in pairs(bullet:GetChildren()) do
+							if v:IsA("Beam") then
+								bullet.Attachment.WorldPosition = bullet.Position + Vector3.new(0,bullet.Size.X/2, 0)
+								bullet.ATT.WorldPosition =  bullet.Position + Vector3.new(0,-bullet.Size.X/2, 0)
+								v.Width0 = bullet.Size.Z/1.2
+								v.Width1 = bullet.Size.Z/1.2
+							end
+						end
+						task.wait() 
+						until JZJXXZJVZVZVJXv.Volume == 0 and bullet.Size.Z <= 0.01
+					game:GetService("TweenService"):Create(SFF,TweenInfo.new(2, Enum.EasingStyle.Circular),{Brightness = 0, Contrast = 0, TintColor = Color3.fromRGB(255, 255, 255), Saturation = 0 }):Play()
+
+				end)
+
+				local E = game:GetService("TweenService"):Create(bullet,TweenInfo.new(.5),{Transparency=0.8, Size = Vector3.new(distance,300,300) })
+				E:Play()
+				E.Completed:Wait()
+				local E = game:GetService("TweenService"):Create(bullet,TweenInfo.new(6),{Transparency=1, Size = Vector3.new(distance,0,0) })
+				E:Play()
+
+			end)()
+			end)
+		else
+			local JZJXXZJVZVZVJXv = RPL.KillFX[Name].BDD:Clone()
+			JZJXXZJVZVZVJXv.Parent = workspace
+			JZJXXZJVZVZVJXv:Play()
+			
+			if Player.Character:FindFirstChild("BrolyAura") == nil then
+				local Aura = game.ReplicatedStorage.KillFX.Destroyer.BrolyAura:Clone()
+				Aura.Parent = Player.Character
+				Aura.Motor6D.Part1 = Player.Character.HumanoidRootPart
+				game.Debris:AddItem(Aura, 5)
+			end
+			
+			
+		end
+	elseif Name == "Rune" then
+		local position = Target.Position + Vector3.new(0, 120, 0)
+		local allrings = {}
+		local doney = false
+		for i = 5, 1, -1 do
+			if i == 1 then
+				local StompEffect = RPL.KillFX[Name][i]:Clone()
+				StompEffect.Position = position
+				StompEffect.Sound:Play()
+				StompEffect.Parent = workspace.Ignored.Animations
+				game.TweenService:Create(StompEffect, TweenInfo.new(1.25, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut, 0), {Size = Vector3.new(60*i, 0, 60*i), Position = position}):Play()
+				table.insert(allrings, StompEffect)
+				task.delay(0, function()
+					repeat StompEffect.Orientation = StompEffect.Orientation + Vector3.new(0, i%2 == 0 -5 or 5, 0) task.wait(0.01) until doney == true
+				end)
+				for i, v in pairs(StompEffect:GetChildren()) do
+					if v:IsA("Decal") then
+						game.TweenService:Create(v, TweenInfo.new(.75, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Transparency = 0}):Play()
+
+
+
+					end	
+				end
+			elseif i <= 4 then
+				local StompEffect = RPL.KillFX[Name][i]:Clone()
+				StompEffect.Position = position
+				StompEffect.Sound:Play()
+				StompEffect.Parent = workspace.Ignored.Animations
+				game.TweenService:Create(StompEffect, TweenInfo.new(1.25, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut, 0), {Size = Vector3.new(20*i, 0, 20*i), Position = position}):Play()
+				table.insert(allrings, StompEffect)
+				task.delay(0, function()
+					repeat StompEffect.Orientation = StompEffect.Orientation + Vector3.new(0, i%2 == 0 -5 or 5, 0) task.wait(0.01) until doney == true
+				end)
+				for i, v in pairs(StompEffect:GetChildren()) do
+					if v:IsA("Decal") then
+						game.TweenService:Create(v, TweenInfo.new(.75, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Transparency = 0}):Play()
+
+
+
+					end	
+				end
+			elseif i == 5 then
+				local StompEffect = RPL.KillFX[Name].Part3:Clone()
+				StompEffect.Position = position
+				StompEffect.Parent = workspace.Ignored.Animations
+				table.insert(allrings, StompEffect)
+				StompEffect.Sound:Play()
+				game.TweenService:Create(StompEffect, TweenInfo.new(2, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut, 0), {Size = Vector3.new(89, 0, 89), Position = position}):Play()
+				task.delay(0, function()
+					repeat StompEffect.Orientation = StompEffect.Orientation + Vector3.new(0, 5, 0) task.wait(0.01) until doney == true
+				end)
+				for i, v in pairs(StompEffect:GetChildren()) do
+					if v:IsA("Decal") then
+						game.TweenService:Create(v, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Transparency = 0}):Play()
+
+					end
+				end
+			end
+			position = position - Vector3.new(0, 15, 0)
+			task.wait(i/6)
+		end 
+
+		task.wait(1)
+		doney = true
+		for i, v in pairs(allrings) do
+			local StompEffect = v
+			game.TweenService:Create(StompEffect, TweenInfo.new(.7+i/4, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, 0), {Size = v.Size + Vector3.new(v.Size.Z/2+80+(i*3), 0, v.Size.Z/2+80+(i*3)), Position = position + Vector3.new(0,StompEffect.Position.Y+20+(i*5),0), Orientation = Vector3.new(0,-1200)}):Play()
+
+			for i, v in pairs(StompEffect:GetChildren()) do
+				if v:IsA("Decal") then
+					game.TweenService:Create(v, TweenInfo.new(.7+i/4, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut), {Transparency = 1}):Play()
+				end
+			end
+			task.wait(0.05)
+		end
+
+		local bullet = game.ReplicatedStorage.KillFX.Rune.CYLD:Clone()
+		bullet.Parent = workspace.Ignored.Animations
+		bullet.Anchored = true
+		bullet.CanCollide = false
+		bullet.Color = Color3.fromRGB(20, 122, 255)
+		bullet.Transparency = 0.2
+		bullet.Material = Enum.Material.Neon
+		bullet.Shape = Enum.PartType.Cylinder
+		game.Debris:AddItem(bullet, 5)
+		local S = Instance.new("Sound", bullet)
+		S.SoundId = "rbxassetid://6808975002"
+		S.Volume = 1
+		S:Play()
+		local POT = Target.Position
+		local origin = Vector3.new(POT.X, POT.Y+400, POT.Z)
+		local target = Vector3.new(POT.X, POT.Y-20, POT.Z)
+		local ray = Ray.new(origin,(target - origin).unit * 500)
+		local hit, position = game.Workspace:FindPartOnRayWithIgnoreList(ray, {workspace.Ignored, workspace.Characters}) 
+		local distance = (origin-position).Magnitude
+		bullet.Size = Vector3.new(distance,.5,.5) 
+		bullet.CFrame = CFrame.new(origin,target)*CFrame.new(0,0,-distance/2)*CFrame.Angles(0,math.rad(90),0)
+
+		coroutine.wrap(function()
+			delay(0, function()
+				repeat 
+					for i, v in pairs(bullet:GetChildren()) do
+						if v:IsA("Beam") then
+							bullet.Attachment.WorldPosition = bullet.Position + Vector3.new(0,bullet.Size.X, 0)
+							bullet.ATT.WorldPosition =  bullet.Position + Vector3.new(0,-bullet.Size.X, 0)
+							v.Width0 = bullet.Size.Z/1.5
+							v.Width1 = bullet.Size.Z/1.5
+						end
+					end
+					task.wait() 
+				until bullet.Parent == nil
+			end)
+
+			local E = game:GetService("TweenService"):Create(bullet,TweenInfo.new(.5),{Transparency=0.8, Size = Vector3.new(distance,30,30) })
+			E:Play()
+			E.Completed:Wait()
+			local E = game:GetService("TweenService"):Create(bullet,TweenInfo.new(2),{Transparency=1, Size = Vector3.new(distance,0,0) })
+			E:Play()
+		end)()
+
+		local position =Target.Position
+
+		local SOnFocus = game.ReplicatedStorage.Adicd.Shock:Clone()
+		SOnFocus.Parent = workspace.Ignored.Animations
+
+		SOnFocus.Position = position
+		game.TweenService:Create(SOnFocus, TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {Orientation = Vector3.new(0,200,0), Position = position, Size = SOnFocus.Size+Vector3.new(100,20,100), Transparency = 1}):Play()
+		game.Debris:AddItem(SOnFocus, 2.5)
+
+
+		local SOnFocus = game.ReplicatedStorage.Adicd.Wind:Clone()
+		SOnFocus.Parent = workspace.Ignored
+
+		SOnFocus.Position = position
+		game.TweenService:Create(SOnFocus, TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {Orientation = Vector3.new(0,-200,0), Position = position, Size = SOnFocus.Size+Vector3.new(100,5,100), Transparency = 1}):Play()
+		game.Debris:AddItem(SOnFocus, 3)
+		local SOnFocus = game.ReplicatedStorage.Adicd.Root:Clone()
+		SOnFocus.Parent = workspace.Ignored
+
+		SOnFocus.Position = position
+		game.TweenService:Create(SOnFocus, TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {Orientation = Vector3.new(0,-200,0), Position = position, Size = SOnFocus.Size+Vector3.new(100,100,100), Transparency = 1}):Play()
+		game.Debris:AddItem(SOnFocus, 2.5)
+
+
+		local s = Instance.new("Sound", SOnFocus)
+		s.Name = "expolsion"
+		s.SoundId = "rbxassetid://6554844728"
+		s:Play()
+		s.Volume = 1
+		game.Debris:AddItem(s, 6)
+		game.Debris:AddItem(SOnFocus, 7)
+		local s = Instance.new("Sound", SOnFocus)
+		s.Name = "expolsion"
+		s.SoundId = "rbxassetid://6230611917"
+		s:Play()
+		s.Volume = 1
+		game.Debris:AddItem(s, 4)
+
+	elseif Name == "Scream" then
+		local StompEffect = RPL.KillFX[Name].Second:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect,5)
+
+
+		local StompEffectR = RPL.KillFX[Name].Stomp:Clone()
+		StompEffectR.Parent = Player.Character.UpperTorso or Target
+		StompEffectR:Play()
+		game.Debris:AddItem(StompEffectR,5)
+
+		local SRE = RPL.KillFX[Name].Yes:Clone()
+		SRE.Parent = Target.Parent.Head 
+
+	elseif Name == "Shapeshifter" then
+		local Son = Target.Parent.UpperTorso or Target
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect,5)
+
+
+
+		local Effect = RPL.KillFX[Name].Spirit:Clone()
+		Effect.Parent = workspace.Ignored.Animations
+		Effect.PrimaryPart.CFrame = Player.Character.HumanoidRootPart.CFrame * CFrame.new(0,30,0)
+
+		if Player and Player:FindFirstChild("Information") then
+			for i, v in pairs(Effect:GetDescendants()) do
+				if v:IsA("BasePart") or v:IsA("MeshPart") then
+					v.Color = Player:FindFirstChild("Information").RayColor.Value
+				end
+			end
+		end
+		game.Debris:AddItem(Effect, 5)
+		local Anim = Effect.Sonned:LoadAnimation(Effect.Animation)
+		Anim:Play()
+		local Lol2
+		local Lol1
+		local Lol3
+		Lol2 = Anim:GetMarkerReachedSignal("GRAB"):Connect(function()
+			local Son = Effect.HumanoidRootPart:FindFirstChildOfClass("BodyPosition")
+			Son.Parent = Target.Parent.UpperTorso
+			coroutine.wrap(function()
+				repeat 
+					Son.Position = Effect.GRABBER.Position
+					task.wait()
+				until Effect.Parent == nil or Son.Parent == nil
+				if Son.Parent ~= nil then
+					Son:Destroy()
+				end
+			end)()
+			Lol2:Disconnect()
+		end)
+
+		Lol1 = Anim:GetMarkerReachedSignal("KILL"):Connect(function()
+			local Bro = game.ReplicatedStorage.VFX.AURAAAAA:Clone()
+			Bro.Parent = workspace.Ignored.Animations
+			Bro.Position = Target.Position
+			game:GetService("TweenService"):Create(Bro,TweenInfo.new(2),{Position= Target.Position + Vector3.new(0, 50, 0)}):Play()
+			game:GetService("TweenService"):Create(Bro.Mesh,TweenInfo.new(2),{Scale=Vector3.new(120, 90, 120)}):Play()
+			game:GetService("TweenService"):Create(Bro,TweenInfo.new(2),{Transparency=1}):Play()
+			Bro.Sound:Play()
+			game.Debris:AddItem(Bro, 2)
+			Bro.Color = Player:FindFirstChild("Information") and Player:FindFirstChild("Information").RayColor.Value or Effect.Head.Color
+			for i, v in pairs(Target.Parent:GetDescendants()) do
+				if v:IsA("BasePart") or v:IsA("MeshPart") or v:IsA("Decal") then
+					game:GetService("TweenService"):Create(
+					v,
+					TweenInfo.new(0.5),
+					{
+						Transparency = 1,
+					}
+					):Play()
+				end
+			end	
+			local sound = Instance.new("Sound",Target.Parent.UpperTorso or Target)
+			sound.SoundId = "rbxassetid://821439273"
+			sound:Play()
+			local a1 = Instance.new("Attachment", Target.Parent.UpperTorso or Target)
+			local a2 = Instance.new("Attachment", workspace.Terrain)
+			a2.WorldPosition = Vector3.new(Son.Position.X+math.random(-1000,1000), Son.Position.Y+1000, Son.Position.Z+math.random(-1000,1000))
+			local Beam = game.ReplicatedStorage.KillFX.Shapeshifter.Beam:Clone()
+			Beam.Parent = workspace
+			Beam.Attachment0 = a1
+			Beam.Attachment1 = a2
+			coroutine.wrap(function()
+				for i = 0, 2, .025 do
+					Beam.Transparency = NumberSequence.new(i)
+					game:GetService("RunService").Heartbeat:wait()	
+				end
+				a2:Destroy()
+			end)()
+			Lol1:Disconnect()
+		end)
+
+		Lol3 = Anim:GetMarkerReachedSignal("END"):Connect(function()
+			for i, v in pairs(Effect:GetDescendants()) do
+				if v:IsA("BasePart") or v:IsA("MeshPart") or v:IsA("Decal") then
+					game:GetService("TweenService"):Create(
+					v,
+					TweenInfo.new(0.6),
+					{
+						Transparency = 1,
+					}
+					):Play()
+				end
+			end
+			Lol3:Disconnect()
+		end)
+	elseif Name == "Kitty" then
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = Target
+		StompEffect:Play()
+
+		local Kitty = RPL.KillFX.Kitty.Model:Clone()
+		Kitty.Parent = workspace.Ignored.Animations
+		game.Debris:AddItem(Kitty, 5)
+		local anim = Kitty.AnimationController:LoadAnimation(Kitty.Animation)
+		anim:Play()
+		anim:AdjustSpeed(.7)
+		local Lol2
+		Lol2 = anim:GetMarkerReachedSignal("START"):Connect(function()
+			Kitty.HumanoidRootPart.CFrame = CFrame.new(Target.Parent.HumanoidRootPart.Position) * CFrame.new(0, 6, 0)
+			Kitty.HumanoidRootPart.CFrame = CFrame.new(Kitty.HumanoidRootPart.Position, Vector3.new(Player.Character.HumanoidRootPart.Position.X, Kitty.HumanoidRootPart.Position.Y,Player.Character.HumanoidRootPart.Position.Z)) * CFrame.Angles(math.rad(0),0,math.rad(180))
+			local Lol3
+			Lol3 = anim:GetMarkerReachedSignal("FALL"):Connect(function()
+				local Explosion = RPL.KillFX["Lotus"].FX:Clone()
+				Explosion.Parent = workspace.Ignored.Animations
+				Explosion.PrimaryPart.CFrame = CFrame.new(Target.Position)
+				Explosion.PrimaryPart.Sound:Play()
+				game.Debris:AddItem(Explosion, 5)
+
+				local SOnFocus = game.ReplicatedStorage.Adicd.Shock:Clone()
+				SOnFocus.Parent = workspace.Ignored.Animations
+				SOnFocus.Color = Color3.fromRGB(255, 143, 207)
+				SOnFocus.Position = Target.Position
+				game.TweenService:Create(SOnFocus, TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {Orientation = Vector3.new(0,200,0), Position = position, Size = SOnFocus.Size+Vector3.new(50,5,50), Transparency = 1}):Play()
+				game.Debris:AddItem(SOnFocus, 2.5)
+
+
+				local SOnFocus = game.ReplicatedStorage.Adicd.Wind:Clone()
+				SOnFocus.Parent = workspace.Ignored.Animations
+				SOnFocus.Color = Color3.fromRGB(255, 143, 207)
+				SOnFocus.Position = Target.Position
+				game.TweenService:Create(SOnFocus, TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {Orientation = Vector3.new(0,-200,0), Position = position, Size = SOnFocus.Size+Vector3.new(30,2,30), Transparency = 1}):Play()
+				game.Debris:AddItem(SOnFocus, 3)
+
+				if Player and Player:FindFirstChild("Information") then
+					for i, v in pairs(Explosion:GetDescendants()) do
+						if v:IsA("BasePart") or v:IsA("MeshPart") then
+							v.Color = Color3.fromRGB(255, 143, 207)
+						end
+					end
+				end
+
+				for i, v in pairs(Explosion:GetChildren()) do
+					local Invert = 1200
+					local ayo = math.random(1,2)
+					if ayo == 2 then
+						Invert = -1200
+					end
+					game:GetService("TweenService"):Create(v, TweenInfo.new(4), {Transparency = 1, Position = Target.Position + Vector3.new(0, 2,0),  Size = v.Size+Vector3.new(200,200,200), Orientation = v.Orientation + Vector3.new(0,0,Invert)}):Play()
+				end
+
+				local Lol4
+				Lol4 = anim:GetMarkerReachedSignal("WINK"):Connect(function()
+					Kitty.HumanoidRootPart.Meow:Play()
+					Kitty.HumanoidRootPart.Wink:Play()
+					game.TweenService:Create(Kitty.Wink, TweenInfo.new(.5), {Size = Vector3.new(0.705, 1.061, 0.245)}):Play()
+					task.delay(.5, function()
+						game.TweenService:Create(Kitty.Wink, TweenInfo.new(.5), {Size = Vector3.new(0.705, 1.061, 1.41)}):Play()
+					end)
+					Kitty.Wink.Attachment.Winker.Enabled = true
+					task.delay(.2, function()
+						Kitty.Wink.Attachment.Winker.Enabled = false
+					end)
+					local Lol5
+					Lol5 = anim:GetMarkerReachedSignal("ROLL"):Connect(function()
+						anim:AdjustSpeed(1)
+						Kitty.HumanoidRootPart.Roll:Play()
+						for i, v in pairs(Kitty:GetDescendants()) do
+							if v:IsA("BasePart") then
+								game.TweenService:Create(v, TweenInfo.new(1.5), {Transparency = 1}):Play()
+							end
+						end
+					end)
+					Lol4:Disconnect()
+				end)
+
+				Lol3:Disconnect()
+			end)
+			Lol2:Disconnect()
+		end)
+	elseif Name == "Megalodon" then
+		local Shark = RPL.KillFX.Megalodon.Megalodon:Clone()
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = Shark["shark original"]
+
+
+		local random = math.random(-360, 360)
+		game.Debris:AddItem(Shark, 8)
+		Shark.Parent = workspace.Ignored.Animations
+		local Anim = Shark.AnimationController:LoadAnimation(Shark["shark original"].Animation)
+		Shark.HumanoidRootPart.CFrame = CFrame.new(Target.Parent.HumanoidRootPart.Position) * CFrame.Angles(math.rad(-90),math.rad(-0),math.rad(-180+random))
+		local Puddle = RPL.KillFX.Megalodon.Puddle:Clone()
+		game.Debris:AddItem(Puddle, 10)
+		Puddle.Parent = workspace.Ignored.Animations
+		print(Target.Parent.HumanoidRootPart.Name)
+		Puddle.CFrame = CFrame.new(Target.Parent.HumanoidRootPart.Position) * CFrame.new(0,-4, 100) * CFrame.Angles(math.rad(-0),math.rad(-360+random),math.rad(-0))
+		local sonner = game.TweenService:Create(Puddle, TweenInfo.new(1, Enum.EasingStyle.Quad), {Size = Vector3.new(328.925, 3.34, 498.834), CFrame =  CFrame.new(Target.Parent.HumanoidRootPart.Position) * CFrame.new(0,-4, 100) * CFrame.Angles(math.rad(-0),math.rad(-360+random),math.rad(-0)) })
+		sonner:Play()
+		sonner.Completed:Wait()
+		Anim:Play()
+		local FirstP = 0
+
+		local Lol2
+		Lol2 = Anim:GetMarkerReachedSignal("START"):Connect(function()
+
+
+			local Son = Shark["shark original"]:FindFirstChildOfClass("BodyPosition")
+			Son.Parent = Target.Parent.UpperTorso
+			coroutine.wrap(function()
+				repeat 
+					Son.Position = Shark["shark original"].Pos.WorldPosition
+					task.wait()
+				until Shark.Parent == nil or Son.Parent == nil
+				if Son.Parent ~= nil then
+					Son:Destroy()
+				end
+			end)()
+			StompEffect:Play()
+
+			game.Debris:AddItem(StompEffect, 4)
+			task.delay(3, function()
+				game.TweenService:Create(StompEffect, TweenInfo.new(1), {Volume = 0}):Play()
+			end)
+			Shark["shark original"].Transparency = .5
+			local Lol1
+			Lol1 = Anim:GetMarkerReachedSignal("PUDDLE"):Connect(function()
+
+				if FirstP == 0 then
+					local Baen = RPL.KillFX.Megalodon.Water:Clone()
+					Baen.CFrame = Puddle.First.WorldCFrame
+					Baen.Parent = workspace.Ignored.Animations
+					game.Debris:AddItem(Baen, 3)
+					game.TweenService:Create(Baen, TweenInfo.new(1), {Size = Vector3.new(120.567, 135.114, 105.723), CFrame = Puddle.First.WorldCFrame}):Play()
+					game.TweenService:Create(Baen.Mesh, TweenInfo.new(1, Enum.EasingStyle.Sine), {Scale = Vector3.new(120.567, 135.114, 105.723)}):Play()
+					task.delay(1, function()
+						game.TweenService:Create(Baen, TweenInfo.new(1), {Size = Vector3.new(10.567, 5.114, 10.723), CFrame = Puddle.First.WorldCFrame, Transparency = 1}):Play()
+						game.TweenService:Create(Baen.Mesh, TweenInfo.new(1, Enum.EasingStyle.Bounce), {Scale = Vector3.new(10.567, 5.114, 10.723)}):Play()
+					end)
+					Baen.Sound1:Play()
+					print('wthhh')
+					FirstP += 1
+					return
+				end
+				print('whaerrt')
+				local Baen = RPL.KillFX.Megalodon.Water:Clone()
+				Baen.CFrame = Puddle.Second.WorldCFrame
+				Baen.Parent = workspace.Ignored.Animations
+				game.Debris:AddItem(Baen, 3)
+				game.TweenService:Create(Baen, TweenInfo.new(1), { CFrame = Puddle.Second.WorldCFrame}):Play()
+				game.TweenService:Create(Baen.Mesh, TweenInfo.new(1, Enum.EasingStyle.Sine), {Scale = Vector3.new(120.567, 135.114, 105.723)}):Play()
+				task.delay(1.5, function()
+					game.TweenService:Create(Baen, TweenInfo.new(1), {Size = Vector3.new(10.567, 5.114, 10.723), CFrame = Puddle.Second.WorldCFrame, Transparency = 1}):Play()
+					game.TweenService:Create(Baen.Mesh, TweenInfo.new(1, Enum.EasingStyle.Bounce), {Scale = Vector3.new(10.567, 5.114, 10.723)}):Play()
+				end)
+				Baen.Sound:Play()
+				print('woahhhh')
+				Lol1:Disconnect()
+			end)
+			local Lol3
+			Lol3 = Anim:GetMarkerReachedSignal("END"):Connect(function()
+				print('debug')
+				game.TweenService:Create(Shark["shark original"], TweenInfo.new(1), {Transparency = 1}):Play()
+				task.delay(1.5, function()
+					game.TweenService:Create(Puddle, TweenInfo.new(1), {Transparency = 1, Size = Vector3.new(0,0,0), Position = Target.Parent.HumanoidRootPart.Position}):Play()
+				end)
+				Lol3:Disconnect()
+			end)
+			Lol2:Disconnect()
+		end)
+	elseif Name == "Shiny Spirit" then
+
+
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 4)
+		local Effect = RPL.KillFX[Name].Spirit:Clone()
+		Effect.Parent = workspace.Ignored.Animations
+		Effect.PrimaryPart.CFrame = Player.Character.HumanoidRootPart.CFrame * CFrame.new(0,48,25)
+		local Son
+		if Player and Player:FindFirstChild("Information") then
+			Son = Player:FindFirstChild("Information").RayColor.Value
+			for i, v in pairs(Effect:GetDescendants()) do
+				if v:IsA("BasePart") or v:IsA("MeshPart") then
+					v.Color = Son
+				elseif v.Name == "Effect" then
+
+					v.Color =
+						ColorSequence.new(
+							{
+
+								ColorSequenceKeypoint.new(0, Son),
+								ColorSequenceKeypoint.new(1, Son)
+							}
+						)
+				end
+			end
+		end
+
+
+		game.Debris:AddItem(Effect, 4.5)
+		local Anim = Effect.Anim:LoadAnimation(Effect.Animation)
+		Anim:Play()
+		local Lol2
+		Lol2 = Anim:GetMarkerReachedSignal("PUNCH"):Connect(function()
+			local Bro = game.ReplicatedStorage.VFX.EXL:Clone()
+			Bro.Parent = workspace.Ignored.Animations
+			Bro.Position = Target.Position
+			game:GetService("TweenService"):Create(Bro,TweenInfo.new(2),{Position= Target.Position + Vector3.new(0, 50, 0), Orientation = Vector3.new(0,200,0)}):Play()
+			game:GetService("TweenService"):Create(Bro,TweenInfo.new(2),{Size=Vector3.new(120, 160, 120)}):Play()
+			game:GetService("TweenService"):Create(Bro,TweenInfo.new(2),{Transparency=1}):Play()
+			Bro.Sound.Volume = 2
+			Bro.Sound:Play()
+			game.Debris:AddItem(Bro, 2)
+
+
+			local position = Target.Position
+
+			local SOnFocus = game.ReplicatedStorage.Adicd.Shock:Clone()
+			SOnFocus.Parent = workspace.Ignored.Animations
+			SOnFocus.Color = Son and Son or Effect.Head.Color
+			SOnFocus.Position = position
+			game.TweenService:Create(SOnFocus, TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {Orientation = Vector3.new(0,200,0), Position = position, Size = SOnFocus.Size+Vector3.new(50,5,50), Transparency = 1}):Play()
+			game.Debris:AddItem(SOnFocus, 2.5)
+
+
+			local SOnFocus = game.ReplicatedStorage.Adicd.Wind:Clone()
+			SOnFocus.Parent = workspace.Ignored.Animations
+			SOnFocus.Color = Son and Son or Effect.Head.Color
+			SOnFocus.Position = position
+			game.TweenService:Create(SOnFocus, TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {Orientation = Vector3.new(0,-200,0), Position = position, Size = SOnFocus.Size+Vector3.new(30,2,30), Transparency = 1}):Play()
+			game.Debris:AddItem(SOnFocus, 3)
+
+
+			Effect["Left Arm"].Delete:Destroy()
+			Bro.Color = Son and Son or Effect.Head.Color
+			for i, v in pairs(Target.Parent:GetDescendants()) do
+				if v:IsA("BasePart") or v:IsA("MeshPart") or v:IsA("Decal") then
+					game:GetService("TweenService"):Create(
+					v,
+					TweenInfo.new(0.5),
+					{
+						Transparency = 1,
+					}
+					):Play()
+				end
+			end
+			Lol2:Disconnect()		
+		end)
+
+		delay(3.5, function()
+			for i, v in pairs(Effect:GetDescendants()) do
+				if v:IsA("BasePart") or v:IsA("MeshPart") or v:IsA("Decal") then
+					game:GetService("TweenService"):Create(
+					v,
+					TweenInfo.new(0.5),
+					{
+						Transparency = 1,
+					}
+					):Play()
+				elseif v:IsA("ParticleEmitter") then
+					delay(0, function()
+						for i = 0, 1, 0.1 do      
+							v.Transparency =  NumberSequence.new({ 
+								NumberSequenceKeypoint.new(0, 0),
+								NumberSequenceKeypoint.new(1, i)
+							}
+							)
+							task.wait(0.01)                                    
+						end			
+					end)
+				end
+			end
+		end)
+
+
+
+
+	elseif Name == "UFO" then
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect,5)
+
+		local UFO = RPL.KillFX[Name].Effect:Clone()
+		UFO.CFrame = CFrame.new(Target.Position.X,Target.Position.Y+35,Target.Position.Z)
+		UFO.Parent = workspace.Ignored.Animations
+		game:GetService("TweenService"):Create(
+		UFO,
+		TweenInfo.new(0.5),
+		{
+			Transparency = 0,
+		}
+		):Play()
+		game.Debris:AddItem(UFO, 5)
+		wait(0.5)
+		local Effect = RPL.KillFX[Name].Second:Clone()
+		Effect.Parent = workspace.Ignored.Animations
+		Effect.Main.CFrame = CFrame.new(Target.Position.X,Target.Position.Y-1,Target.Position.Z)
+		game.Debris:AddItem(Effect, 4)
+
+		game:GetService("TweenService"):Create(
+		Effect.Main,
+		TweenInfo.new(4),
+		{
+			CFrame = CFrame.new(Effect.Main.Position.X,Effect.Main.Position.Y+20,Effect.Main.Position.Z)
+		}
+		):Play()
+
+		game:GetService("TweenService"):Create(
+		UFO,
+		TweenInfo.new(4),
+		{
+			CFrame = CFrame.new(UFO.Position.X,UFO.Position.Y+20,UFO.Position.Z)
+		}
+		):Play()
+
+		for i, v in pairs(Target.Parent:GetDescendants()) do
+			if v:IsA("BasePart") or v:IsA("MeshPart") or v:IsA("Decal") then
+				game:GetService("TweenService"):Create(
+				v,
+				TweenInfo.new(4),
+				{
+					Transparency = 1,
+				}
+				):Play()
+			end
+		end
+
+		delay(4, function()
+			game:GetService("TweenService"):Create(
+			UFO,
+			TweenInfo.new(1),
+			{
+				Transparency = 1
+			}
+			):Play()
+
+
+		end)
+	elseif Name == "Spirit" then
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 4)
+		local Effect = RPL.KillFX[Name].Spirit:Clone()
+		Effect.Parent = workspace.Ignored.Animations
+		Effect.PrimaryPart.CFrame = Player.Character.HumanoidRootPart.CFrame * CFrame.new(0,48,25)
+
+		if Player and Player:FindFirstChild("Information") then
+			for i, v in pairs(Effect:GetDescendants()) do
+				if v:IsA("BasePart") or v:IsA("MeshPart") then
+					v.Color = Player:FindFirstChild("Information").RayColor.Value
+				end
+			end
+		end
+		game.Debris:AddItem(Effect, 4.5)
+		local Anim = Effect.Anim:LoadAnimation(Effect.Animation)
+		Anim:Play()
+		local Lol2
+		Lol2 = Anim:GetMarkerReachedSignal("PUNCH"):Connect(function()
+			local Bro = game.ReplicatedStorage.VFX.AURAAAAA:Clone()
+			Bro.Parent = workspace.Ignored.Animations
+			Bro.Position = Target.Position
+			game:GetService("TweenService"):Create(Bro,TweenInfo.new(2),{Position= Target.Position + Vector3.new(0, 50, 0)}):Play()
+			game:GetService("TweenService"):Create(Bro.Mesh,TweenInfo.new(2),{Scale=Vector3.new(120, 90, 120)}):Play()
+			game:GetService("TweenService"):Create(Bro,TweenInfo.new(2),{Transparency=1}):Play()
+			Bro.Sound:Play()
+			game.Debris:AddItem(Bro, 2)
+			Bro.Color = Player:FindFirstChild("Information") and Player:FindFirstChild("Information").RayColor.Value or Effect.Head.Color
+			for i, v in pairs(Target.Parent:GetDescendants()) do
+				if v:IsA("BasePart") or v:IsA("MeshPart") or v:IsA("Decal") then
+					game:GetService("TweenService"):Create(
+					v,
+					TweenInfo.new(0.5),
+					{
+						Transparency = 1,
+					}
+					):Play()
+				end
+			end
+			Lol2:Disconnect()		
+		end)
+
+		delay(3.5, function()
+			for i, v in pairs(Effect:GetDescendants()) do
+				if v:IsA("BasePart") or v:IsA("MeshPart") or v:IsA("Decal") then
+					game:GetService("TweenService"):Create(
+					v,
+					TweenInfo.new(0.5),
+					{
+						Transparency = 1,
+					}
+					):Play()
+				end
+			end
+		end)
+
+	elseif Name == "Confetti" then
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 4)
+		local Effect = RPL.KillFX[Name].Effect:Clone()
+		Effect.Parent = Target.Parent.UpperTorso or Target
+		Effect.Effect.Enabled = true
+		Effect.Position = Target.Parent.UpperTorso.Position or Target.Position
+		game.Debris:AddItem(Effect, 4)
+		local Weld = Instance.new("WeldConstraint", Effect)
+		Weld.Part0 = Effect
+		Weld.Part1 = Target.Parent.UpperTorso or Target
+	elseif Name == "Money" then
+
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 4)
+		local Effect = RPL.KillFX[Name].Effect:Clone()
+		Effect.Parent = Target.Parent.UpperTorso or Target
+		Effect.Effect.Enabled = true
+		Effect.Position = Target.Parent.UpperTorso.Position or Target.Position
+		game.Debris:AddItem(Effect, 4)
+		local Weld = Instance.new("WeldConstraint", Effect)
+		Weld.Part0 = Effect
+		Weld.Part1 = Target.Parent.UpperTorso or Target
+	elseif Name == "Dragon" then
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 4)
+		local Explosion = RPL.KillFX[Name].DragonFly:Clone()
+		Explosion.Parent = workspace.Ignored.Animations
+		Explosion.PrimaryPart.CFrame = CFrame.new(Target.Position)
+		local Son = Explosion.AC:LoadAnimation(Explosion.Animation)
+		Son:Play()
+		game.Debris:AddItem(Explosion, 6)
+		if Player and Player:FindFirstChild("Information") then
+			for i, v in pairs(Explosion:GetDescendants()) do
+				if v:IsA("BasePart") or v:IsA("MeshPart") then
+					v.Color = Player:FindFirstChild("Information").RayColor.Value
+				end
+			end
+			Explosion.Head.Trail.Color =  ColorSequence.new(Player:FindFirstChild("Information").RayColor.Value, Player:FindFirstChild("Information").RayColor.Value)
+		end
+
+
+
+
+
+		local Lol2
+		Lol2 = Son:GetMarkerReachedSignal("START"):Connect(function()
+			Explosion.Head.Transparency = 0
+			Explosion.Head.Trail.Enabled = true
+
+
+			local Lol5
+			Lol5 = Son:GetMarkerReachedSignal("END"):Connect(function()
+				Explosion.Head.Trail.Enabled = false
+				game.TweenService:Create(Explosion.Head, TweenInfo.new(0.5), {Transparency = 1}):Play()
+				local StompEffect = RPL.KillFX[Name].Sound:Clone()
+				StompEffect.Parent = Target.Parent.UpperTorso or Target
+				StompEffect:Play()
+				game.Debris:AddItem(StompEffect, 4)
+
+
+				local bullet = Instance.new("Part", workspace.Ignored.Animations)
+				bullet.Anchored = true
+				bullet.CanCollide = false
+				bullet.Color = Player:FindFirstChild("Information").RayColor.Value or Color3.fromRGB(85, 170, 255)
+				bullet.Transparency = 0.5
+				bullet.Material = Enum.Material.Neon
+				bullet.Shape = Enum.PartType.Cylinder
+				local S = Instance.new("Sound", bullet)
+				S.SoundId = "rbxassetid://6808975002"
+				S.Volume = 1
+				S:Play()
+				local POT = Target.Position
+				local origin = Vector3.new(POT.X, POT.Y+400, POT.Z)
+				local target = Vector3.new(POT.X, POT.Y-20, POT.Z)
+				local ray = Ray.new(origin,(target - origin).unit * 500)
+				local hit, position = game.Workspace:FindPartOnRayWithIgnoreList(ray, {workspace.Ignored.Animations, workspace.Characters}) 
+				local distance = (origin-position).Magnitude
+				bullet.Size = Vector3.new(distance,.5,.5) 
+				bullet.CFrame = CFrame.new(origin,target)*CFrame.new(0,0,-distance/2)*CFrame.Angles(0,math.rad(90),0)
+
+				coroutine.wrap(function()
+					local E = game:GetService("TweenService"):Create(bullet,TweenInfo.new(.5),{Transparency=0.8, Size = Vector3.new(distance,30,30) })
+					E:Play()
+					E.Completed:Wait()
+					local E = game:GetService("TweenService"):Create(bullet,TweenInfo.new(2),{Transparency=1, Size = Vector3.new(distance,0,0) })
+					E:Play()
+				end)()
+
+				for i, v in pairs(Target.Parent:GetDescendants()) do
+					if v:IsA("BasePart") or v:IsA("MeshPart") or v:IsA("Decal") then
+						game:GetService("TweenService"):Create(
+						v,
+						TweenInfo.new(0.5),
+						{
+							Transparency = 1,
+						}
+						):Play()
+					end
+				end
+
+
+				local Explosion = RPL.KillFX["Lotus"].FX:Clone()
+				Explosion.Parent = workspace.Ignored.Animations
+				Explosion.PrimaryPart.CFrame = CFrame.new(Target.Position)
+				Explosion.PrimaryPart.Sound:Play()
+
+				if Player and Player:FindFirstChild("Information") then
+					for i, v in pairs(Explosion:GetDescendants()) do
+						if v:IsA("BasePart") or v:IsA("MeshPart") then
+							v.Color = Player:FindFirstChild("Information").RayColor.Value
+						end
+					end
+				end
+
+				for i, v in pairs(Explosion:GetChildren()) do
+					local Invert = 1200
+					local ayo = math.random(1,2)
+					if ayo == 2 then
+						Invert = -1200
+					end
+					game:GetService("TweenService"):Create(v, TweenInfo.new(4), {Transparency = 1, Position = Target.Position + Vector3.new(0, 2,0),  Size = v.Size+Vector3.new(200,200,200), Orientation = v.Orientation + Vector3.new(0,0,Invert)}):Play()
+				end
+
+
+			end)
+			Lol2:Disconnect()
+		end)
+	elseif Name == "Lotus" then
+		local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 4)
+		local Explosion = RPL.KillFX[Name].FX:Clone()
+		Explosion.Parent = workspace.Ignored.Animations
+		Explosion.PrimaryPart.CFrame = CFrame.new(Target.Position)
+		Explosion.PrimaryPart.Sound:Play()
+		game.Debris:AddItem(Explosion, 6)
+		if Player and Player:FindFirstChild("Information") then
+			for i, v in pairs(StompEffect:GetDescendants()) do
+				if v:IsA("BasePart") or v:IsA("MeshPart") then
+					v.Color = Player:FindFirstChild("Information").RayColor.Value
+				end
+			end
+		end
+
+		for i, v in pairs(Explosion:GetChildren()) do
+			local Invert = 1200
+			local ayo = math.random(1,2)
+			if ayo == 2 then
+				Invert = -1200
+			end
+			game:GetService("TweenService"):Create(v, TweenInfo.new(4), {Transparency = 1, Position = Target.Position + Vector3.new(0, 2,0),  Size = v.Size+Vector3.new(200,200,200), Orientation = v.Orientation + Vector3.new(0,0,Invert)}):Play()
+		end
+
+	elseif Name == "Thanos" or Name == "Valentine" then
+
+
+		local StompEffect = RPL.KillFX["Thanos"].Stomp:Clone()
+		StompEffect.Parent = Target.Parent.UpperTorso or Target
+		StompEffect:Play()
+		game.Debris:AddItem(StompEffect, 4)
+
+		for i, v in pairs(Target.Parent:GetDescendants()) do
+			if v:IsA("BasePart") or v:IsA("MeshPart") then
+				local Particle = game.ReplicatedStorage.VFX[Name]:Clone()
+				Particle.Parent = v 
+				if Name == "Thanos" then
+					Particle.Color = ColorSequence.new({
+						ColorSequenceKeypoint.new( 0, v.Color),  -- At t=0, White
+						ColorSequenceKeypoint.new(.6, Color3.fromRGB(65, 33, 18)), -- At t=.5, Orange
+						ColorSequenceKeypoint.new( 1, Color3.fromRGB(0, 0, 0))   -- At t=1, Red
+					})
+				end
+				game:GetService("TweenService"):Create(v, TweenInfo.new(0.5), {Transparency = 1}):Play()
+				delay(0.5, function()
+					Particle.Enabled = false
+				end)
+				wait(0.1)
+			end
+		end
+
+
+	elseif Name == "Mario" then
+		local overwith = false
+
+
+		local Effect = RPL.KillFX[Name].Effect:Clone()
+		Effect.Parent = Target.Parent.UpperTorso or Target
+		Effect.Enabled = true
+		game.Debris:AddItem(Effect, 4)
+
+		task.delay(0, function()
+			for i = 0, 0.25, 0.01 do
+				Effect.StudsOffset = Vector3.new(Effect.StudsOffset.X-i/2, Effect.StudsOffset.Y-i, 0)
+				task.wait()
+			end
+			local StompEffect = RPL.KillFX[Name].Stomp:Clone()
+			StompEffect.Parent = Target.Parent.UpperTorso or Target
+			StompEffect:Play()
+			game.Debris:AddItem(StompEffect, 4)
+
+			for i = 0, 0.25, 0.01 do
+				Effect.StudsOffset = Vector3.new(Effect.StudsOffset.X-i, Effect.StudsOffset.Y+i, 0)
+				task.wait()
+			end
+			Effect:Destroy()
+			overwith = true
+		end)
+
+		repeat  task.wait() until overwith == true or Effect.Parent == nil
+
+		if not Effect.Parent == nil then
+			Effect:Destroy()
+		end 
+
+	end
+
+end
+
+function GetRandomNumber()
+
+	local HowAbout = math.random(3, 8)
+	local IdLIke = 0
+	local Negatvive = math.random(1, 2)
+
+	repeat if Negatvive == 1 then IdLIke += 0.025 else IdLIke -= 0.025 end HowAbout -= 1 until HowAbout == 0
+
+	local Min = 0
+	local StudiedNumber = 0
+	local Tries = 0
+	local MaxTries = math.random(3, 7)
+
+	repeat Tries += 1 Min += IdLIke until Tries == MaxTries
+
+	return Min
+end
+
+local WeirdTe = {"DEATH", "PAIN", "GLTCH", "ERROR 404", "HELP", "BEHIND", "SYS", "PROBLEM", "STOP!", "HATTRED!", "ESCAPE!","LOST!", "FATAL", "MISTAKE", "FAITH", "END"}
+
+function AnimateText(Player)
+	
+		delay(0, function()
+			repeat 
+				pcall(function()
+					local Tag, Type  = Player.Character.Head:FindFirstChildOfClass("BillboardGui") or nil, Player:WaitForChild("Information", 10):WaitForChild("Tag", 10).Value	
+				if Tag ~= nil and _G[Player.UserId].Animating == false and (_G.Streaks) == true then
+						_G[Player.UserId].Animating = true			
+						if Type == "Diamond" then
+
+							local TS = game:GetService("TweenService")
+							local Text = Tag:FindFirstChild("Text")
+
+							local Shine = Text:FindFirstChild("Shine")
+							local Info = TweenInfo.new(1, Enum.EasingStyle.Circular, Enum.EasingDirection.Out)
+							local InfoRotate = TweenInfo.new(1)
+
+							if Text and Shine and Text:FindFirstChild("UIGradient") then
+								local AnimateStart = TS:Create(Shine, TweenInfo.new(1.9), {ImageTransparency = 0, Rotation = 75})
+								local AnimateEnd = TS:Create(Shine, TweenInfo.new(0.4), {ImageTransparency = 1, Rotation = 175})
+
+								local ShineAnimate = TS:Create(Text.UIGradient, Info, {Offset = Vector2.new(1, 0)})
+								local ShineAnimate2 = TS:Create(Text.UIGradient, Info, {Offset = Vector2.new(-1, 0)})
+
+								local SHINEROTATE = TS:Create(Text, InfoRotate, {Rotation = 3})
+								local SHINEROTATE2 = TS:Create(Text, InfoRotate, {Rotation = -3})
+								local SHINEROTATE3 = TS:Create(Text, InfoRotate, {Rotation = 0})
+
+
+								if not Text.UIGradient.Offset == Vector2.new(-1, 0) and ShineAnimate.Completed then
+									Text.UIGradient.Offset = Vector2.new(-1, 0)
+								end
+
+								AnimateStart:Play()
+								AnimateStart.Completed:Wait()
+
+								AnimateEnd:Play()
+								AnimateEnd.Completed:Wait()
+
+								if Shine.Rotation == 175 and Shine.ImageTransparency == 1 then
+									Shine.Rotation = 0
+								end
+
+								ShineAnimate:Play()
+								SHINEROTATE:Play()
+								ShineAnimate.Completed:Wait()
+
+								Text.UIGradient.Offset = Vector2.new(1, 0)
+
+								ShineAnimate2:Play()
+								SHINEROTATE2:Play()
+								ShineAnimate2.Completed:Wait()
+
+								SHINEROTATE3:Play()
+
+								if not Text.Rotation == 0 then
+									return
+								else
+
+									Text.UIGradient.Offset = Vector2.new(-1, 0)
+									Text.Shine.Size = UDim2.new(0.5, 0,2, 0)
+
+
+									task.wait(0.5)
+
+								end
+							end
+
+							_G[Player.UserId].Animating = false
+						elseif Type == "Sakura" then
+							local TS = game:GetService("TweenService")
+
+							if Tag:FindFirstChild("Flowers") then
+								local Flowers = Tag:FindFirstChild("Flowers"):Clone()
+								Flowers.Position = Tag:FindFirstChild("Flowers").Position
+								Flowers.Parent = Tag
+								Flowers.Rotation = 85
+								game.Debris:AddItem(Flowers, 1)
+
+								local Fall =
+									TS:Create(
+										Flowers,
+										TweenInfo.new(1.66),
+										{Position = UDim2.fromScale(0.25, -0.75, 0.5), ImageTransparency = 1}
+									)
+
+								Fall:Play()
+
+
+							end
+							task.wait(.6)
+							_G[Player.UserId].Animating = false
+					elseif Type == "Heaven" then
+						local v64 = Tag
+						local l__TweenService__115 = game:GetService("TweenService");
+						local l__Text__116 = v64:FindFirstChild("Text");
+						
+						local v118 = TweenInfo.new(0.52, Enum.EasingStyle.Linear, Enum.EasingDirection.Out);
+						local v119 = l__TweenService__115:Create(l__Text__116, v118, {
+							TextStrokeColor3 = Color3.fromRGB(255, 237, 96), 
+							TextStrokeTransparency = 0.4
+						});
+						local v120 = l__TweenService__115:Create(l__Text__116, v118, {
+							Rotation = 2
+						});
+						local v121 = l__TweenService__115:Create(l__Text__116.Hallo, v118, {
+							ImageTransparency = 0, 
+							Position = UDim2.new(-0.236, 0, -0.88, 0)
+						});
+						local v122 = l__TweenService__115:Create(l__Text__116.UIGradient, v118, {
+							Offset = Vector2.new(1, 0)
+						});
+						local v123 = l__TweenService__115:Create(l__Text__116.UIGradient, v118, {
+							Offset = Vector2.new(-2, 0)
+						});
+						local v124 = l__TweenService__115:Create(l__Text__116.Hallo, v118, {
+							ImageTransparency = 1, 
+							Position = UDim2.new(-0.236, 0, -0.83, 0)
+						});
+						local v125 = l__TweenService__115:Create(l__Text__116, v118, {
+							TextStrokeColor3 = Color3.fromRGB(125, 184, 211), 
+							TextStrokeTransparency = 0.5
+						});
+						local v126 = l__TweenService__115:Create(l__Text__116, v118, {
+							Rotation = 0
+						});
+						local v127 = l__TweenService__115:Create(v64.Wing, v118, {
+							Position = UDim2.new(-0.41, 0, -0.07, 0), 
+							Rotation = -20, 
+							ImageTransparency = 1
+						});
+						local v128 = l__TweenService__115:Create(v64.Wing, v118, {
+							Position = UDim2.new(-0.41, 0, -0.55, 0), 
+							ImageTransparency = 0, 
+							Rotation = 20
+						});
+					
+						local v131 = l__TweenService__115:Create(v64.Aura, v118, {
+							ImageTransparency = 0, 
+							Position = UDim2.new(-0.135, 0, -0.35, 0)
+						});
+						local v132 = l__TweenService__115:Create(v64.Aura, v118, {
+							ImageTransparency = 1, 
+							Position = UDim2.new(-0.138, 0, -0.25, 0)
+						});
+						local v133 = l__TweenService__115:Create(v64.Wing, TweenInfo.new(0.46), {
+							Position = UDim2.new(-0.41, 0, -0.07, 0), 
+							Rotation = -20
+						});
+						local v134 = l__TweenService__115:Create(v64.Wing, TweenInfo.new(0.46), {
+							Position = UDim2.new(-0.41, 0, -0.55, 0), 
+							Rotation = 20
+						});
+						
+						v128:Play()
+						v131:Play();
+						v122:Play();
+						v119:Play();
+						v121:Play();
+						
+						v122.Completed:Wait();
+						v120:Play()
+						if l__Text__116.UIGradient.Offset == Vector2.new(1, 0) then
+						
+								v133:Play();
+								v133.Completed:Wait();
+								task.wait(0.1);
+								v134:Play();
+								v134.Completed:Wait();
+								task.wait(0.08);
+								v133:Play();
+								v133.Completed:Wait();
+								task.wait(0.1);
+								v134:Play();
+								v134.Completed:Wait();
+							
+							
+						else
+							wait(2.3);
+						end;
+						v127:Play()
+						v123:Play();
+						v125:Play();
+						v124:Play();
+						v132:Play();
+						v126:Play()
+						v123.Completed:Wait();
+					
+						wait(2.3);
+						
+							_G[Player.UserId].Animating = false
+						elseif Type == "Thunder" then
+
+
+							for i = 1, 15 do
+								if math.random(1, 3) == 2 then
+									Tag.Flower.FF.Enabled = false
+									Tag.Flower.ImageColor3 = Color3.fromHSV(0.166667, 1, 1)
+									Tag:FindFirstChild("Text").F.Enabled = false
+
+								else
+									Tag.Flower.FF.Enabled = true
+									Tag.Flower.ImageColor3 = Color3.fromHSV(0, 0, 1)
+									Tag:FindFirstChild("Text").F.Enabled = true
+								end
+								task.wait(.1)
+							end
+
+							_G[Player.UserId].Animating = false
+						elseif Type == "Kitten" then
+
+							local xDelta = 205
+							local yDelta = 205
+							local xIndex = 0
+							local yIndex = 0
+							local maxX = 5
+							local maxY = 2
+							local yo = 0
+
+
+
+
+							task.delay(0, function()
+
+								task.delay(0, function()
+									local TS = game:GetService("TweenService")
+									local Text = Tag:FindFirstChild("Text")
+
+									local Info = TweenInfo.new(1, Enum.EasingStyle.Circular, Enum.EasingDirection.Out)
+									local InfoRotate = TweenInfo.new(1)
+
+									if Text and Text:FindFirstChild("UIGradient") then
+
+
+										local SHINEROTATE = TS:Create(Text, InfoRotate, {Rotation = 1})
+										local SHINEROTATE2 = TS:Create(Text, InfoRotate, {Rotation = -1})
+										local SHINEROTATE3 = TS:Create(Text, InfoRotate, {Rotation = 0})
+
+
+
+
+
+										SHINEROTATE:Play()
+										SHINEROTATE.Completed:Wait()
+
+
+
+										SHINEROTATE2:Play()
+										SHINEROTATE2.Completed:Wait()
+
+
+										SHINEROTATE3:Play()
+										SHINEROTATE3.Completed:Wait()
+										
+
+
+									end
+								end)
+
+								for i = 1, math.random(35,50) do
+									if Tag:FindFirstChild("Text") then
+										local Drop = Tag:FindFirstChild("FX"):Clone()
+										local Sup, Sup1 = GetRandomNumber(), GetRandomNumber()
+										Drop.Position = UDim2.new(Sup, 0, Sup1, 0)
+										Drop.ImageTransparency = 0
+										Drop.Parent = Tag
+										Drop.Rotation = math.random(-45, 45)
+										game.Debris:AddItem(Drop, 0.5)
+										game:GetService("TweenService"):Create(Drop, TweenInfo.new(0.5), {Position = UDim2.new(Sup, 0, 1, 0), ImageTransparency = 1}):Play()
+										task.wait(math.random(0.05, 0.2))
+									else
+										break
+									end
+								end
+							end)
+
+							for i = 1, 10 do
+
+								Tag.Shine.ImageRectOffset = Vector2.new(xIndex * xDelta,  yIndex * yDelta )
+								xIndex = xIndex + 1
+								if xIndex == maxX then
+									xIndex = 0
+									yIndex = yIndex + 1
+
+
+
+
+									if yIndex == maxY then
+										yIndex = 0
+									end
+								end
+
+
+								task.wait(0.08)
+							end
+
+						_G[Player.UserId].Animating = false
+
+					elseif Type == "Sailor" then
+
+
+							for i = 1, math.random(35,50) do
+								if Tag:FindFirstChild("Text") then
+									local Drop = Tag:FindFirstChild("FX"):Clone()
+									local Sup, Sup1 = GetRandomNumber(), GetRandomNumber()
+									Drop.Position = UDim2.new(Sup, 0, Sup1, 0)
+									Drop.ImageTransparency = 0
+									Drop.Parent = Tag
+									Drop.Rotation = math.random(-45, 45)
+									game.Debris:AddItem(Drop, 0.5)
+									game:GetService("TweenService"):Create(Drop, TweenInfo.new(0.5), {Position = UDim2.new(Sup, 0, 1, 0), ImageTransparency = 1}):Play()
+								task.wait(math.random(0.05, 0.2))
+								else
+									break
+								end
+							end
+
+
+							_G[Player.UserId].Animating = false
+						elseif Type == "Rainbow" then
+							local ben = false
+							delay(0, function()
+								repeat 
+									if Tag:FindFirstChild("Text") then
+										local Drop = Tag:FindFirstChild("Shine"):Clone()
+										local Sup, Sup1 = GetRandomNumber(), GetRandomNumber()
+										Drop.Position = UDim2.new(Sup, 0, Sup1, 0)
+										Drop.ImageTransparency = 0
+										Drop.Parent = Tag
+										Drop.Rotation = math.random(-45, 45)
+										game.Debris:AddItem(Drop, 0.5)
+										game:GetService("TweenService"):Create(Drop, TweenInfo.new(0.5), {Position = UDim2.new(Sup, 0, 1, 0), ImageTransparency = 1}):Play()
+										task.wait(math.random(0.05, 0.2))
+									else
+										break
+									end
+
+								until ben == true
+							end)
+
+							local tween = game.TweenService:Create(Tag:FindFirstChild("Text").UIGradient, TweenInfo.new(.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {Offset = Vector2.new(1, 0)})
+							tween:Play()
+							task.wait(.5)
+							Tag:FindFirstChild("Text").UIGradient.Offset = Vector2.new(-1, 0)
+							local tween2 = game.TweenService:Create(Tag:FindFirstChild("Text").UIGradient, TweenInfo.new(.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {Offset = Vector2.new(0, 0)})
+							tween2:Play()
+
+						task.wait(.8)
+							ben = true
+
+							_G[Player.UserId].Animating = false
+						elseif Type == "Goth" then
+							local Wagah
+							local FirstT		
+							if Tag:FindFirstChild("Text").Rotation == 0 then
+								Wagah = 80
+								FirstT = game:GetService("TweenService"):Create(Tag:FindFirstChild("Text"), TweenInfo.new(1), {Rotation = 10})
+
+							else
+								Wagah = 100	
+								FirstT = game:GetService("TweenService"):Create(Tag:FindFirstChild("Text"), TweenInfo.new(2), {Rotation = 10})
+							end
+
+							delay(0, function()
+								for i = 1, Wagah do
+									if Tag:FindFirstChild("Text")  then
+										local Mihaltan = Tag:FindFirstChild("Text"):Clone()
+										Mihaltan.Parent = Tag
+										game:GetService("TweenService"):Create(Mihaltan, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
+										game.Debris:AddItem(Mihaltan, .5)
+										local Drop = Tag:FindFirstChild("Blood"):Clone()
+										local Sup, Sup1 = GetRandomNumber(), GetRandomNumber()
+										Drop.Position = UDim2.new(Sup, 0, Sup1, 0)
+										Drop.ImageTransparency = 0
+										Drop.Parent = Tag
+										game.Debris:AddItem(Drop, 0.5)
+										game:GetService("TweenService"):Create(Drop, TweenInfo.new(0.5), {Position = UDim2.new(Sup, 0, 1, 0), ImageTransparency = 1}):Play()
+									task.wait(math.random(0.05, 0.2))
+									else
+										break
+									end
+								end
+							end)
+
+							FirstT:Play()
+							FirstT.Completed:Wait()
+
+							local SecondT = game:GetService("TweenService"):Create(Tag:FindFirstChild("Text"), TweenInfo.new(2), {Rotation = -10})
+
+							SecondT:Play()
+							SecondT.Completed:Wait()	
+
+							_G[Player.UserId].Animating = false
+						elseif Type == "Glitch" then
+
+							local Wagah = 100
+
+
+
+
+							for i = 1, 120 do
+								if Tag:FindFirstChild("WeirdText") then
+									Tag.Text.TextColor3 = Color3.fromRGB(math.random(0,255),math.random(0,255),math.random(0,255))
+
+									local Drop = Tag:FindFirstChild("WeirdText"):Clone()
+									Drop.TextColor3 = Color3.fromRGB(math.random(0,255),math.random(0,255),math.random(0,255))
+									local Sup, Sup1 = GetRandomNumber(), GetRandomNumber()
+									Drop.Rotation = math.random(-45, 45)
+									Drop.Position = UDim2.new(Sup, 0, Sup1, 0)
+									Drop.TextTransparency = 0
+									Drop.Text = WeirdTe[math.random(1, #WeirdTe)]
+									Drop.Parent = Tag
+									game.Debris:AddItem(Drop, 0.5)
+									game:GetService("TweenService"):Create(Drop, TweenInfo.new(0.5), {Position = UDim2.new(Sup, 0, 1, 0), TextTransparency = 1}):Play()
+								task.wait(math.random(0.05, 0.2))
+								else
+									break
+								end
+							end
+
+
+							_G[Player.UserId].Animating = false
+						elseif Type == "Pacman" then
+							_G[Player.UserId].Animating = false
+						elseif Type == "Ruby" then
+							for i = 1, 80 do
+								if Tag:FindFirstChild("Text") then
+									local Drop = Tag:FindFirstChild("FX"):Clone()
+									local Sup, Sup1 = GetRandomNumber(), GetRandomNumber()
+									Drop.Position = UDim2.new(Sup, 0, Sup1, 0)
+									Drop.ImageTransparency = 0
+									Drop.Parent = Tag
+									Drop.Rotation = math.random(-45, 45)
+									game.Debris:AddItem(Drop, 0.5)
+									game:GetService("TweenService"):Create(Drop, TweenInfo.new(0.5), {Position = UDim2.new(Sup, 0, 1, 0), ImageTransparency = 1}):Play()
+								task.wait(math.random(0.05, 0.2))
+								else
+									break
+								end
+							end
+
+
+							_G[Player.UserId].Animating = false
+
+						elseif Type == "Valentine" then
+
+							if Tag:FindFirstChild("Text") then
+								local Drop = Tag:FindFirstChild("ImageLabel"):Clone()
+								local ting = Tag:FindFirstChild("ImageLabel").Position
+								Drop.Position = ting
+								Drop.ImageTransparency = 0
+								Drop.Parent = Tag
+								Drop.Rotation = math.random(-10, 10)
+								game.Debris:AddItem(Drop, 1)
+								game:GetService("TweenService"):Create(Drop, TweenInfo.new(1), {Position = UDim2.fromScale(0.85,-1), ImageTransparency = 1}):Play()
+							task.wait(.15)
+							end
+
+
+							_G[Player.UserId].Animating = false
+						elseif Type == "Candy" or Type == "Menacing" then
+							coroutine.wrap(function()
+								if Tag:FindFirstChild("Text") and Tag:FindFirstChild("Text"):FindFirstChild("UIGradient").Rotation == 0 then
+									local SONNER = game.TweenService:Create(Tag:FindFirstChild("Text"):FindFirstChild("UIGradient"), TweenInfo.new(2.5, Enum.EasingStyle.Cubic), {Rotation = 360})
+									SONNER:Play()
+									SONNER.Completed:Wait()
+									if Tag:FindFirstChild("Text") and Tag:FindFirstChild("Text"):FindFirstChild("UIGradient") then
+										Tag:FindFirstChild("Text"):FindFirstChild("UIGradient").Rotation = 0
+									end 
+								end
+							end)()
+
+							for i = 1, math.random(75,120) do
+								if Tag:FindFirstChild("Text") then
+									local Drop = Tag:FindFirstChild("FX"):Clone()
+									local Sup, Sup1 = GetRandomNumber(), GetRandomNumber()
+									Drop.Position = UDim2.new(Sup, 0, Sup1, 0)
+									Drop.ImageTransparency = 0
+									Drop.Parent = Tag
+									Drop.Rotation = math.random(-45, 45)
+									game.Debris:AddItem(Drop, 0.5)
+									game:GetService("TweenService"):Create(Drop, TweenInfo.new(0.5), {Position = UDim2.new(Sup, 0, 1, 0), ImageTransparency = 1}):Play()
+								task.wait(math.random(0.05, 0.2))
+								else
+									break
+								end
+							end
+							_G[Player.UserId].Animating = false
+						elseif Type == "Grandmaster" then
+							if Tag:FindFirstChild("Text") and Tag:FindFirstChild("Text"):FindFirstChild("Shine") then
+								game.TweenService:Create(Tag:FindFirstChild("Text").Shine, TweenInfo.new(.5, Enum.EasingStyle.Quad), {Rotation = 0}):Play()
+								Tag:FindFirstChild("FX").ImageTransparency = .4
+								task.delay(1, function()
+									game.TweenService:Create(Tag:FindFirstChild("FX"), TweenInfo.new(.5, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
+								end)
+								game.TweenService:Create(Tag:FindFirstChild("FX"), TweenInfo.new(1.5, Enum.EasingStyle.Quint), {Position = UDim2.fromScale(0.9, -0.99)}):Play()
+								task.delay(1.6, function()
+									if (Tag:FindFirstChild("FX")) and Type == "Grandmaster" then
+										Tag:FindFirstChild("FX").Position = UDim2.fromScale(0.1, -0.99)
+									end
+								end)
+								task.wait(.5)
+								game.TweenService:Create(Tag:FindFirstChild("Text").Shine, TweenInfo.new(.5, Enum.EasingStyle.Quad), {Rotation = -7}):Play()
+							end
+							task.wait(3.5)
+							_G[Player.UserId].Animating = false
+						elseif Type == "Hallo" then
+
+							coroutine.wrap(function()
+								if math.random(1, 2) == 2 and Tag:FindFirstChild("Text") and Tag:FindFirstChild("Text"):FindFirstChild("Shine").ImageColor3 == Color3.fromRGB(197, 159, 46) then
+									for i = 1, math.random(1, 4) do
+										if Tag:FindFirstChild("Text"):FindFirstChild("Shine") and Type == "Hallo" then
+											local E = game:GetService("TweenService"):Create(Tag:FindFirstChild("Text"):FindFirstChild("Shine"), TweenInfo.new(0.25), {ImageColor3 = Color3.fromRGB(108, 86, 25)})
+											E:Play()
+											E.Completed:Wait()
+											if Tag:FindFirstChild("Text"):FindFirstChild("Shine") and Type == "Hallo" then			
+												local ER = game:GetService("TweenService"):Create(Tag:FindFirstChild("Text"):FindFirstChild("Shine"), TweenInfo.new(0.25), {ImageColor3 = Color3.fromRGB(197, 159, 45)})
+												ER:Play()
+												ER.Completed:Wait()
+											else
+												break
+											end
+										else
+											break
+										end	
+									end	
+									if Tag:FindFirstChild("Text") and Tag:FindFirstChild("Text"):FindFirstChild("Shine") and Type == "Hallo" then
+										Tag:FindFirstChild("Text"):FindFirstChild("Shine").ImageColor3 = Color3.fromRGB(197, 159, 46)
+									end
+								end
+							end)()
+
+							for i = 1, 80 do
+								if Tag:FindFirstChild("Text") then
+									local Drop = Tag:FindFirstChild("FX"):Clone()
+									local Sup, Sup1 = GetRandomNumber(), GetRandomNumber()
+									Drop.Position = UDim2.new(Sup, 0, Sup1, 0)
+									Drop.ImageTransparency = 0
+									Drop.Parent = Tag
+									Drop.Rotation = math.random(-45, 45)
+									game.Debris:AddItem(Drop, 0.5)
+									game:GetService("TweenService"):Create(Drop, TweenInfo.new(0.5), {Position = UDim2.new(Sup, 0, 1, 0), ImageTransparency = 1}):Play()
+								task.wait(math.random(0.05, 0.2))
+								else
+									break
+								end
+							end
+
+						_G[Player.UserId].Animating = false
+					elseif Type == "Summer" then
+						local TS = game:GetService("TweenService")
+						local Text = Tag:FindFirstChild("Text")
+
+						local TEXT = TS:Create(Text, TweenInfo.new(0.75), {Rotation = 2})
+						local TEXT2 = TS:Create(Text, TweenInfo.new(0.75), {Rotation = -2})
+
+						local WAVE = TS:Create(Tag.Wave, TweenInfo.new(0.75), {Rotation = 1})
+						local WAVE2 = TS:Create(Tag.Wave, TweenInfo.new(0.75), {Rotation = -1})
+
+						local Anim = TS:Create(Text.UIGradient, TweenInfo.new(0.75), {Offset = Vector2.new(0, 0.1)})
+						local Anim2 = TS:Create(Text.UIGradient, TweenInfo.new(0.75), {Offset = Vector2.new(0, 0)})
+
+						local AniSUn = TS:Create(Tag.Sun, TweenInfo.new(1), {Rotation = -10})
+						local Animsun = TS:Create(Tag.Sun, TweenInfo.new(1), {Rotation = 10})
+
+						if Text and Text:FindFirstChild("UIGradient") and Tag:FindFirstChild("Sun") and Tag:FindFirstChild("Wave") then
+
+							TEXT:Play()
+							WAVE:Play()
+							Anim:Play()
+							AniSUn:Play()
+							Anim.Completed:Wait()
+
+							task.wait(0.4)
+
+							TEXT2:Play()
+							WAVE2:Play()
+							Anim2:Play()
+							Animsun:Play()
+							Anim2.Completed:Wait()
+
+							task.wait(0.4)
+						end
+
+						_G[Player.UserId].Animating = false
+						elseif Type == "Rock" then
+							for i = 1, 80 do
+								if Tag:FindFirstChild("Text") then
+									local Drop = Tag:FindFirstChild("FX"):Clone()
+									local Sup, Sup1 = GetRandomNumber(), GetRandomNumber()
+									Drop.Position = UDim2.new(Sup, 0, Sup1, 0)
+									Drop.ImageTransparency = 0
+									Drop.Parent = Tag
+									Drop.Rotation = math.random(-45, 45)
+									game.Debris:AddItem(Drop, 0.5)
+									game:GetService("TweenService"):Create(Drop, TweenInfo.new(0.5), {Position = UDim2.new(Sup, 0, 1, 0), ImageTransparency = 1}):Play()
+								task.wait(math.random(0.05, 0.2))
+								else
+									break
+								end
+							end
+
+							_G[Player.UserId].Animating = false
+
+						elseif Type == "Normal" or Type == "Blue" then
+						_G[Player.UserId].Animating = false
+					elseif Type == "Paws" then
+
+						local xDelta = 124.8
+						local yDelta = 127.8
+						local xIndex = 0
+						local yIndex = 0
+						local maxX = 5
+						local maxY = 8
+						local yo = 0
+
+
+
+
+
+						task.delay(0, function()
+
+
+
+							for i = 1, 90 do
+								if Tag:FindFirstChild("Text") then
+									local Drop = Tag:FindFirstChild("FX"):Clone()
+									local Sup, Sup1 = GetRandomNumber(), GetRandomNumber()
+									Drop.Position = UDim2.new(Sup, 0, Sup1, 0)
+									Drop.ImageTransparency = 0
+									Drop.Parent = Tag
+									Drop.Rotation = math.random(-45, 45)
+									game.Debris:AddItem(Drop, 0.5)
+									game:GetService("TweenService"):Create(Drop, TweenInfo.new(0.5), {Position = UDim2.new(Sup, 0, 1, 0), ImageTransparency = 1}):Play()
+									task.wait(math.random(0.05, 0.2))
+								else
+									break
+								end
+							end
+						end)
+
+						for i = 1, 39 do
+
+							Tag.Shine.ImageRectOffset = Vector2.new(xIndex * xDelta,  yIndex * yDelta )
+							xIndex = xIndex + 1
+							if xIndex == maxX then
+								xIndex = 0
+								yIndex = yIndex + 1
+
+
+
+
+								if yIndex == maxY then
+									yIndex = 0
+								end
+							end
+
+
+							task.wait(0.1)
+						end
+
+
+						_G[Player.UserId].Animating = false
+						elseif Type == "Kurumi" then
+							local TS = game:GetService("TweenService")
+
+							for i = 1, 80 do
+								if Tag:FindFirstChild("Text") then
+									local Drop = Tag:FindFirstChild("FX"):Clone()
+									local Sup, Sup1 = GetRandomNumber(), GetRandomNumber()
+									Drop.Position = UDim2.new(Sup, 0, Sup1, 0)
+									Drop.ImageTransparency = 0
+									Drop.Parent = Tag
+									Drop.Rotation = math.random(-25, 35)
+									if Type == "Kurumi" then
+										game.Debris:AddItem(Drop, 0.67)
+										TS:Create(Drop,TweenInfo.new(0.67), {Position = UDim2.new(Sup, 0, 0.95, 0), ImageTransparency = 1}):Play()
+									task.wait(math.random(0.05, 0.3))
+									elseif Type == "Cinnamoroll" then
+										game.Debris:AddItem(Drop, 0.67)
+										TS:Create(Drop,TweenInfo.new(0.67), {Position = UDim2.new(Sup, 0, -0.95, 0), ImageTransparency = 1}):Play()
+									task.wait(math.random(0.05, 0.3))
+									end
+								else
+									break
+								end
+							end
+
+							_G[Player.UserId].Animating = false	
+
+
+					elseif Type == "Zoku" then
+							local TS = game:GetService("TweenService")
+
+							for i = 1, 80 do
+								if Tag:FindFirstChild("Text") and Tag.Text:FindFirstChild("FX") then
+									local Drop = Tag.Text:FindFirstChild("FX"):Clone()
+									local Sup, Sup1 = GetRandomNumber(), GetRandomNumber()
+									Drop.Position = UDim2.new(Sup, 0, Sup1, 0)
+									Drop.ImageTransparency = 0
+									Drop.Parent = Tag
+									Drop.Rotation = math.random(-100, 100)
+
+									game.Debris:AddItem(Drop, 0.67)
+									TS:Create(Drop,TweenInfo.new(0.67), {Position = UDim2.new(Sup, 0, 0.95, 0), ImageTransparency = 1}):Play()
+								task.wait(math.random(0.05, 0.6))
+
+								else
+									break
+								end
+							end
+
+
+
+							_G[Player.UserId].Animating = false	
+						elseif Type == "Money" then
+							if Tag:FindFirstChild("Text") then
+								local TS = game:GetService("TweenService")
+
+								local ImageTable = {
+									"rbxassetid://9601415531"
+								}
+
+								local Rotation
+
+								spawn(function()
+									for i = 1, 80 do
+										if not Tag:FindFirstChild("Text") then
+											break
+										else
+											local Drop = Tag:FindFirstChild("Text"):FindFirstChild("FX"):Clone()
+											local Sup, Sup1 = GetRandomNumber(), GetRandomNumber()
+											Drop.Position = UDim2.new(Sup, 0, Sup1, 0)
+											Drop.ImageTransparency = 0
+											Drop.Image = ImageTable[math.random(1, #ImageTable)]
+											Drop.Parent = Tag
+											Drop.Rotation = math.random(-45, 25)
+											game.Debris:AddItem(Drop, 0.68)
+											TS:Create(Drop,TweenInfo.new(0.68), {Position = UDim2.new(Sup, 0, 1, 0), ImageTransparency = 1}):Play()
+										task.wait(math.random(0.05, 0.2))
+										end
+									end
+								end
+								)
+
+								local Info = TweenInfo.new(1.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
+								local Anim = TS:Create(Tag:FindFirstChild("Text"), Info, {Rotation = 7})
+								local Anim2 = TS:Create(Tag:FindFirstChild("Text"), Info, {Rotation = -7})
+
+								local Ro = TS:Create(Tag:FindFirstChild("Text").UIGradient, Info, {Rotation = -85})
+								local Ro2 = TS:Create(Tag:FindFirstChild("Text").UIGradient, Info, {Rotation = -95})
+
+								Anim:Play()
+								Ro:Play()
+								Anim.Completed:Wait()
+
+								Anim2:Play()
+								Ro2:Play()
+								Anim2.Completed:Wait()
+							else
+								return
+							end
+
+							_G[Player.UserId].Animating = false
+						elseif Type == "Wobble" then
+							for i = 1, 80 do
+								if Tag:FindFirstChild("Text") then
+									local Drop = Tag:FindFirstChild("Blood"):Clone()
+									local Sup, Sup1 = GetRandomNumber(), GetRandomNumber()
+									Drop.Position = UDim2.new(Sup, 0, Sup1, 0)
+									Drop.ImageTransparency = 0
+									Drop.Parent = Tag
+									game.Debris:AddItem(Drop, 0.5)
+									game:GetService("TweenService"):Create(Drop, TweenInfo.new(0.5), {Position = UDim2.new(Sup, 0, 1, 0), ImageTransparency = 1}):Play()
+								task.wait(math.random(0.05, 0.2))
+								else
+									break
+								end
+							end
+							_G[Player.UserId].Animating = false
+						end
+					end		
+				end)
+				game:GetService("RunService").Heartbeat:wait()				
+			until _G[Player.UserId] == nil
+
+		end)
+	
+end
+
+function CheckIfStreak(CharRacter, Player)
+	pcall(function()
+		workspace.Characters:WaitForChild(CharRacter.Name, 15)
+
+		AnimateText(Player)
+		if CharRacter.Head:FindFirstChild("Streak-Kill") == nil then
+			if Player:FindFirstChild("Admn") == nil and Player:FindFirstChild("Modrator") == nil then
+				if game.Players[CharRacter.Name].Information.Streaks.Value == 1 then
+					local GUI = RPL.TagText[game.Players[CharRacter.Name].Information.Tag.Value]:Clone()
+					GUI.Parent = CharRacter.Head
+					GUI.Name = "Streak-Kill"
+					GUI.Text.Text = "Kill Streak - "..game.Players[CharRacter.Name].Information.Streaks.Value
+				elseif game.Players[CharRacter.Name].Information.Streaks.Value > 1 then
+					local GUI = RPL.TagText[game.Players[CharRacter.Name].Information.Tag.Value]:Clone()
+					GUI.Parent = CharRacter.Head
+					GUI.Name = "Streak-Kill"
+					GUI.Text.Text = "Kill Streaks - "..game.Players[CharRacter.Name].Information.Streaks.Value
+				end
+			end
+		end
+	end)
+end
+
+local cooldown = false
+local key = 0
+function ReactiveTags(Player)
+	delay(0, function()
+		local son, errorz = pcall(function()
+
+			local Tag, Type  = Player.Character.Head:FindFirstChildOfClass("BillboardGui") or nil, Player:WaitForChild("Information", 10):WaitForChild("Tag", 10).Value	
+			if Tag ~= nil and (_G.Streaks) == true then
+				if Type == "Pacman" and _G[Player.UserId].Reactive == false then
+
+					_G[Player.UserId].Reactive = true
+					local WepfPF = game.ReplicatedStorage.Pacman:Clone()
+					WepfPF.Parent = Player.Character.Head
+					game.Debris:AddItem(WepfPF, 5)
+
+					local Son = Tag
+					Son.Sound.Value = WepfPF
+					local SCale = Son.Text.Shine.Position
+					local Transparnet = Son.Text.UIGradient.Transparency
+					local Update = 0
+					local son = false
+					Son.Sound.Value:Play()
+					for i = 0, 1, .025 do 
+						Son.Text.UIGradient.Transparency = NumberSequence.new({
+							NumberSequenceKeypoint.new(0, 1), -- transparent
+							NumberSequenceKeypoint.new(i, i+.2),
+							NumberSequenceKeypoint.new(1, 0)
+						})
+
+						Son.Text.Shine.Position = UDim2.fromScale(SCale.X.Scale+i, SCale.Y.Scale)
+						if son == false then
+							son = true
+							if Son.Text.Shine.Image == "rbxassetid://33755815" then
+								Son.Text.Shine.Image = "http://www.roblox.com/asset/?id=9070090089"
+							else
+								Son.Text.Shine.Image = "rbxassetid://33755815"
+							end
+							task.delay(.15, function()
+								son = false
+							end)
+						end
+						task.wait()
+					end
+					son = false
+					Son.Sound.Value:Stop()
+					Update = Son.Text.Shine.Position
+					Son.Text.Shine.Image = "rbxassetid://33755815"
+					local dFd = game.TweenService:Create(Son.Text.Shine, TweenInfo.new(.5), {Rotation = 180, Position = Update + UDim2.fromScale(.3, 0)})
+					dFd:Play()
+					dFd.Completed:Wait()
+					Son.Sound.Value:Play()
+					for i = 0, 1, .05 do 
+						Son.Text.UIGradient.Transparency = NumberSequence.new({
+							NumberSequenceKeypoint.new(0, 1), -- transparent
+							NumberSequenceKeypoint.new(1-i, 1-i),
+							NumberSequenceKeypoint.new(1, 0)
+						})
+
+						Son.Text.Shine.Position = UDim2.fromScale(Update.X.Scale-i, Update.Y.Scale)
+						if son == false then
+							son = true
+							if Son.Text.Shine.Image == "rbxassetid://33755815" then
+								Son.Text.Shine.Image = "http://www.roblox.com/asset/?id=9070090089"
+							else
+								Son.Text.Shine.Image = "rbxassetid://33755815"
+							end
+							task.delay(.1, function()
+								son = false
+							end)
+						end
+						task.wait()
+					end
+					Son.Sound.Value:Stop()
+					Son.Text.UIGradient.Transparency = Transparnet
+					Son.Text.Shine.Image = "rbxassetid://33755815"
+					Son.Text.Shine.Position = SCale
+					local dFd = game.TweenService:Create(Son.Text.Shine, TweenInfo.new(.5), {Rotation = 0})
+					dFd:Play()
+					dFd.Completed:Wait()
+					_G[Player.UserId].Reactive = false
+
+				elseif Type == "Sailor" and _G[Player.UserId].Reactive == false then
+					_G[Player.UserId].Reactive = true
+					local xDelta = 82
+					local yDelta = 80
+					local xIndex = 0
+					local yIndex = 0
+					local maxX = 5
+					local maxY = 8
+					local yo = 0
+
+					local s = {on = false, con = false}
+					for i = 1, 41 do
+
+						if i >= 1 and s.on == false then
+							s.on = true
+							local WepfPF = game.ReplicatedStorage.MoonSlayer:Clone()
+							WepfPF.Parent = Player.Character.Head
+							WepfPF:Play()
+							game.Debris:AddItem(WepfPF, 3.1)
+						end
+						if i >= 28 and s.con == false then
+							s.con = true
+							local WepfPF = game.ReplicatedStorage.MoonSlayerAttack:Clone()
+							WepfPF.Parent = Player.Character.Head
+							WepfPF:Play()
+							game.Debris:AddItem(WepfPF, 2)
+						end
+						Tag.Text.Shine.ImageRectOffset = Vector2.new(xIndex * xDelta,  yIndex * yDelta )
+						xIndex = xIndex + 1
+						if xIndex == maxX then
+							xIndex = 0
+							yIndex = yIndex + 1
+
+
+
+
+							if yIndex == maxY then
+								yIndex = 0
+							end
+						end
+
+						task.wait(0.05)
+					end
+					task.wait(5)
+					_G[Player.UserId].Reactive = false
+				elseif  Type == "Grandmaster" and _G[Player.UserId].Reactive == false and Player.Character:FindFirstChild("Grandwings") == nil then
+					_G[Player.UserId].Reactive = true
+					local Baen = game.ReplicatedStorage.Grandwings:Clone()
+					Baen.sayap7.Sound:Play()
+					local Weld = Instance.new("Weld", Baen)
+					Weld.Part0 = Baen["Stand Torso"]
+					Weld.Part1 = Player.Character.HumanoidRootPart
+					Baen.Parent = Player.Character
+					game.Debris:AddItem(Baen, 6)
+					task.delay(0.2, function()
+						Baen.sayap7.Attachment["Sparks (30)"].Rate = 0
+					end)
+					local Hey = Baen.AnimationController:LoadAnimation(Baen.Animation)
+					Hey:Play()
+					Hey.Stopped:Wait()
+					for i, v in pairs(Baen:GetDescendants()) do
+						if v:IsA("Trail") or v:IsA("ParticleEmitter") then
+							v.Enabled = false
+						elseif v:IsA("UnionOperation") or v:IsA("BasePart") then
+							game.TweenService:Create(v, TweenInfo.new(.5), {Transparency = 1}):Play()
+						end
+					end
+					task.wait(5)
+					_G[Player.UserId].Reactive = false
+				elseif Type == "Zoku" and _G[Player.UserId].Reactive == false then
+
+					local WepfPF = game.ReplicatedStorage.Charge:Clone()
+					WepfPF.Parent = Player.Character.Head
+					WepfPF:Play()
+					game.Debris:AddItem(WepfPF, 2)
+
+
+					_G[Player.UserId].Reactive = true
+					for i = 2, 3 do
+						if Tag:FindFirstChild("Flower") and Tag:FindFirstChild("Flower"):FindFirstChild("Beam") then
+							local ayo = i == 1 and "rbxassetid://9882270331" or i == 2  and "rbxassetid://9882271229" or i == 3 and "rbxassetid://9882271905"
+							Tag.Flower.Image = ayo
+							print(ayo)
+							if i == 3 then
+								break
+							end
+						else
+
+							break
+						end
+						task.wait((i/1.5))
+					end
+
+					local WepfPF = game.ReplicatedStorage.Beam:Clone()
+					WepfPF.Parent = Player.Character.Head
+					WepfPF:Play()
+					game.Debris:AddItem(WepfPF, 3)
+					local sonny = game.TweenService:Create(WepfPF, TweenInfo.new(3, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut), {Volume = 0}):Play()
+
+					local sonny = game.TweenService:Create(Tag.Flower.Beam, TweenInfo.new(.5, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut), {Size = UDim2.fromScale(1, 2), Position = UDim2.fromScale(1.5, -0.5), ImageTransparency = 0}):Play()
+					local done = false
+					task.delay(0, function()
+						repeat 
+							Tag.Flower.Beam.ImageColor3 = Color3.fromRGB(199, 199, 199) 
+							if Tag.Flower.Beam.Size ==  UDim2.fromScale(1, 2) then
+								Tag.Flower.Beam.Size = UDim2.fromScale(.95, 2)
+							end
+							Tag.Flower.FF.Enabled = true task.wait(0.08) 
+
+							if Tag.Flower.Beam.Size ==  UDim2.fromScale(.95, 2) then
+								Tag.Flower.Beam.Size = UDim2.fromScale(1, 2)
+							end
+
+							Tag.Flower.Beam.ImageColor3 = Color3.fromRGB(255, 255, 255) Tag.Flower.FF.Enabled = false task.wait(0.08) 
+
+						until done == true
+					end)
+					task.delay(2.5, function()
+						done = true
+						local sonny = game.TweenService:Create(Tag.Flower.Beam, TweenInfo.new(.5, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut), {Size = UDim2.fromScale(0, 2), Position = UDim2.fromScale(1.9, -0.5), ImageTransparency = 1}):Play()
+					end)
+					task.wait(3)
+					task.delay(2, function()
+						_G[Player.UserId].Reactive = false
+					end)
+					Tag.Flower.FF.Enabled = false
+					Tag.Flower.Image = "rbxassetid://9882270331"
+
+				end
+
+
+
+			end
+
+		end)
+		print(errorz)
+	end)
+
+end
+
+function DidItChange(Checker, Player)
+	pcall(function()
+		workspace.Characters:WaitForChild(Player.Name, 15)
+		Player:WaitForChild("Information"):WaitForChild("Tag", 15)
+		local CharRacter = workspace.Characters:WaitForChild(Player.Name, 15)
+		CharRacter:WaitForChild("Head", 15)
+		CheckIfStreak(CharRacter, Player)
+
+		if Player ~= game:GetService("Players").LocalPlayer then
+			Player.CharacterAdded:Connect(function(Char)
+				Char:WaitForChild("I_LOADED_I")
+				CheckIfStreak(Char, Player)
+			end)
+		end
+
+		Player.Information.Tag.Changed:Connect(function()
+			wait()
+			_G[Player.UserId].Animating = false
+			local Character = Player.Character
+			if Character.Head:FindFirstChild("Streak-Kill") and Character.Head:FindFirstChild("Streak-Kill").TypeTag.Value ~= Player.Information.Tag.Value and Player.Information.Streaks.Value > 0 then
+				if Character.Head:FindFirstChild("Streak-Kill") then
+					Character.Head:FindFirstChild("Streak-Kill"):Destroy()
+				end
+				local GUI = RPL.TagText[Player.Information.Tag.Value]:Clone()
+				GUI.Parent = Character.Head
+				GUI.Name = "Streak-Kill"
+				if game.Players[Character.Name].Information.Streaks.Value <= 1 then
+					GUI.Text.Text = "Kill Streak - "..Player.Information.Streaks.Value
+				else
+					GUI.Text.Text = "Kill Streaks - "..Player.Information.Streaks.Value
+				end
+			end
+		end)
+
+
+		Player.Information.Streaks.Changed:Connect(function()
+			wait()
+
+			local Character = Player.Character
+			if Player:FindFirstChild("Admn") == nil and Player:FindFirstChild("Moderator") == nil then
+
+				if Player.Information.Streaks.Value == 0 then
+					if Character.Head:FindFirstChild("Streak-Kill") then
+						Character.Head:FindFirstChild("Streak-Kill"):Destroy()
+					end
+				else
+
+					ReactiveTags(Player)
+					if Character.Head:FindFirstChild("Streak-Kill") == nil then
+						local GUI = RPL.TagText[Player.Information.Tag.Value]:Clone()
+						GUI.Parent = Character.Head
+						GUI.Name = "Streak-Kill"
+						GUI.Text.Text = "Kill Streak - "..Player.Information.Streaks.Value
+
+					else
+						if game.Players[Character.Name].Information.Streaks.Value <= 1 then
+							Character.Head:FindFirstChild("Streak-Kill").Text.Text = "Kill Streak - "..Player.Information.Streaks.Value
+						else
+							Character.Head:FindFirstChild("Streak-Kill").Text.Text = "Kill Streaks - "..Player.Information.Streaks.Value
+						end
+					end
+				end
+			end		
+
+		end)
+
+	end)
+end
+
+local PlayerList = {}
+
+game.Players.PlayerAdded:Connect(function(plr)
+	wait()
+	DidItChange(nil, plr)
+	_G[plr.UserId] = 
+		{
+			Animating = false,
+			Reactive = false
+		}
+	PlayerList[plr] = plr.Name
+end)
+for i, v in pairs(game.Players:GetPlayers()) do
+	if v.Name ~= game.Players.LocalPlayer.Name then
+		DidItChange(nil, v)
+	end
+	_G[v.UserId] = 
+		{
+			Animating = false,
+			Reactive = false
+		}
+	PlayerList[v] = v.UserId	
+end
+DidItChange(nil, game.Players.LocalPlayer)
+game.Players.PlayerRemoving:Connect(function(plr)
+	_G[plr.UserId] = nil
+	PlayerList[plr] = nil
+end)
+
+local Bro = {
+	["Megalodon"] = 
+		{
+			["Rotate"] = true,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0.294118, 0.635294, 1)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(0, 0.733333, 1)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.117647, 0.454902, 1))
+			}
+
+		},
+	["Raycodex"] = 
+		{
+			["Rotate"] = true,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0.407843, 0.407843, 0.407843)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(1, 1, 1)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.368627, 0.368627, 0.368627))
+			}
+
+		},
+	["RoadRoller"] = 
+		{
+			["Rotate"] = true,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(1, 0.862745, 0.0823529)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(0.792157, 0.701961, 0)),
+				ColorSequenceKeypoint.new(1, Color3.new(1, 0.862745, 0.0823529))
+			}
+
+		},
+	["Shapeshifter"] = 
+		{
+			["Rotate"] = true,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0.105882, 1, 0.00784314)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(0.113725, 0, 1)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.0470588, 1, 0))
+			}
+
+		},
+	["Zoku"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(1, 0.74902, 0)),
+				ColorSequenceKeypoint.new(.49, Color3.new(0.835294, 0.568627, 0.0392157)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(1, 0, 0)),
+				ColorSequenceKeypoint.new(1, Color3.new(1, 0, 0))
+			}
+
+		},
+	["Sailor"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(1, 0.952941, 0.701961)),
+
+
+				ColorSequenceKeypoint.new(1, Color3.new(0.901961, 1, 0))
+			}
+
+		},
+	["Hallo"] = 
+		{
+			["Rotate"] = true,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(1, 0, 0)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(1, 0.254902, 0.0313725)),
+				ColorSequenceKeypoint.new(1, Color3.new(1, 0, 0))
+			}
+
+		},
+	["Heaven"] = 
+		{
+			["Rotate"] = true,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(1, 0.937255, 0.431373)),
+				ColorSequenceKeypoint.new(1, Color3.new(1, 1, 1))
+			}
+
+		},
+
+	["Kitten"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0.984314, 0.529412, 1)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(0.85098, 0.298039, 1)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.882353, 0.52549, 1))
+			}
+
+		},
+	["Spirit"] = 
+		{
+			["Rotate"] = true,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+				ColorSequenceKeypoint.new(.5, Color3.new(0.67451, 0.67451, 0.67451)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.67451, 0.67451, 0.67451))
+			}
+
+		},
+	["Ruby"] = 
+		{
+			["Rotate"] = true,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+				ColorSequenceKeypoint.new(.5, Color3.new(0.67451, 0.67451, 0.67451)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.67451, 0.67451, 0.67451))
+			}
+
+		},
+	["Lotus"] = 
+		{
+			["Rotate"] = true,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+				ColorSequenceKeypoint.new(.5, Color3.new(0.67451, 0.67451, 0.67451)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.67451, 0.67451, 0.67451))
+			}
+
+		},
+	["Pacman"] = 
+		{
+			["Rotate"] = true,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+				ColorSequenceKeypoint.new(.5, Color3.new(0.67451, 0.67451, 0.67451)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.67451, 0.67451, 0.67451))
+
+			}
+
+		},
+	["Gates of Heaven"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0.67451, 0.67451, 0.67451)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(0.67451, 0.67451, 0.67451)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.968627, 1, 0.32549))
+			}
+
+		},
+	["Kitty"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0.956863, 0.870588, 1)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(0.956863, 0.870588, 1)),
+				ColorSequenceKeypoint.new(1, Color3.new(1, 0.647059, 0.996078))
+			}
+
+		},
+	["UFO"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0, 0.231373, 1)),
+
+				ColorSequenceKeypoint.new(1, Color3.new(0, 0.713725, 0.105882))
+			}
+
+		},
+	["Lightning"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0, 0.231373, 1)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(0, 0.713725, 0.105882)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.698039, 0.172549, 1))
+			}
+
+		},
+	["Kurumi"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(1, 0, 0)),
+				ColorSequenceKeypoint.new(1, Color3.new(1, 0, 0))
+			}
+
+		},
+	["Money"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(1, 0, 0)),
+				ColorSequenceKeypoint.new(1, Color3.new(1, 0, 0))
+			}
+
+		},
+
+	["Thanos"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0.333333, 0, 1)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.333333, 0, 1))
+			}
+
+		},
+	["Goth"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0.333333, 0, 1)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.333333, 0, 1))
+			}
+
+		},
+	["Thunder"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0.333333, 0, 1)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.333333, 0, 1))
+			}
+
+		},
+	["Confetti"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0, 1, 0.0823529)),
+				ColorSequenceKeypoint.new(1, Color3.new(0, 1, 0.0823529))
+			}
+
+		},
+	["Wobble"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0, 1, 0.0823529)),
+				ColorSequenceKeypoint.new(1, Color3.new(0, 1, 0.0823529))
+			}
+
+		},
+	["Rings"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0, 1, 0.0823529)),
+				ColorSequenceKeypoint.new(1, Color3.new(0, 1, 0.0823529))
+			}
+
+		},
+	["Mario"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0.333333, 0, 1)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.333333, 0, 1))
+			}
+
+		},
+	["Glitch"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(1, 0, 0)),
+				ColorSequenceKeypoint.new(1, Color3.new(1, 0, 0))
+			}
+
+		},
+	["Rainbow"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0, 0.568627, 1)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(0, 1, 0.133333)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.8, 0, 1))
+			}
+
+		},
+	["Diamond"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0, 0.568627, 1)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(0, 1, 0.133333)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.8, 0, 1))
+			}
+
+		},
+	["Rock"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0, 0.568627, 1)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(0, 1, 0.133333)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.8, 0, 1))
+			}
+
+		},
+	["Sakura"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0, 0.568627, 1)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(0, 1, 0.133333)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.8, 0, 1))
+			}
+
+		},
+	["D4C"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0, 0.568627, 1)),
+				ColorSequenceKeypoint.new(1, Color3.new(0, 1, 0.133333)),
+
+			}
+
+		},
+	["Dragon"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(1, 0, 0)),
+				ColorSequenceKeypoint.new(.5, Color3.new(0.67451, 0.67451, 0.67451)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.67451, 0.67451, 0.67451))
+			}
+
+		},
+	["Rune"] = 
+		{
+			["Rotate"] = false,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0, 1, 1)),
+				ColorSequenceKeypoint.new(0.25, Color3.new(1, 0, 0)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(0.917647, 1, 0)),
+				ColorSequenceKeypoint.new(0.75, Color3.new(1, 0, 0.917647)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.133333, 1, 0))
+			}
+
+		},
+	["Shiny Spirit"] = 
+		{
+			["Rotate"] = true,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0, 1, 1)),
+				ColorSequenceKeypoint.new(0.25, Color3.new(0.596078, 0.933333, 1)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(0, 0.45098, 1)),
+				ColorSequenceKeypoint.new(0.75, Color3.new(0.596078, 0.933333, 1)),
+				ColorSequenceKeypoint.new(1, Color3.new(0, 0.568627, 1))
+			}
+
+		},
+
+}
+
+
+
+game:GetService("Players").LocalPlayer.Character.AncestryChanged:Connect(function()
+	for i, v in pairs(PlayerList) do
+		PlayerList[v] = nil
+		_G[v] = nil
+	end
+end)
+
+local TradeUI = script.Parent:WaitForChild("TradeUI")
+local CurrentThing = 0
+
+function AddSoundToClick()
+	TradeUI.Sound:Play()
+end
+
+function RemoveTheTrade(button, val, WhichC, FL, origin)
+	local YoungOne
+	YoungOne = button.MouseButton1Click:Connect(function()
+		if cooldown == false then
+		game.ReplicatedStorage.MainRemote:FireServer("RemoveTrade", FL, val, WhichC)
+		AddSoundToClick()
+		if origin:FindFirstChild("Raycodex") then
+			origin["Raycodex"]:Destroy()
+		end
+
+			YoungOne:Disconnect()
+		end
+	end)
+end
+
+function AddUpToTrade(button, val, WhichC, FL)
+	local YoungOne
+	YoungOne = button.MouseButton1Click:Connect(function()
+		if cooldown == false then
+		game.ReplicatedStorage.MainRemote:FireServer("AddUpTrade", FL, val, WhichC)
+		AddSoundToClick()
+		local sff = Instance.new("StringValue", button)
+		sff.Name = "Raycodex"
+			YoungOne:Disconnect()
+		end
+	end)
+
+	TradeUI.Changed:Connect(function()
+		if TradeUI.Visible == false then
+			CurrentThing = 0
+			YoungOne:Disconnect()
+		end
+	end)
+end
+
+function AddButton(button, FL, NAME)
+	local YoungOne
+	YoungOne = button.MouseButton1Click:Connect(function()
+		if cooldown == false then
+			game.ReplicatedStorage.MainRemote:FireServer(NAME, FL)
+		end
+		AddSoundToClick()
+		
+	end)
+
+	TradeUI.Changed:Connect(function()
+		if TradeUI.Visible == false then
+			YoungOne:Disconnect()
+		end
+	end)
+end
+local bener = nil
+
+function LoadTradesUp(OtherPerson, WhichC, Folder)
+	if game.Players:FindFirstChild(OtherPerson) then
+		TradeUI.Visible = true
+		for i, v in pairs(TradeUI.SPL.Inventory:GetChildren()) do
+			if v:IsA("Frame") then
+				v:Destroy()
+			end
+		end
+		for i, v in pairs(TradeUI.FPL.Inventory:GetChildren()) do
+			if v:IsA("Frame") then
+				v:Destroy()
+			end
+		end
+		local OtherIn = game.Players:FindFirstChild(OtherPerson)
+		for i, v in pairs(PlayerOrg.Information.Inventory:GetChildren()) do
+			local whattt = game.ReplicatedStorage.UrInventorySon:Clone()
+			whattt.Name = string.sub(v.Name, 3)
+			whattt.Parent = TradeUI.FPL.Inventory
+			
+			
+			
+			if Bro[ string.sub(v.Name, 3)] ~= nil then
+				whattt.TextButton.UIGradient.Enabled = true
+				whattt.TextButton.UIGradient.Color = ColorSequence.new(Bro[ string.sub(v.Name, 3)].Color)
+				if Bro[ string.sub(v.Name, 3)].Rotate == true then
+					game.TweenService:Create(whattt:FindFirstChild("TextButton"):FindFirstChild("UIGradient"), TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360}):Play()
+				else 
+					whattt.TextButton.UIGradient.Rotation = 0
+
+				end
+			end
+			
+			
+				if string.sub(v.Name, 1, 1) == "K" then
+				AddUpToTrade(whattt.TextButton, v, WhichC, Folder)
+				whattt.TextButton.Text = string.sub(v.Name, 3)
+				elseif string.sub(v.Name, 1, 1) == "R" then
+				AddUpToTrade(whattt.TextButton , v, WhichC, Folder)
+				whattt.TextButton.Text = string.sub(v.Name, 3)
+				elseif string.sub(v.Name, 1, 1) == "T" then
+				AddUpToTrade(whattt.TextButton, v, WhichC, Folder)
+				
+				whattt.TextButton.Text = string.sub(v.Name, 3)
+				end
+		end
+
+		if WhichC == "B" then
+			TradeUI.UI.FP.Text = PlayerOrg.Name
+			TradeUI.UI.SP.Text = OtherIn.Name
+		else
+			TradeUI.UI.FP.Text = OtherIn.Name
+			TradeUI.UI.SP.Text = PlayerOrg.Name
+		end
+		TradeUI.UI.TITLE.Text = "Trade with "..OtherIn.Name
+		bener = "Trade with "..OtherIn.Name
+		for i, v in pairs(TradeUI.UI:GetDescendants()) do
+			if v:IsA("TextButton") and v.Name == "TextButton" then
+				v.Text = ""
+			end
+		end
+		AddButton(TradeUI.UI.Accept, Folder, "AcceptTrade")
+		AddButton(TradeUI.UI.Decline, Folder, "DeclineTrade")
+		TradeUI.FPL.TextLabel.Text = PlayerOrg.Name.."'s inventory"
+		for i, v in pairs(OtherIn.Information.Inventory:GetChildren()) do
+			local whattt = game.ReplicatedStorage.UrInventorySon:Clone()
+			whattt.Parent = TradeUI.SPL.Inventory
+			whattt.Name = string.sub(v.Name, 3)
+			if string.sub(v.Name, 1, 1) == "K" then
+				whattt.TextButton.Text = string.sub(v.Name, 3)
+			elseif string.sub(v.Name, 1, 1) == "R" then
+				whattt.TextButton.Text = string.sub(v.Name, 3)
+			elseif string.sub(v.Name, 1, 1) == "T" then
+				whattt.TextButton.Text = string.sub(v.Name, 3)
+			end
+			
+			if Bro[ string.sub(v.Name, 3)] ~= nil then
+				whattt.TextButton.UIGradient.Enabled = true
+				whattt.TextButton.UIGradient.Color = ColorSequence.new(Bro[ string.sub(v.Name, 3)].Color)
+				if Bro[ string.sub(v.Name, 3)].Rotate == true then
+					game.TweenService:Create(whattt:FindFirstChild("TextButton"):FindFirstChild("UIGradient"), TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360}):Play()
+				else 
+					whattt.TextButton.UIGradient.Rotation = 0
+
+				end
+			end
+
+			
+			
+		end
+		TradeUI.SPL.TextLabel.Text = OtherIn.Name.."'s inventory"
+	end
+end
+
+
+PlayerOrg.Chatted:Connect(function(f)
+	if f:sub(1, 6) == "!trade" and f:sub(1, 7) ~= "!trades" then
+		local Table = string.split(f, " ")
+		game.ReplicatedStorage.MainRemote:FireServer("CreateTrade", Table[2]) 
+	end
+end)
+
+local function FindWho(Ye)
+	if TradeUI.UI.SP.Text == Ye then
+		return TradeUI.UI.SP
+	else
+		return TradeUI.UI.FP
+	end
+end
+
+local function FindWhoer(Ye)
+	if TradeUI.UI.SP.Text == Ye.." (ACCEPTED)" then
+		return TradeUI.UI.SP
+	else
+		return TradeUI.UI.FP
+	end
+end
+
+RPL.MainRemote.OnClientEvent:Connect(function(...)
+	local Table = {...}
+	if Table[1] == "FX_KILL" then
+		if Table[1] == "FX_KILL" then
+			local _, withinScreenBounds = workspace.CurrentCamera:WorldToScreenPoint(Table[3].Position)
+			local origin = Table[3].Position + Vector3.new(0, 10, 0)
+			local target = PlayerOrg.Character.PrimaryPart.Position
+			local ray = Ray.new(origin,(target - origin).unit * 250)
+			local hit, position = game.Workspace:FindPartOnRayWithWhitelist(ray, {workspace.Map, PlayerOrg.Character}) 
+			print(hit, withinScreenBounds)
+			if (withinScreenBounds or hit) and (PlayerOrg.Character.PrimaryPart.Position - Table[3].Position).Magnitude <= 300 then
+				CheckForFX(Table[2], Table[3], Table[4])
+			end
+		end
+	elseif Table[1] == "Trade" then
+		local CurrentTrade = Table[2]
+		local whichChose = Table[3]
+		CurrentTrade.ChildAdded:Connect(function(Child)
+			wait()
+			if (Child.Name == whichChose.."1" or Child.Name == whichChose.."2" or Child.Name == whichChose.."3" or Child.Name == whichChose.."4") then
+				print(Child)
+				CurrentThing += 1
+				for i, v in pairs(TradeUI.FPL.Inventory:GetChildren()) do
+					local son = nil
+					if v:IsA("Frame") then
+						son = v.TextButton
+					end
+					if son ~= nil and  v.Name == string.sub(Child.ARG.Value.Name, 3) and son.Text == string.sub(Child.ARG.Value.Name, 3) and son:FindFirstChild("Raycodex") then
+						TradeUI.UI[Child.Name].TextButton.Text = string.sub(Child.ARG.Value.Name, 3)
+						local tool = string.sub(Child.ARG.Value.Name, 3)
+						if Bro[tool] ~= nil then
+							TradeUI.UI[Child.Name].TextButton.UIGradient.Enabled = true
+							TradeUI.UI[Child.Name].TextButton.UIGradient.Color = ColorSequence.new(Bro[tool].Color)
+							if Bro[tool].Rotate == true then
+								game.TweenService:Create(TradeUI.UI[Child.Name]:FindFirstChild("TextButton"):FindFirstChild("UIGradient"), TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, 1), {Rotation = 360}):Play()
+							else 
+								TradeUI.UI[Child.Name].TextButton.UIGradient.Rotation = 0
+							end
+						end
+
+						
+						son.Text = ""
+						son.UIGradient.Enabled = false
+						RemoveTheTrade(TradeUI.UI[Child.Name].TextButton, Child.ARG.Value, whichChose, CurrentTrade, son)
+						break
+					end
+				end
+			elseif game.Players:FindFirstChild(Child.Name) == nil then
+				
+				
+				for i, v in pairs(TradeUI.SPL.Inventory:GetChildren()) do
+					local son = nil
+					if v:IsA("Frame") then
+						son = v.TextButton
+						
+					end
+					
+					if son ~= nil and  v.Name == string.sub(Child.ARG.Value.Name, 3) and son.Text == string.sub(Child.ARG.Value.Name, 3) then
+						son.Text = ""
+						local tool = string.sub(Child.ARG.Value.Name, 3)
+						if Bro[tool] ~= nil then
+							TradeUI.UI[Child.Name].TextButton.UIGradient.Enabled = true
+							TradeUI.UI[Child.Name].TextButton.UIGradient.Color = ColorSequence.new(Bro[tool].Color)
+							if Bro[tool].Rotate == true then
+								game.TweenService:Create(TradeUI.UI[Child.Name]:FindFirstChild("TextButton"):FindFirstChild("UIGradient"), TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, 1), {Rotation = 360}):Play()
+							else 
+								TradeUI.UI[Child.Name].TextButton.UIGradient.Rotation = 0
+							end
+						end
+
+						son.UIGradient.Enabled = false
+						TradeUI.UI[Child.Name].TextButton.Text = string.sub(Child.ARG.Value.Name, 3)
+				
+						break
+					end
+				end
+				
+			
+			else
+				local E = FindWhoer(Child.Name)
+				E.Text = Child.Name
+			end	
+		end)
+
+		CurrentTrade.ChildRemoved:Connect(function(Child)
+			
+		
+			
+			
+			if (Child.Name == whichChose.."1" or Child.Name == whichChose.."2" or Child.Name == whichChose.."3" or Child.Name == whichChose.."4") then
+				
+				key += 1
+				local oldkey = key
+				cooldown = oldkey
+
+				task.delay(0, function()
+					for i = 3, 0, -1 do
+						if oldkey ~= key then
+							break
+						end
+						TradeUI.UI.TITLE.Text = bener.." ("..i..")"
+						task.wait(1)
+					end
+					TradeUI.UI.TITLE.Text = bener
+					if key == oldkey then
+						cooldown = false
+					end
+				end)
+				
+				for i, v in pairs(TradeUI.FPL.Inventory:GetChildren()) do
+					local son = nil
+					if v:IsA("Frame") then
+						son = v.TextButton
+					end
+					if son ~= nil and v.Name == string.sub(Child.ARG.Value.Name, 3) and son.Text == "" then
+				
+						TradeUI.UI[Child.Name].TextButton.Text = ""
+						TradeUI.UI[Child.Name].TextButton.UIGradient.Rotation = 0
+						TradeUI.UI[Child.Name].TextButton.UIGradient.Color = ColorSequence.new({
+							ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+							ColorSequenceKeypoint.new(1, Color3.new(1, 1, 1))
+						})
+						if string.sub(Child.Value, 1,1) ~= "R" then
+							son.Text = string.sub(Child.Value, 3)
+						else
+							son.Text = BrickColor.new(string.sub(Child.Value, 3)).Name
+						end
+					
+						son.UIGradient.Enabled = true
+						AddUpToTrade(son, Child.ARG.Value, whichChose, CurrentTrade)
+						break
+					end
+				end
+				
+			
+				
+				CurrentThing -= 1
+			
+			
+			elseif game.Players:FindFirstChild(Child.Name) == nil then
+				
+				
+				key += 1
+				local oldkey = key
+				cooldown = oldkey
+
+				task.delay(0, function()
+					for i = 3, 0, -1 do
+						if oldkey ~= key then
+							break
+						end
+						TradeUI.UI.TITLE.Text = bener.." ("..i..")"
+						task.wait(1)
+					end
+					TradeUI.UI.TITLE.Text = bener
+					if key == oldkey then
+						cooldown = false
+					end
+				end)
+				
+				for i, v in pairs(TradeUI.SPL.Inventory:GetChildren()) do
+					local son = nil
+					if v:IsA("Frame") then
+						son = v.TextButton
+					end
+					if son ~= nil and v.Name == string.sub(Child.ARG.Value.Name, 3) and son.Text == "" then
+
+						TradeUI.UI[Child.Name].TextButton.Text = ""
+						TradeUI.UI[Child.Name].TextButton.UIGradient.Rotation = 0
+						TradeUI.UI[Child.Name].TextButton.UIGradient.Color = ColorSequence.new({
+							ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+							ColorSequenceKeypoint.new(1, Color3.new(1, 1, 1))
+						})
+						if string.sub(Child.Value, 1,1) ~= "R" then
+							son.Text = string.sub(Child.Value, 3)
+						else
+							son.Text = BrickColor.new(string.sub(Child.Value, 3)).Name
+						end
+						
+						son.UIGradient.Enabled = true
+						break
+					end
+				end
+				
+				
+				
+				
+			else
+				local E = FindWho(Child.Name)
+				E.Text = E.Text.." (ACCEPTED)"
+			end	
+		end)
+
+		CurrentTrade.AncestryChanged:Connect(function()
+			wait(3)
+			TradeUI.Visible = false
+		end)
+
+		LoadTradesUp(Table[4], whichChose, CurrentTrade)
+	end
+end)
+
+

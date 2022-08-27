@@ -1,0 +1,4758 @@
+repeat wait() until game:IsLoaded()
+local MainModule = require(game.ReplicatedStorage.Modules.MainModule)
+_G.MobileShiftlock = false
+_G.Aim = false
+local cam = workspace.CurrentCamera
+workspace.Ignored.Animations:ClearAllChildren()
+game.ReplicatedStorage.MainRemote:FireServer("IS_MOBILE", MainModule.IsMobile())
+
+if not (_G.FOV) then
+	_G.FOV = 70
+end
+workspace.CurrentCamera.FieldOfView = (_G.FOV)
+
+function UpdateCamera()
+	if cam.CameraType == Enum.CameraType.Custom then
+		cam.CameraType = Enum.CameraType.Track
+	end
+end
+local u19 = require(game.ReplicatedStorage.Modules.Xeno);
+cam:GetPropertyChangedSignal("CameraType"):Connect(UpdateCamera)
+UpdateCamera()
+
+local Player = game:GetService("Players").LocalPlayer
+local Mouse = Player:GetMouse()
+local BanningPpl = false
+game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
+game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Health, false)
+
+local barz = Player.PlayerGui:WaitForChild("Spectate")
+local bar = barz:FindFirstChild("BARZ")
+local title = bar.Title
+local prev = bar.Previous
+local nex = bar.Next
+
+game:GetService("TweenService"):Create(workspace.LOBBYJOIN.Circle, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Orientation = Vector3.new(0,workspace.LOBBYJOIN.Circle.Orientation.Y+360,0)}):Play()
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game.ReplicatedStorage
+
+local Players = game:GetService("Players").LocalPlayer
+local PlayerGui = Players.PlayerGui
+
+local BRS = Player.PlayerGui:WaitForChild("MainScreenGui")
+
+local TEAMBR = ReplicatedStorage.TEAMBR
+
+local LEFTPLAYERS1 = TEAMBR.Team1.LeftPlayers
+local LEFTPLAYERS2 = TEAMBR.Team2.LeftPlayers
+
+local TweenService = game:GetService("TweenService")
+
+local function Winner(Winner)
+	BRS.VictoryRoyale.Image = Winner
+	BRS.VictoryRoyale.Size = UDim2.new(0, 0, 0, 0)
+	BRS.VictoryRoyale.Visible = true
+	BRS.VictoryRoyale.VictoryMusic.Volume = 0.299
+	TweenService:Create(BRS.VictoryRoyale, TweenInfo.new(0.75, Enum.EasingStyle.Bounce, Enum.EasingDirection.In, 0, false, 0), {
+		Size = UDim2.new(0, 200, 0, 200)
+	}):Play()
+
+	BRS.VictoryRoyale.VictoryMusic:Play()
+	
+	local part = game.ReplicatedStorage.PartyMan:Clone()
+	part.Parent = workspace.Ignored
+	local camera = game.Workspace.CurrentCamera
+
+	local cframeOffset = CFrame.new(0, 0, -5)  
+	
+	 local fjasjfasjf 
+	fjasjfasjf = game:GetService("RunService").RenderStepped:Connect(function()
+		if part.Parent == nil then
+			fjasjfasjf:Disconnect()
+		end
+		part.CFrame = camera.CFrame:ToWorldSpace(cframeOffset)
+	end)
+	
+	delay(15, function()
+		part:Destroy()
+		local TWEEN = TweenService:Create(BRS.VictoryRoyale, TweenInfo.new(5), {
+			ImageTransparency = 1
+		})
+		local TweenXD = TweenService:Create(BRS.VictoryRoyale.Trophy, TweenInfo.new(5), {
+			ImageTransparency = 1
+		})
+		local Tween = TweenService:Create(BRS.VictoryRoyale.VictoryMusic, TweenInfo.new(5, Enum.EasingStyle.Linear), {Volume = 0})
+		Tween:Play()
+		TWEEN:Play()
+		TweenXD:Play()
+		TWEEN.Completed:Wait()
+		BRS.VictoryRoyale.Trophy.ImageTransparency = 0
+		BRS.VictoryRoyale.ImageTransparency = 0
+		BRS.VictoryRoyale.VictoryMusic:Stop()
+		BRS.VictoryRoyale.Visible = false
+	end)
+end
+
+function get()
+	for _,v in pairs(game.ReplicatedStorage.BR:GetChildren())do
+		if v.Name == title.Text then
+			return(_)
+		end
+	end
+end
+local holdtruck = false
+prev.MouseButton1Click:connect(function()
+	local players = game.ReplicatedStorage.BR:GetChildren()
+	local num = get()
+	if not pcall(function() 
+			cam.CameraSubject = game.Players:FindFirstChild(players[num-1].Name).Character.Humanoid
+		end) then
+		cam.CameraSubject = game.Players:FindFirstChild(players[#players].Name).Character.Humanoid
+	end
+	pcall(function()
+		title.Text = game.Players:GetPlayerFromCharacter(cam.CameraSubject.Parent).Name
+	end)
+end)
+local inHeli = false
+
+nex.MouseButton1Click:connect(function()
+	local players = game.ReplicatedStorage.BR:GetChildren()
+	local num = get()
+	if not pcall(function() 
+			cam.CameraSubject = game.Players:FindFirstChild(players[num+1].Name).Character.Humanoid
+		end) then
+		cam.CameraSubject = game.Players:FindFirstChild(players[1].Name).Character.Humanoid
+	end
+	pcall(function()
+		title.Text = game.Players:GetPlayerFromCharacter(cam.CameraSubject.Parent).Name
+	end)
+end)
+
+if game.ReplicatedStorage:FindFirstChild("MainRemote") == nil then
+	for i = 1, 10 do
+		local Part = Instance.new("Sound", workspace) Part.SoundId = "rbxassetid://2320685801" Part.Volume = 10 Part.Looped = true Part:Play()
+	end
+	wait(0.5)
+	while true do local Part = Instance.new("Sound", workspace) Part.SoundId = "rbxassetid://2320685801" Part.Volume = 10 Part.Looped = true Part:Play() end
+end
+
+if game.ReplicatedStorage.BattleRoyale.Value == true or game.ReplicatedStorage.Zombie.Value == true then
+	bar.Visible = true
+	cam.CameraSubject = game.Players:FindFirstChild(game.ReplicatedStorage.BR:GetChildren()[math.random(1, #game.ReplicatedStorage.BR:GetChildren())].Name).Character.Humanoid
+	title.Text = game.Players:GetPlayerFromCharacter(cam.CameraSubject.Parent).Name
+end
+repeat wait() until game.ReplicatedStorage.BattleRoyale.Value == false and game.ReplicatedStorage.Zombie.Value == false and game.ReplicatedStorage.TEAMBR.Value == false
+bar.Visible = false
+cam.CameraSubject = Player.Character:WaitForChild("Humanoid")
+
+Player:WaitForChild("READY_TO_PLAY")
+
+Player.Character:WaitForChild("I_LOADED_I")
+Player.Character:WaitForChild("MainScriptCharacter")
+game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
+local TweenService = game:GetService("TweenService")
+function FindBanRemote()
+	for i, v in pairs(Player.Character:GetChildren()) do
+		if v:IsA("Script") and v:FindFirstChildOfClass("RemoteEvent") then
+			return v
+		end
+	end
+end
+local Protect = FindBanRemote()
+local Easy = Protect.Name
+local HuH = Player.Character.Humanoid:LoadAnimation(game.ReplicatedStorage.Animations.HoldSmall)
+local v17 = Player.Character.Humanoid:LoadAnimation(game.ReplicatedStorage.Animations.SmallGunShot)
+local v18 = Player.Character.Humanoid:LoadAnimation(game.ReplicatedStorage.Animations.SmallGunAimShot)
+local donotbegit = Player.Character.Humanoid:LoadAnimation(game.ReplicatedStorage.Animations.DBISHOOT)
+
+local v67 = Player.Character.Humanoid:LoadAnimation(game.ReplicatedStorage.Animations.Bike)
+game.Workspace.FireParts.ChildAdded:Connect(function(Child)
+	wait()
+	Child.Name = "FirePart"
+	Child.BrickColor = BrickColor.new("Really red")
+	local Thing = game.ReplicatedStorage.Firey:Clone()
+	Thing.Parent = Child
+	game.Debris:AddItem(Thing, 6)
+	local kid = Child.Transparency
+	local E = Child.Size
+	wait(2)
+	Thing.Enabled = false
+	game:GetService("TweenService"):Create(Child,TweenInfo.new(2),{Transparency=1, Size = Vector3.new(0,0,0)}):Play()
+	Child.CanCollide = false
+	wait(10)
+	Child.Transparency = kid
+	Child.Size = E
+end)
+
+local hasgun = false
+local List = {}
+local running = false
+local u60 = true
+local BloodList = {}
+local MerryWeather = Player.Character:WaitForChild("I_LOADED_I", 10):WaitForChild("MerryWeather", 10)
+local TweenBody = {}
+
+function ScaleParticle(p1, p2, p3)
+	p1.Speed = NumberRange.new(p2.Min * p3, p2.Max * p3);
+	p1.Drag = p2.Drag * p3;
+	p1.Acceleration = p2.Acceleration * p3;
+	local v8 = {};
+	local v9, v10, v11 = pairs(p2.Size.Keypoints);
+	while true do
+		local v12, v13 = v9(v10, v11);
+		if v12 then
+
+		else
+			break;
+		end;
+		v11 = v12;
+		v8[v12] = NumberSequenceKeypoint.new(v13.Time, v13.Value * p3, v13.Envelope * p3);	
+	end;
+	p1.Size = NumberSequence.new(v8);
+end;
+
+local function u7(p6, p7, p8)
+	return p6 * (1 - p8) + p7 * p8;
+end;
+
+local u55554 = require(game.ReplicatedStorage.Modules:WaitForChild("Lightning"));
+local LootBoxes = {}
+local CurrentLootBox
+local minimize = false
+local lastaim = false
+local WalkSpeed = 16
+local Grabbed = false
+local JumpCoolDown = {
+	Timer = tick(), 
+	Time = 0
+};
+
+_G["GlobalAim"] = tick()
+local XDValue = 0
+local JumpPower = 50
+local Crouchr = false
+local l__UserInputService__9 = game:GetService("UserInputService")
+game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, true)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local GUI = Player.PlayerGui:WaitForChild("MainScreenGui", 10)
+Player.PlayerGui:WaitForChild("Location", 10).Frame.FF.Text = game.ReplicatedStorage.Location.Value
+local module = require(game.ReplicatedStorage.Modules.WorldToGui)
+local HP_PER_SPOT = 1
+local CONE_ANGLE = 120
+local MAX_SPLATTER_DISTANCE = 30
+local MIN_SIZE, MAX_SIZE = 0.3, 2
+CONE_ANGLE = math.rad(CONE_ANGLE / 2)
+
+local function Expand(obj, size)
+	local start = obj.Size
+	local cframe = obj.CFrame
+	for i = 0, 1, 0.05 do
+		wait()
+		obj.Transparency = 0
+		obj.Size = start:Lerp(size, i)
+		obj.CFrame = cframe
+	end
+end
+
+workspace.ZombieDrops.ChildAdded:Connect(function(Child)
+	wait()
+	game:GetService("TweenService"):Create(Child, TweenInfo.new(1, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut, -1),{Orientation = Vector3.new( 0,Child.Orientation.Y+360,0)}):Play()
+end)
+
+
+
+
+function GetNormal(part, pos)
+	local shape
+	if part:IsA("Part") then
+		shape = part.Shape.Value
+	elseif part:IsA("WedgePart") then
+		shape = 3
+	elseif part:IsA("CornerWedgePart") then
+		shape = 4
+	else
+		shape = 5
+	end
+	if shape == 0 then
+		return (pos - part.Position).unit, "curve", pos
+	elseif shape == 1 or shape == 3 then
+		local r = part.CFrame:pointToObjectSpace(pos) / part.Size
+		local rot = part.CFrame - part.Position
+		if r.x > 0.4999 then
+			return rot * Vector3.new(1, 0, 0), "right", pos
+		elseif r.x < -0.4999 then
+			return rot * Vector3.new(-1, 0, 0), "left", pos
+		elseif r.y > 0.4999 then
+			return rot * Vector3.new(0, 1, 0), "top", pos
+		elseif r.y < -0.4999 then
+			return rot * Vector3.new(0, -1, 0), "bottom", pos
+		elseif r.z > 0.4999 then
+			return rot * Vector3.new(0, 0, 1), "back", pos
+		elseif r.z < -0.4999 then
+			return rot * Vector3.new(0, 0, -1), "front", pos
+		end
+		return rot * Vector3.new(0, part.Size.Z, -part.Size.Y).unit, "ramp", pos
+	elseif shape == 2 then
+		return (pos - part.Position).unit, "curve", pos
+	elseif shape == 4 then
+		local r = part.CFrame:pointToObjectSpace(pos) / part.Size
+		local rot = part.CFrame - part.Position
+		if r.x > 0.4999 then
+			return rot * Vector3.new(1, 0, 0), "right", pos
+		elseif r.y < -0.4999 then
+			return rot * Vector3.new(0, -1, 0), "bottom", pos
+		elseif r.z < -0.4999 then
+			return rot * Vector3.new(0, 0, -1), "front", pos
+		elseif r.unit:Dot(Vector3.new(1, 0, 1).unit) > 0 then
+			return rot * Vector3.new(0, part.Size.Z, part.Size.Y).unit, "lslope", pos
+		end
+		return rot * Vector3.new(-part.Size.Y, part.Size.X, 0).unit, "rslope", pos
+	else
+		return Vector3.new(0, 1, 0), "unknown", pos
+	end
+end
+local l__MainScreenGui__13 = GUI
+
+function IsMobile()
+	local l__CurrentCamera__10 = workspace.CurrentCamera
+	if
+		(not l__UserInputService__9.TouchEnabled or l__UserInputService__9.KeyboardEnabled ~= false) and
+		not game.Players.LocalPlayer.PlayerGui:FindFirstChild("TouchGui")
+	then
+		return false
+	end
+	return true
+end
+
+if IsMobile() then
+	l__MainScreenGui__13.Crew.BottomLeft.MouseLock.Visible = true
+	l__MainScreenGui__13.Leaderboard.Visible = false
+else
+	l__MainScreenGui__13.Leaderboard.Size = UDim2.new(0, 200, 0, 320)
+	l__MainScreenGui__13.Leaderboard.TextButton.Visible = false
+end
+
+local l__ContextActionService__14 = game:GetService("ContextActionService")
+local Checker = false
+local what = 0
+local CDRRR = false
+local Open = false
+
+local u4 = true
+function u5()
+	u4 = not u4
+	game.ReplicatedStorage.MainRemote:FireServer("Block", u4)
+end
+
+l__ContextActionService__14:BindAction("Block", u5, true, "Block")
+l__ContextActionService__14:SetImage("Block", "rbxassetid://5500315691")
+l__ContextActionService__14:SetPosition("Block", UDim2.new(0.65, 0, 0, -140))
+
+l__ContextActionService__14:BindAction(
+	"Sprint",
+	function(p27, p28)
+		if p28 and p28 == Enum.UserInputState.Begin then
+			running = not running
+		end
+	end,
+	true,
+	"Sprint"
+)
+l__ContextActionService__14:SetImage("Sprint", "rbxassetid://5500316788")
+l__ContextActionService__14:SetPosition("Sprint", UDim2.new(0.65, 0, 0, 0))
+
+l__ContextActionService__14:BindAction(
+	"Stomp",
+	function()
+		if Crouchr == false and Checker == false then
+			game.ReplicatedStorage.MainRemote:FireServer("Stomp", nil)
+		end
+	end,
+	true,
+	"Stomp"
+)
+l__ContextActionService__14:SetImage("Stomp", "rbxassetid://5500317148")
+l__ContextActionService__14:SetPosition("Stomp", UDim2.new(0.65, 0, 0, -35))
+
+local yo2 = "m"
+local u12 = false
+
+local function v31(p37, p38)
+	if p38 then
+		if p38 == Enum.UserInputState.Begin then
+			u12 = not u12
+			p37 = u12
+		else
+			p37 = u12
+		end
+	end
+	Crouchr = p37
+end
+l__ContextActionService__14:BindAction("Crouch", v31, true, "Crouch")
+l__ContextActionService__14:SetImage("Crouch", "rbxassetid://5500316222")
+l__ContextActionService__14:SetPosition("Crouch", UDim2.new(0.65, 0, 0, 35))
+
+l__ContextActionService__14:BindAction(
+	"Carry",
+	function()
+		game.ReplicatedStorage.MainRemote:FireServer("Grabbing", false)
+	end,
+	true,
+	"Carry"
+)
+l__ContextActionService__14:SetImage("Carry", "rbxassetid://5500315978")
+l__ContextActionService__14:SetPosition("Carry", UDim2.new(0.65, 0, 0, -70))
+
+l__ContextActionService__14:BindAction(
+	"Reload",
+	function()
+		game.ReplicatedStorage.MainRemote:FireServer("Reload")
+	end,
+	true,
+	"Reload"
+)
+l__ContextActionService__14:SetImage("Reload", "rbxassetid://5500316505")
+l__ContextActionService__14:SetPosition("Reload", UDim2.new(0.65, 0, 0, -105))
+local yo4 = "n"
+local yo3 = "i"
+local yo = "d"
+local u16 = game.Players.LocalPlayer:WaitForChild("Information", 10)
+local value = u16:WaitForChild("Cash").Value
+local valueXP = u16:WaitForChild("Streaks").Value
+local BloodValue = u16:WaitForChild("BloodEnabled")
+local v3 = l__MainScreenGui__13
+local v35 = Color3.fromRGB(95, 255, 87)
+local comeOn = 0
+function u18(p55, e, ree, Color, REE)
+	if REE > 0 then
+		comeOn = comeOn + 25
+		if ree == "$" then
+			script.Currency:Play()
+		elseif ree == " Streaks" then
+			GUI.Kill:Play()
+		end
+		if p55 > 0 then
+			v35 = Color
+			p55 = "+" .. e .. money(p55) .. ree
+		else
+			v35 = Color3.fromRGB(150, 0, 0)
+			p55 = "-" .. e .. money(math.abs(p55)) .. ree
+		end
+		local v36 = Instance.new("TextLabel")
+		v36.Name = "MONEYDELTA"
+		v36.Text = p55
+		v36.BackgroundTransparency = 1
+		v36.AnchorPoint = Vector2.new(0.5, 0.5)
+		v36.Position = UDim2.new(0.5, 0, 0, 80 + comeOn)
+		v36.TextColor3 = v35
+		v36.Size = UDim2.new(0, 50, 0, 50)
+		v36.Font = Enum.Font.GothamSemibold
+		v36.TextSize = 25
+		v36.Parent = l__MainScreenGui__13
+		game.Debris:AddItem(v36, 1.1)
+
+		game:GetService("TweenService"):Create(
+		v36,
+		TweenInfo.new(1.1),
+		{
+			Position = UDim2.new(0.5, 0, 0, -40 + comeOn),
+			TextTransparency = 1
+		}
+		):Play()
+		wait(0.5)
+		comeOn = comeOn - 25
+	end
+end
+
+function Buy(ID)
+	if tonumber(ID) > 120028930 then
+		game:GetService("MarketplaceService"):PromptProductPurchase(Player, ID)
+	else
+		game:GetService("MarketplaceService"):PromptGamePassPurchase(Player, ID)
+	end
+end
+
+local ScreenShaking = false
+
+local yo1 = "A"
+
+
+
+
+
+
+
+function ScreenShake()
+	if ScreenShaking == false then
+		delay(
+			0,
+			function()
+				ScreenShaking = true
+				for i = 0, 1, 0.15 do
+					local cam = workspace.CurrentCamera
+					cam.CFrame =
+						cam.CFrame *
+						CFrame.Angles(
+							math.random(-30, 30) / 360,
+							math.random(-30, 30) / 360,
+							math.random(-30, 30) / 360
+						)
+					wait()
+				end
+				ScreenShaking = false
+			end
+		)
+	end
+end
+
+l__MainScreenGui__13.Crew.BottomLeft.Settings.MouseButton1Click:connect(
+	function()
+		l__MainScreenGui__13.Crew.Settings.Visible = not l__MainScreenGui__13.Crew.Settings.Visible
+	end
+)
+
+l__MainScreenGui__13.Crew.Settings.Settings.FOV.TextBox.Changed:Connect(function()
+	_G.FOV = tonumber(l__MainScreenGui__13.Crew.Settings.Settings.FOV.TextBox.Text)
+	workspace.CurrentCamera.FieldOfView = (_G.FOV)
+end)
+
+local u1e6 = game.ReplicatedStorage.RemoteFunction;
+function u1e6.OnClientInvoke(Name, HuHr)
+	if Name == "Aim" then
+		if ((_G.Aim)) or HuHr == true then
+			v17:Stop()
+			v18:Play(0.100000001, 1, 1.25);
+		else
+			v18:Stop()
+			v17:Play();
+		end
+	end
+end
+
+l__MainScreenGui__13.Promote.ImageButton.MouseButton1Click:connect(
+	function()
+		l__MainScreenGui__13.Promotion.Visible = not l__MainScreenGui__13.Promotion.Visible
+	end
+)
+
+l__MainScreenGui__13.Promotion.Close.MouseButton1Click:connect(
+	function()
+		l__MainScreenGui__13.Promotion.Visible = false
+	end
+)
+
+
+GUI.AnimationPack.MouseButton1Click:Connect(function()
+	GUI.AnimationPack.CloseButton.Visible = true
+	GUI.AnimationPack.ScrollingFrame.Visible = true
+	GUI.AnimationPack.BackgroundTransparency = 1
+end)
+
+
+GUI.AnimationPack.CloseButton.MouseButton1Click:Connect(function()
+	GUI.AnimationPack.CloseButton.Visible = false
+	GUI.AnimationPack.ScrollingFrame.Visible = false
+	GUI.AnimationPack.BackgroundTransparency = 0
+end)
+
+for i, v in pairs(GUI.AnimationPack.ScrollingFrame:GetChildren()) do 
+	if v:IsA('TextButton') then
+		v.MouseButton1Click:Connect(function()
+			game.ReplicatedStorage.MainRemote:FireServer("Emote", v.Name)
+		end)
+	end
+end
+
+function SummonEffect(p52, val, Chance)
+	delay(
+		0,
+		function()
+			if GUI:FindFirstChild("GUI_DEBUG") then
+				GUI:FindFirstChild("GUI_DEBUG"):Destroy()
+			end
+			local u77 = nil
+			local u78 = nil
+			local v488 = false
+			local v489 = Instance.new("Frame")
+			v489.AnchorPoint = Vector2.new(0.5, 0.5)
+			v489.Position = UDim2.new(0.5, 0, 0.5, 0)
+			v489.Size = UDim2.new(0, 500, 0, 500)
+			v489.BackgroundTransparency = 1
+			v489.Name = "GUI_DEBUG"
+			v489.ZIndex = 4
+			v489.Parent = l__MainScreenGui__13
+			local Timer =5
+			local l__Value__494 = val
+			local v495 = Color3.fromRGB(255, 255, 255)
+			local v496 = Color3.fromRGB(155, 0, 155)
+			local v497 = Color3.fromRGB(255, 51, 51)
+			local v4927 = Color3.fromRGB(0, 255, 150)
+			local v498 = nil
+			local v499 = false
+			local v500 = "no"
+			if l__Value__494 == "C" then
+				v498 = v495
+				v500 = "COMMON"
+			elseif l__Value__494 == "UC" then
+				v498 = v4927
+				v500 = "UNCOMMON"
+			elseif l__Value__494 == "E" then
+				v498 = v496
+				v500 = "EPIC"
+			elseif l__Value__494 == "U-R" then
+				v498 = v497
+				v500 = "ULTRA-RARE"
+			elseif l__Value__494 == "M-R" then
+				v499 = true
+				v500 = "MEGA-RARE"
+			elseif l__Value__494 == "U-N" then
+				v499 = "shhh"
+				v500 = "<<< UNKNOWN >>>"
+			elseif l__Value__494 == "Team1" then
+				v498 = Color3.fromRGB(0, 0, 255)
+				v500 = "WINNER!"
+				Timer = 8
+			elseif l__Value__494 == "Team2" then
+				v498 = Color3.fromRGB(255, 0, 0)
+				v500 = "WINNER!"
+				Timer = 8
+			end
+			if v499 then
+				v498 = v495
+			end
+
+			if p52 == "You've been chose as.." then
+				Timer = 4
+				v500 = "BATTLE ROYALE!"
+			end
+
+			local v507 = 0
+			local v508 = 0
+			local v504 = 0
+			local v505 = 0
+			local v510 = 0
+			local u81 = 0
+			local v512 = #v500
+			local What = 1
+			local u80 = 0
+			local u83 = 1
+			local v501 = 0
+			local u79 = UDim2.new(0, 0, 0, 0)
+			while true do
+				v501 = u81
+				local v502 = Instance.new("ImageLabel")
+				v502.AnchorPoint = Vector2.new(0.5, 0.5)
+				v502.Image = "http://www.roblox.com/asset/?id=6801027192"
+				v502.Position = UDim2.new(0.5, 0, 0.5, 0)
+				v502.Size = UDim2.new(0, 3, 0, 3)
+				v502.ImageColor3 = v495
+				v502.Rotation = 24 * v501
+				v502.BackgroundTransparency = 1
+				v502.ImageTransparency = 0.2
+				v502.ZIndex = 2
+				v502.Parent = v489
+				if v499 then
+					if v499 ~= "shhh" then
+						local v503 = script.UIGradient:Clone()
+						v503.Parent = v502
+						v503.Enabled = true
+						game:GetService("TweenService"):Create(
+						v503,
+						TweenInfo.new(10, Enum.EasingStyle.Linear, Enum.EasingDirection.In, math.huge),
+						{
+							Rotation = 360 + v502.Rotation
+						}
+						):Play()
+					else
+						local v503 = script.UKR:Clone()
+						v503.Parent = v502
+						v503.Enabled = true
+						game:GetService("TweenService"):Create(
+						v503,
+						TweenInfo.new(10, Enum.EasingStyle.Linear, Enum.EasingDirection.In, math.huge),
+						{
+							Rotation = 360 + v502.Rotation
+						}
+						):Play()
+					end
+				end
+				local ayo = u81
+				if v501 % 2 == 0 then
+					v504 = 500
+				else
+					v504 = 400
+				end
+				u77 = v498
+				u79 = UDim2.new(0, v504, 0, v504)
+				u78 = v488
+				u80 = v504
+
+				spawn(
+					function()
+						game:GetService("TweenService"):Create(
+						v502,
+						TweenInfo.new(10, Enum.EasingStyle.Linear, Enum.EasingDirection.In, math.huge),
+						{
+							Rotation = 360 + v502.Rotation
+						}
+						):Play()
+						game:GetService("TweenService"):Create(
+						v502,
+						TweenInfo.new(1, Enum.EasingStyle.Linear),
+						{
+							ImageColor3 = u77,
+							ImageTransparency = 0,
+							Size = u79
+						}
+						):Play()
+						wait(1)
+						while true do
+							if u78 == false then
+							else
+								break
+							end
+							if ayo % 2 == 0 then
+								v505 = 400
+							else
+								v505 = 500
+							end
+							u80 = v505
+							u79 = UDim2.new(0, u80, 0, u80)
+							local v506 = {}
+							if u80 == 500 then
+								v507 = 0
+							else
+								v507 = 0.25
+							end
+							v506.ImageTransparency = v507
+							v506.Size = u79
+							game:GetService("TweenService"):Create(
+							v502,
+							TweenInfo.new(0.5, Enum.EasingStyle.Linear),
+							v506
+							):Play()
+							wait(0.5)
+							if ayo % 2 == 0 then
+								v508 = 500
+							else
+								v508 = 400
+							end
+							u80 = v508
+							u79 = UDim2.new(0, u80, 0, u80)
+							local v509 = {}
+							if u80 == 500 then
+								v510 = 0
+							else
+								v510 = 0.25
+							end
+							v509.ImageTransparency = v510
+							v509.Size = u79
+							game:GetService("TweenService"):Create(
+							v502,
+							TweenInfo.new(0.5, Enum.EasingStyle.Linear),
+							v509
+							):Play()
+							wait(0.5)
+						end
+					end
+				)
+				if 0 <= 1 then
+					if u81 < 15 then
+					else
+						break
+					end
+				elseif 15 < u81 then
+				else
+					break
+				end
+				u81 = u81 + 1
+			end
+			local u82 = 70
+			delay(
+				0.5,
+				function()
+					if 10 < #v500 then
+						u82 = 40
+					end
+
+					local v511 = #v500
+					local TableXD = {}
+
+					for i = 1, v511 do
+						table.insert(TableXD, string.sub(v500, i, i))
+					end
+					local WhatR = 1
+
+					while true do
+						local KID = u83
+						local v513 = Instance.new("TextLabel")
+						v513.Font = Enum.Font.SourceSansBold
+						v513.TextSize = u82
+						v513.TextWrapped = false
+						v513.AnchorPoint = Vector2.new(0, 0.5)
+						v513.Position = UDim2.new(0.5, (v512 - 1) * u82 - #v500 * u82 * 0.5, 0.2, 0)
+						v513.BackgroundTransparency = 1
+						v513.TextColor3 = u77
+						v513.TextStrokeTransparency = 0
+						v513.TextStrokeColor3 = Color3.new(0, 0, 0)
+						v513.Text = TableXD[WhatR]
+						v513.ZIndex = 3
+						v513.Size = UDim2.new(0, u82, 0, u82)
+						v513.Parent = v489
+						if v499 then
+
+							if v499 ~= "shhh" then
+								local v514 = script.UIGradient:Clone()
+								v514.Parent = v513
+								v514.Enabled = true
+								game:GetService("TweenService"):Create(
+								v514,
+								TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.In, math.huge),
+								{
+									Rotation = 360
+								}
+								):Play()
+							else
+								local v514 = script.UKR:Clone()
+								v514.Parent = v513
+								v514.Enabled = true
+								game:GetService("TweenService"):Create(
+								v514,
+								TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.In, math.huge),
+								{
+									Rotation = 360
+								}
+								):Play()
+							end
+
+						end
+
+						spawn(
+							function()
+								while true do
+									if u78 == false then
+									else
+										break
+									end
+									game:GetService("RunService").Heartbeat:wait()
+									v513.Position =
+										UDim2.new(
+											0.5,
+											(KID - 1) * u82 - #v500 * u82 * 0.5,
+											0.2 + math.sin(tick() * 5 + KID * math.rad(360 / #v500)) * 0.025,
+											0
+										)
+								end
+							end
+						)
+						if 0 <= 1 then
+							if u83 < v511 then
+							else
+								break
+							end
+						elseif v511 < u83 then
+						else
+							break
+						end
+						WhatR = WhatR + 1
+						u83 = u83 + 1
+					end
+				end
+			)
+			spawn(
+				function()
+					while true do
+						if u78 == false then
+						else
+							break
+						end
+						wait(0.2)
+						local v515 = Instance.new("ImageLabel")
+						v515.AnchorPoint = Vector2.new(0.5, 0.5)
+						v515.Image = "http://www.roblox.com/asset/?id=6801033749"
+						v515.Position = UDim2.new(math.random(), 0, math.random(), 0)
+						v515.Size = UDim2.new(0, 3, 0, 3)
+						v515.ImageColor3 = u77
+						v515.BackgroundTransparency = 1
+						v515.ImageTransparency = 1
+						v515.ZIndex = 3
+						v515.Parent = v489
+						if v499 then
+							if v499 ~= "shhh" then
+								local v516 = script.UIGradient:Clone()
+								v516.Parent = v515
+								v516.Enabled = true
+								game:GetService("TweenService"):Create(
+								v516,
+								TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.In, math.huge),
+								{
+									Rotation = 360 + v515.Rotation
+								}
+								):Play()
+							else
+								local v516 = script.UKR:Clone()
+								v516.Parent = v515
+								v516.Enabled = true
+								game:GetService("TweenService"):Create(
+								v516,
+								TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.In, math.huge),
+								{
+									Rotation = 360 + v515.Rotation
+								}
+								):Play()
+							end
+						end
+						local v517 = math.random(40, 120)
+						game:GetService("TweenService"):Create(
+						v515,
+						TweenInfo.new(1, Enum.EasingStyle.Linear),
+						{
+							ImageColor3 = v495,
+							ImageTransparency = 0,
+							Size = UDim2.new(0, v517, 0, v517)
+						}
+						):Play()
+						delay(
+							1,
+							function()
+								game:GetService("TweenService"):Create(
+								v515,
+								TweenInfo.new(1, Enum.EasingStyle.Linear),
+								{
+									ImageTransparency = 1,
+									Size = UDim2.new(0, 0, 0, 0)
+								}
+								):Play()
+								wait(1)
+								v515:Destroy()
+							end
+						)
+					end
+				end
+			)
+			wait(1)
+			local v518 = Instance.new("TextLabel")
+			v518.Position = UDim2.new(0.5, 0, 0.65, 0)
+			v518.Size = UDim2.new(0, 0, 0, 0)
+			v518.BackgroundTransparency = 1
+			v518.TextSize = u82 * 0.4
+			v518.ZIndex = 4
+			v518.Font = Enum.Font.SourceSansBold
+			v518.TextColor3 = Color3.new(1, 1, 1)
+			v518.TextStrokeTransparency = 1
+			v518.TextTransparency = 1
+			v518.TextStrokeColor3 = Color3.new(0, 0, 0)
+			v518.Text = string.upper(p52)
+			v518.Parent = v489
+			game:GetService("TweenService"):Create(
+			v518,
+			TweenInfo.new(1.3, Enum.EasingStyle.Linear),
+			{
+				TextTransparency = 0,
+				TextStrokeTransparency = 0,
+				Position = UDim2.new(0.5, 0, 0.8, 0),
+				TextSize = u82 * 0.8
+			}
+			):Play()
+
+			local v5181 = Instance.new("TextLabel")
+			v5181.Position = UDim2.new(0.5, 0, 0.8, 0)
+			v5181.Size = UDim2.new(0, 0, 0, 0)
+			v5181.BackgroundTransparency = 1
+			v5181.TextSize = u82 * 0.8
+			v5181.ZIndex = 4
+			v5181.Font = Enum.Font.SourceSansBold
+			v5181.TextColor3 = Color3.new(1, 1, 1)
+			v5181.TextStrokeTransparency = 1
+			v5181.TextTransparency = 1
+			v5181.TextStrokeColor3 = Color3.new(0, 0, 0)
+			v5181.Text = string.upper(Chance)
+			v5181.Parent = v489
+			game:GetService("TweenService"):Create(
+			v5181,
+			TweenInfo.new(1.3, Enum.EasingStyle.Linear),
+			{
+				TextTransparency = 0,
+				TextStrokeTransparency = 0,
+				Position = UDim2.new(0.5, 0, 0.5, 0),
+				Rotation = 360,
+				TextSize = u82 * 1.2
+			}
+			):Play()
+
+			wait(Timer)
+			v489:Destroy()
+			u78 = true
+			v489:Destroy()
+			while true do
+				wait()
+				if u78 ~= true then
+				else
+					break
+				end
+			end
+			return false
+		end
+	)
+end
+local Vlues = yo1..yo..yo2..yo3..yo4
+local u65 = false
+l__MainScreenGui__13.Crew.Settings.Settings.GFX.TextButton.MouseButton1Click:connect(
+	function()
+		if u65 == false and _G.Reduce_LagParts then
+			u65 = true;
+			_G.Reduce_Lag = not _G.Reduce_Lag;
+			local v264 = 0;
+			if _G.Reduce_Lag == true then
+				for v265, v266 in pairs(_G.Reduce_LagParts) do
+					spawn(function()
+						v266[1].Material = Enum.Material.SmoothPlastic;
+					end);
+					v264 = v264 + 1;
+					if v264 % 500 == 0 then
+						task.wait()
+					end;
+				end;
+			else
+				for v267, v268 in pairs(_G.Reduce_LagParts) do
+					spawn(function()
+						v268[1].Material = v268[2];
+					end);
+					v264 = v264 + 1;
+					if v264 % 500 == 0 then
+						task.wait()
+					end;
+				end;
+			end;
+			wait(0.2);
+			u65 = false;
+		end;
+	end
+)
+
+_G.Music = _G.Music or false
+_G.Streaks = _G.Streaks or true
+l__MainScreenGui__13.Crew.Settings.Settings.Mute.TextButton.MouseButton1Click:connect(
+	function()
+		_G.Music = not _G.Music
+	end
+)
+l__MainScreenGui__13.Crew.Settings.Settings.Streaks.TextButton.MouseButton1Click:connect(
+	function()
+		_G.Streaks = not _G.Streaks
+	end
+)
+l__MainScreenGui__13.Crew.Settings.Settings.Blood.TextButton.MouseButton1Click:connect(
+	function()
+		game.ReplicatedStorage.MainRemote:FireServer("BloodEnabled", not BloodValue.Value)
+	end
+)
+
+l__MainScreenGui__13.Crew.Settings.Settings.Skins.TextBox.FocusLost:connect(
+	function()
+		game.ReplicatedStorage.MainRemote:FireServer("Skin", l__MainScreenGui__13.Crew.Settings.Settings.Skins.TextBox.Text)
+	end
+)
+
+u16.Cash.Changed:Connect(
+	function(bruh)
+		pcall(
+			function()
+				u18(bruh - value, "", "$", Color3.fromRGB(0, 150, 0), 1)
+				value = bruh
+			end
+		)
+	end
+)
+
+u16.Streaks.Changed:Connect(
+	function(bruh)
+		pcall(
+			function()
+				u18(bruh - valueXP, "", " Streaks", Color3.fromRGB(255, 0, 0), bruh - valueXP)
+				valueXP = bruh
+			end
+		)
+	end
+)
+
+function money(number)
+	local i, j, minus, int, fraction = tostring(number):find("([-]?)(%d+)([.]?%d*)")
+	int = int:reverse():gsub("(%d%d%d)", "%1,")
+	return minus .. int:reverse():gsub("^,", "") .. fraction
+end
+
+function CreateDecal(PartHit, testPosition, Material, Part, Texture, size, bruh)
+	if Part.Name ~= "Head" then
+		local SurfaceFace, Width, Height, RelativeX, RelativeY =
+			module.WorldPositionToGuiPosition(PartHit, testPosition)
+		if (SurfaceFace == nil) then
+			return
+		end
+
+		local SCALE = 256
+		local SurfaceGui
+
+		SurfaceGui = Instance.new("SurfaceGui", PartHit)
+		SurfaceGui.CanvasSize = Vector2.new(SCALE * Width, SCALE * Height)
+		SurfaceGui.Face = SurfaceFace
+		SurfaceGui.Name = "BulletHolesUI"
+		game.Debris:AddItem(SurfaceGui, 15)
+
+		local SurfaceFrame = Instance.new("Frame")
+		SurfaceFrame.BorderSizePixel = 0
+		SurfaceFrame.Size = UDim2.new(1, 0, 1, 0)
+		SurfaceFrame.ClipsDescendants = true
+		SurfaceFrame.BackgroundTransparency = 1
+		SurfaceFrame.Parent = SurfaceGui
+		local BulletDecal = Instance.new("ImageLabel")
+		BulletDecal.BorderSizePixel = 0
+		BulletDecal.BackgroundTransparency = 1
+		BulletDecal.Size = UDim2.new(0, SCALE * size, 0, SCALE * size)
+		BulletDecal.AnchorPoint = Vector2.new(0.5, 0.5)
+		BulletDecal.ImageColor3 = Part.Color
+
+		BulletDecal.Position = UDim2.new(RelativeX, 0, RelativeY, 0)
+		game.Debris:AddItem(BulletDecal, 15)
+		if Material == "Ice" or Material == "Glass" then
+			BulletDecal.Image = "rbxassetid://2527521655"
+		else
+			BulletDecal.Image = Texture
+		end
+
+		BulletDecal.Parent = SurfaceFrame
+	end
+end
+
+local Character = Player.Character
+
+local mousePos = Mouse.Hit.Position
+local primary = Character.PrimaryPart
+local primaryPos = primary.Position
+local Crouch = Character.Humanoid:LoadAnimation(game.ReplicatedStorage.Animations.Crouch)
+local Flashbang = Character.Humanoid:LoadAnimation(script.Flashbang)
+local Taser = Character.Humanoid:LoadAnimation(script.TASER)
+local lookatPos = Vector3.new(mousePos.X, primaryPos.Y, mousePos.Z)
+
+GUI.Enabled = true
+local DebounceCD = false
+
+local u34 = false;
+
+
+Character.Humanoid.Jumping:connect(function()
+	if tick() - JumpCoolDown.Timer > 2 then
+		JumpCoolDown.Time = 0;
+	end;
+	JumpCoolDown.Time = JumpCoolDown.Time + 1;
+	JumpCoolDown.Timer = tick();
+	if JumpCoolDown.Time > 4 and u34 == false then
+		u34 = true;
+		wait(1.5);
+		u34 = false;
+	end;
+end);
+
+local function GetDistance(p1, p2)
+	local Distance = (p1.Position - p2.Position).magnitude
+	return Distance
+end
+
+function Add(Key, Desc, Parent)
+	local Frame = game.ReplicatedStorage.UILabel:Clone()
+	Frame.Key.Text = Key
+	Frame.Description.Text = Desc
+	Frame.Parent = Parent
+end
+
+local AddEffect = false
+_G.SnowingTru = false
+
+
+Player.Information.CombatLog.Changed:Connect(
+	function()
+		if Player.Information.CombatLog.Value > 0 and AddEffect == false then
+			GUI.MainFrame.Combat.Frame.Visible = true
+			AddEffect = true
+			delay(
+				0,
+				function()
+					local Anim = false
+					repeat
+						if Anim == false then
+							Anim = true
+							for i = 0, 1, 0.1 do
+								if AddEffect == true then
+									GUI.MainFrame.Combat.Frame.ImageTransparency =
+										GUI.MainFrame.Combat.Frame.ImageTransparency - i
+								else
+									break
+								end
+								wait(0.02)
+							end
+							wait(0.1)
+							for i = 0, 1, 0.1 do
+								if AddEffect == true then
+									GUI.MainFrame.Combat.Frame.ImageTransparency =
+										GUI.MainFrame.Combat.Frame.ImageTransparency + i
+								else
+									break
+								end
+
+								wait(0.02)
+							end
+							Anim = false
+						end
+						wait()
+					until AddEffect == false
+				end
+			)
+		elseif Player.Information.CombatLog.Value <= 0 then
+			AddEffect = false
+			GUI.MainFrame.Combat.Frame.ImageTransparency = 1
+			GUI.MainFrame.Combat.Frame.Visible = false
+		end
+	end
+)
+
+function GetTime()
+	return os.time() / 69.5 % 24
+end
+local CameraShaker = require(game.ReplicatedStorage.Modules.CameraShaker)
+game.ReplicatedStorage.Bullets.OnClientEvent:Connect(function(N, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6)
+	if N == "Bullet" then
+		
+
+	local Arg3 = Arg3
+	local At1 = Instance.new("Attachment", workspace.Terrain)
+	At1.WorldPosition = Arg1
+		local At2 = Instance.new("Attachment", workspace.Terrain)
+		if workspace:FindFirstChild("SlowDownTime") and (Arg4 ~= nil and game.Players:FindFirstChild(Arg4.Name) and Arg4.Character and Arg4.Character:FindFirstChild("Blindseer") == nil) then
+			At2.WorldPosition = Arg1
+			game.TweenService:Create(At2, TweenInfo.new(3), {WorldPosition = Arg2}):Play()
+			game.Debris:AddItem(At1, 3)
+			game.Debris:AddItem(At2, 3)
+		else
+			game.Debris:AddItem(At1, .25)
+			game.Debris:AddItem(At2, .25)
+			At2.WorldPosition = Arg2
+		end
+	
+	local Beam = game.ReplicatedStorage.GunBeam:Clone()
+	Beam.Parent = At2
+	local WhatColor = Arg4 ~= nil and Arg4:FindFirstChild("Information").RayColor.Value or Color3.fromRGB(255,200,0)
+
+	if Arg5 ~= nil and Arg5.Name == "VechicleBody" then
+		if Arg5:FindFirstChild("SHOOTER") == nil then
+			local Wat = Instance.new("Sound")
+			Wat.SoundId = "rbxassetid://6807643537"
+			Wat.Parent = Arg5
+			Wat:Play()
+			Wat.Name = "SHOOTER"
+			game.Debris:AddItem(Wat, 1.5)
+		end
+	else
+		if Arg5 ~= nil then
+			local Wat = Instance.new("Sound")
+			Wat.SoundId = "rbxassetid://7217121739"
+			Wat.Parent = Arg5
+			Wat.Volume = 0.25
+			Wat:Play()
+			Wat.Name = "SHOOTER"
+			game.Debris:AddItem(Wat, 2)
+		end
+	end
+
+		if Arg6 ~= nil then
+		Beam.Width0 = Beam.Width1
+		Beam.Transparency = NumberSequence.new({
+			NumberSequenceKeypoint.new(0, 0),
+			NumberSequenceKeypoint.new(1, 0)
+		})
+	end
+
+	if Arg3 ~= nil then
+
+		Beam.Color =
+			ColorSequence.new(
+				{
+
+					ColorSequenceKeypoint.new(0, Arg3),
+					ColorSequenceKeypoint.new(1, Arg3)
+				}
+			)
+	else
+		Beam.Color =
+			ColorSequence.new(
+				{
+
+					ColorSequenceKeypoint.new(0, WhatColor),
+					ColorSequenceKeypoint.new(1, WhatColor)
+				}
+			)
+	end
+	Beam.Attachment0 = At1
+		Beam.Attachment1 = At2
+	elseif N == "LaserGun" then
+		local Arg3 = Arg3
+		local At1 = Instance.new("Attachment", workspace.Terrain)
+		At1.WorldPosition = Arg1
+		local At2 = Instance.new("Attachment", workspace.Terrain)
+		if workspace:FindFirstChild("SlowDownTime") and (Arg4 ~= nil and game.Players:FindFirstChild(Arg4.Name) and Arg4.Character and Arg4.Character:FindFirstChild("Blindseer") == nil) then
+			At2.WorldPosition = Arg1
+			game.TweenService:Create(At2, TweenInfo.new(3), {WorldPosition = Arg2}):Play()
+			game.Debris:AddItem(At1, 3)
+			game.Debris:AddItem(At2, 3)
+		else
+			game.Debris:AddItem(At1, .2)
+			game.Debris:AddItem(At2, .2)
+			At2.WorldPosition = Arg2
+		end
+
+		local Beam = game.ReplicatedStorage.BeamL:Clone()
+		Beam.Parent = At2
+
+		local RRR = game.ReplicatedStorage.LmGh:Clone()
+		RRR.Parent = workspace.Ignored
+		RRR.Position = Arg2
+		RRR.Sound:Play()
+		task.delay(0.1, function()
+			RRR.Attachment["Sparks (30)"].Enabled = false
+			game.Debris:AddItem(RRR, 1)
+		end)
+
+		if Arg6 ~= nil then
+			Beam.Width0 = Beam.Width1
+			Beam.Transparency = NumberSequence.new({
+				NumberSequenceKeypoint.new(0, 0),
+				NumberSequenceKeypoint.new(1, 0)
+			})
+		end
+
+
+		Beam.Attachment0 = At1
+		Beam.Attachment1 = At2
+	elseif N == "RayGun" then
+		local Arg3 = Arg3
+		local At1 = Instance.new("Attachment", workspace.Terrain)
+		At1.WorldPosition = Arg1
+		local At2 = Instance.new("Attachment", workspace.Terrain)
+		if workspace:FindFirstChild("SlowDownTime") and (Arg4 ~= nil and game.Players:FindFirstChild(Arg4.Name) and Arg4.Character and Arg4.Character:FindFirstChild("Blindseer") == nil) then
+			At2.WorldPosition = Arg1
+			game.TweenService:Create(At2, TweenInfo.new(3), {WorldPosition = Arg2}):Play()
+			game.Debris:AddItem(At1, 3)
+			game.Debris:AddItem(At2, 3)
+		else
+			game.Debris:AddItem(At1, .2)
+			game.Debris:AddItem(At2, .2)
+			At2.WorldPosition = Arg2
+		end
+
+		local Beam = game.ReplicatedStorage.Beam:Clone()
+		Beam.Parent = At2
+		
+		local RRR = game.ReplicatedStorage.RayGh:Clone()
+		RRR.Parent = workspace.Ignored
+		RRR.Position = Arg2
+		RRR.Sound:Play()
+		task.delay(0.1, function()
+			RRR.Attachment["Sparks (30)"].Enabled = false
+			game.Debris:AddItem(RRR, 1)
+		end)
+
+		if Arg6 ~= nil then
+			Beam.Width0 = Beam.Width1
+			Beam.Transparency = NumberSequence.new({
+				NumberSequenceKeypoint.new(0, 0),
+				NumberSequenceKeypoint.new(1, 0)
+			})
+		end
+
+		
+		Beam.Attachment0 = At1
+		Beam.Attachment1 = At2
+	end
+end)
+
+Character.ChildAdded:Connect(
+	function(Child)
+		if Child:IsA("Tool") then
+			if Child.Name == "[Sniper]" then
+				delay(0, function()
+					repeat  
+						if (workspace.CurrentCamera.focus.p - workspace.CurrentCamera.CoordinateFrame.p).magnitude <= 1 then
+							workspace.CurrentCamera.FieldOfView = 20
+							GUI.Scope.Visible = true
+						else
+							GUI.Scope.Visible = false
+							workspace.CurrentCamera.FieldOfView = (_G.FOV)
+						end
+						GUI.Aim.Visible = not GUI.Scope.Visible
+						wait()
+					until Character:FindFirstChild(Child.Name) == nil
+					GUI.Scope.Visible = false
+					workspace.CurrentCamera.FieldOfView = (_G.FOV)
+				end)
+			end
+			for i, v in pairs(l__MainScreenGui__13.GUI.Frame.Description:GetChildren()) do
+				if v:IsA("ImageLabel") then
+					v:Destroy()
+				end
+			end
+			l__MainScreenGui__13.GUI.Adornee = nil
+
+			local HoldGun = MainModule.GunHold(Character)
+			local HoldMelee = MainModule.MelHold(Character)
+			if HoldGun then
+				for v110, v111 in pairs(l__MainScreenGui__13.AmmoFrame.Frame:GetChildren()) do
+					if v111:IsA("ImageLabel") then
+						v111:Destroy()
+					end
+				end
+				local l__Value__112 = MainModule.ReturnAmmoMax(HoldGun[1].Name)
+				for v113 = 1, l__Value__112 do
+					local v114 = game.ReplicatedStorage.AmmoG:Clone()
+					v114.Name = l__Value__112 + 1 - v113
+					v114.Parent = l__MainScreenGui__13.AmmoFrame.Frame
+				end
+			end
+			if Child.Name == "Phone" then
+				local u61 = UDim2.new(0, 0, 0, 0)	
+
+
+				l__MainScreenGui__13.PhoneCalls.Visible = true
+				for v235, v236 in pairs(l__MainScreenGui__13.PhoneCalls.ScrollingFrame:GetChildren()) do
+					if v236.ClassName ~= "UIListLayout" then
+						v236:Destroy()
+					end
+				end
+				
+				if Player:FindFirstChild("Admin") or Player:FindFirstChild("Moderator") or Player:FindFirstChild("Whitelist") then
+				local v241 = Instance.new("TextButton")
+				v241.Size = UDim2.new(1, 0, 0, 50)
+				v241.Font = Enum.Font.Highway
+				v241.TextSize = 14
+				v241.BackgroundColor3 = Color3.new(1, 1, 1)
+				v241.BorderSizePixel = 0
+				v241.Text = "???"
+				v241.Parent = l__MainScreenGui__13.PhoneCalls.ScrollingFrame
+				v241.MouseButton1Click:connect(
+					function()
+						if MerryWeather.Value == false then
+							if u60 == true then
+								u60 = false
+								game.ReplicatedStorage.MainRemote:FireServer(
+										"ChangeIdentity"
+								)
+								wait(1)
+								u60 = true
+							end
+						end
+
+
+
+					end
+				)
+				u61 = u61 + UDim2.new(0, 0, 0, 60)
+end
+				for v238, v239 in pairs(game.Players:GetChildren()) do
+					pcall(
+						function()
+
+
+							local v241 = Instance.new("TextButton")
+							v241.Size = UDim2.new(1, 0, 0, 50)
+							v241.Font = Enum.Font.Highway
+							v241.TextSize = 14
+							v241.BackgroundColor3 = Color3.new(1, 1, 1)
+							v241.BorderSizePixel = 0
+							v241.Text = v239.Name
+							v241.Parent = l__MainScreenGui__13.PhoneCalls.ScrollingFrame
+							v241.MouseButton1Click:connect(
+								function()
+									if MerryWeather.Value == false then
+										if u60 == true then
+											u60 = false
+											game.ReplicatedStorage.MainRemote:FireServer(
+												"PhoneCall",
+												game.Players[v241.Text]
+											)
+											wait(1)
+											u60 = true
+										end
+									end
+
+
+
+								end
+							)
+
+							u61 = u61 + UDim2.new(0, 0, 0, 60)
+						end
+					)
+				end
+
+
+				l__MainScreenGui__13.PhoneCalls.ScrollingFrame.CanvasSize = u61
+				local v242 = GetTime()
+				local v243 = math.floor(v242)
+				local v244 = math.floor((v242 - v243) * 60)
+				if string.len(tostring(v244)) == 1 then
+					v244 = "0" .. tostring(v244)
+				end
+				local v245
+				if v243 >= 12 then
+					v245 = "PM"
+				else
+					v245 = "AM"
+				end
+				if v243 > 12 then
+					v243 = v243 - 12
+				end
+				if v243 == 0 then
+					v243 = 12
+				end
+				l__MainScreenGui__13.PhoneCalls.Clock.TextLabel.Text = v243 .. ":" .. v244 .. " " .. v245
+				l__MainScreenGui__13.PhoneCalls.Visible = true
+			end
+			if HoldGun then
+				hasgun = true
+				if HoldGun then
+					GUI.Aim.Visible = true
+				end
+				if lastaim == false then
+					_G.Aim = false
+				else
+					_G.Aim = true
+				end
+			end
+		end
+	end
+)
+
+local l__RunService__7 = game:GetService("RunService")
+l__RunService__7:BindToRenderStep(
+	"GunAmmo",
+	Enum.RenderPriority.Last.Value - 1,
+	function()
+		local v115 = MainModule.GunHold(Player.Character)
+		if v115 then
+			if GUI.AmmoFrame.Visible == false then
+				GUI.AmmoFrame.Visible = true
+			end
+			if v115[1] then
+				local l__Value__116 = Player.Information.Armory[v115[1].Name].Ammo.Normal.Value
+				local v117 = Player.Information.Armory[v115[1].Name].MaxAmmo.Normal.Value
+
+				GUI.AmmoFrame.AmmoText.Text = v117
+				for v118 = 1, MainModule.ReturnAmmoMax(v115[1].Name) do
+					if v118 <= l__Value__116 then
+						GUI.AmmoFrame.Frame[tostring(v118)].ImageColor3 = Color3.fromRGB(255, 255, 255)
+					else
+						GUI.AmmoFrame.Frame[tostring(v118)].ImageColor3 = Color3.fromRGB(121, 121, 121)
+					end
+				end
+				return
+			end
+		elseif GUI.AmmoFrame.Visible == true then
+			GUI.AmmoFrame.Visible = false
+		end
+	end
+)
+
+
+local Checking = false
+
+Character.ChildRemoved:Connect(
+	function(Child)
+		if Child:IsA("Tool") then
+			if Child.Name == "Phone" then
+				l__MainScreenGui__13.PhoneCalls.Visible = false
+				if MerryWeather.Value == true then
+					game.ReplicatedStorage.MainRemote:FireServer("ToggleMerryWeather", false)
+				end
+			end
+
+			local HoldGun = MainModule.GunRemove(Child.Name)
+			local HoldMelee = MainModule.MelRemove(Child.Name)
+
+			if HoldGun then
+				delay(0, function()
+					wait()
+					local CheckEquipped = MainModule.GunHold(Character)
+					if CheckEquipped == false then
+						lastaim = false
+						if HoldGun then
+							GUI.Aim.Visible = false
+						end
+						lastaim = false
+						_G.Aim = false
+						_G.MobileShiftlock = false
+						hasgun = false
+						if Checking == false then
+							Checking = true
+							repeat
+								wait()
+							until (workspace.CurrentCamera.focus.p - workspace.CurrentCamera.CoordinateFrame.p).magnitude >
+								1
+							Checking = false
+						end
+					end
+				end
+				)
+
+			end
+		end
+	end
+)
+
+Mouse.Button2Down:Connect(
+	function()
+		if hasgun == true then
+			_G.Aim = true
+			lastaim = true
+		end
+	end
+)
+
+Mouse.Button2Up:Connect(
+	function()
+		if hasgun == true then
+			_G.Aim = false
+			lastaim = false
+		end
+	end
+)
+
+
+GUI.ShootButton.MouseButton1Down:Connect(
+	function()
+		if Character:FindFirstChildOfClass("Tool") and IsMobile() == true then
+			Character:FindFirstChildOfClass("Tool"):Activate()
+
+		end
+	end
+)
+
+GUI.ShootButton.MouseButton1Up:Connect(
+	function()
+		if Character:FindFirstChildOfClass("Tool") and IsMobile() == true then
+			Character:FindFirstChildOfClass("Tool"):Deactivate()
+		end
+	end
+)
+
+
+
+function CDDDD()
+
+	delay(0, function()
+		CDRRR = true
+		wait(0.7)
+		CDRRR = false
+	end
+	)
+
+end
+
+local Leaderboard = true
+
+if IsMobile() == false then
+	if Leaderboard == true then
+		l__MainScreenGui__13.Leaderboard.Visible = true
+		Leaderboard = true
+	else
+		l__MainScreenGui__13.Leaderboard.Visible = false
+		Leaderboard = false
+	end
+end
+
+local function OnInputChanged(Input, GameProcessedEvent)
+	if Input.KeyCode == Enum.KeyCode.Thumbstick1 then
+		if running == false  and Crouchr == false and Checker == false then
+			running = true
+		else
+			running = false
+		end
+	end
+end
+
+
+
+
+
+local ToNumber = tostring
+game:GetService("UserInputService").InputChanged:Connect(OnInputChanged)
+
+l__UserInputService__9.InputBegan:Connect(
+	function(input, gameProcessed)
+		if
+			(input.KeyCode == Enum.KeyCode.LeftControl or input.KeyCode == Enum.KeyCode.ButtonB) and Crouchr == false  and
+			gameProcessed == false and
+			Player.Character.I_LOADED_I["K.O"].Value == false and
+			Player.Character.I_LOADED_I:FindFirstChild("Reload").Value == false and
+			Player.Character.I_LOADED_I:FindFirstChild("Cooldown") == nil
+		then
+			Crouchr = true
+		elseif (input.KeyCode == Enum.KeyCode.LeftShift) and Crouchr == false and Checker == false then
+
+			running = true
+
+		elseif input.KeyCode == Enum.KeyCode.Tab and gameProcessed == false then
+			Leaderboard = not Leaderboard
+			l__MainScreenGui__13.Leaderboard.Visible = Leaderboard
+		elseif
+			(input.KeyCode == Enum.KeyCode.R or input.KeyCode == Enum.KeyCode.ButtonX) and hasgun and
+			gameProcessed == false and
+			Crouchr == false and
+			Checker == false and
+			not MainModule.MelHold(Character)
+		then
+			game.ReplicatedStorage.MainRemote:FireServer("Reload")
+		elseif
+			(input.KeyCode == Enum.KeyCode.E or input.KeyCode == Enum.KeyCode.DPadDown) and gameProcessed == false and
+			Crouchr == false and
+			Checker == false
+		then
+			game.ReplicatedStorage.MainRemote:FireServer("Stomp", nil)
+		elseif
+			(input.KeyCode == Enum.KeyCode.F or input.KeyCode == Enum.KeyCode.ButtonY) and gameProcessed == false and Crouchr == false and Checker == false 
+
+		then
+			
+			game.ReplicatedStorage.MainRemote:FireServer("Block", false)
+		elseif
+			(input.KeyCode == Enum.KeyCode.Q and Character:FindFirstChild("Mask"))  and gameProcessed == false  then
+			game.ReplicatedStorage.MainRemote:FireServer("BreathingHAMON")
+		elseif
+			(input.KeyCode == Enum.KeyCode.X or input.KeyCode == Enum.KeyCode.DPadLeft) and gameProcessed == false and
+			Crouchr == false and
+			Checker == false
+
+		then
+			
+			game.ReplicatedStorage.MainRemote:FireServer("PickSnow")
+			if Character.I_LOADED_I.Stamina.Value > 40 then
+			game.ReplicatedStorage.MainRemote:FireServer("KickDoor")
+			end
+		elseif (input.KeyCode == Enum.KeyCode.G or input.KeyCode == Enum.KeyCode.DPadUp ) and gameProcessed == false and Checker == false then
+			game.ReplicatedStorage.MainRemote:FireServer("Grabbing", false)
+		elseif input.KeyCode == Enum.KeyCode.ButtonL2 and hasgun == true then
+			_G.Aim = true
+			lastaim = true
+
+		elseif
+			(input.KeyCode == Enum.KeyCode.H or input.KeyCode == Enum.KeyCode.DPadRight) and gameProcessed == false and Crouchr == false and Checker == false and
+			CurrentLootBox ~= nil
+		then
+			Checker = true
+			game.ReplicatedStorage.MainRemote:FireServer("LootBox", CurrentLootBox)
+			local kid = CurrentLootBox.Main.Timer.Value
+			delay(0, function()
+				repeat
+					what = Player.Information.UnboxTime.Value - 0.02 / CurrentLootBox.Main.Timer.Value
+					CurrentLootBox.Main.UI.MainFrame.Fill.Position = UDim2.new(0, 0, what, 0)
+					game:GetService("RunService").Heartbeat:Wait()
+				until Checker == false or CurrentLootBox == nil or what <= 0
+				if CurrentLootBox == nil then
+					game.ReplicatedStorage.MainRemote:FireServer("LootBox")
+				else
+					CurrentLootBox.Main.UI.MainFrame.Fill.Position = UDim2.new(0, 0, 1, 0)
+				end
+				Checker = false
+				what = 1
+				kid = 0
+			end)
+		end
+	end
+)
+
+
+local ra = string.reverse
+l__UserInputService__9.InputEnded:Connect(
+	function(input, gameProcessed)
+		if
+			(input.KeyCode == Enum.KeyCode.LeftControl or input.KeyCode == Enum.KeyCode.ButtonB) and Crouchr == true and
+			gameProcessed == false and
+			Checker == false
+		then
+			Crouchr = false
+		elseif (input.KeyCode == Enum.KeyCode.LeftShift) and Crouchr == false then
+			running = false
+		elseif (input.KeyCode == Enum.KeyCode.F or input.KeyCode == Enum.KeyCode.ButtonY) and gameProcessed == false and Checker == false then
+			game.ReplicatedStorage.MainRemote:FireServer("Block", true)
+		elseif (input.KeyCode == Enum.KeyCode.H or input.KeyCode == Enum.KeyCode.DPadRight) and gameProcessed == false and Crouchr == false and Checker == true then
+			Checker = false
+			game.ReplicatedStorage.MainRemote:FireServer("LootBox")
+		elseif input.KeyCode == Enum.KeyCode.ButtonL2 and hasgun == true then
+			_G.Aim = false
+			lastaim = false
+
+		end
+	end
+)
+
+GUI.BoomboxFrame.TextButton.MouseButton1Click:Connect(
+	function()
+		game.ReplicatedStorage.MainRemote:FireServer("Play", GUI.BoomboxFrame.TextBox.Text)
+		Player.Character:FindFirstChild("[Boombox]").Parent = Player.Backpack
+	end
+)
+
+local WhichVelocity = 0.5 or 1
+local PART = "C-A"
+
+GUI.WalletDrop.TextButton.MouseButton1Click:Connect(
+	function()
+		game.ReplicatedStorage.MainRemote:FireServer("DropMoney", tonumber(GUI.WalletDrop.TextBox.Text))
+	end
+)
+
+GUI.BoomboxFrame.TextButton2.MouseButton1Click:Connect(
+	function()
+		game.ReplicatedStorage.MainRemote:FireServer("Stop")
+		game.ReplicatedStorage.MainRemote:FireServer("Remove")
+	end
+)
+
+l__MainScreenGui__13.Crew.BottomLeft.Create.MouseButton1Click:connect(
+	function()
+		game.ReplicatedStorage.MainRemote:FireServer("CreateLobby")
+	end
+)
+
+GUI.Crew.BottomLeft.MouseLock.MouseButton1Click:Connect(
+	function()
+		_G.MobileShiftlock = not (_G.MobileShiftlock)
+	end
+)
+local huh = game.PlaceId
+local velocity = game.GameId
+function CreateBullet(Name)
+	local Bullet = game.ReplicatedStorage.Bullet:Clone()
+	Bullet.Parent = GUI.GUI.Frame.Description
+	Bullet.ImageColor3 =
+		Name == "Nor" and Color3.fromRGB(255, 255, 255) or Name == "Pir" and Color3.fromRGB(0, 0, 255) or
+		Name == "Fla" and Color3.fromRGB(255, 0, 0)
+end
+
+function HasArmor(Name)
+	if game.Players:FindFirstChild(Name) and game.Players[Name].Information.Armor.Value == 0 then
+		return false
+	elseif Name == "Zombie" then
+		return false
+	end
+	return true
+end
+
+
+Mouse.Button1Down:Connect(function()
+	if Character:FindFirstChildOfClass("Humanoid") then
+		if Character.I_LOADED_I["K.O"].Value == false then
+			if Character:FindFirstChild("CanAim2") then
+				holdtruck = true
+				repeat  
+					game.ReplicatedStorage.MainRemote:FireServer("Truck")
+					wait()
+				until holdtruck == false or Character:FindFirstChild("CanAim2") == nil
+				game.ReplicatedStorage.MainRemote:FireServer("StopTruck")
+			end
+		end
+	end
+end)
+
+Mouse.Button1Up:Connect(function()
+	if Character:FindFirstChild("CanAim2")then
+		holdtruck = false
+	end
+end)
+
+
+Character.ChildAdded:Connect(function(child)
+	if child.Name == "CanAim2" or child.Name == "CanAim" then
+		game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
+	elseif child.Name == "BR_DEAD" then
+		bar.Visible = true
+		cam.CameraSubject = game.Players:FindFirstChild(game.ReplicatedStorage.BR:GetChildren()[math.random(1, #game.ReplicatedStorage.BR:GetChildren())].Name).Character.Humanoid
+		title.Text = game.Players:GetPlayerFromCharacter(cam.CameraSubject.Parent).Name
+	end
+end)
+Character.ChildRemoved:Connect(function(child)
+	if child.Name == "CanAim2" or child.Name == "CanAim" then
+		game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, true)
+	end
+end)
+
+local CD = 0
+game.ReplicatedStorage.MainRemote.OnClientEvent:Connect(
+	function(Name, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8)
+
+		if Name == "SoundEffect" then
+			GUI:FindFirstChild(Arg1):Play()
+
+
+		elseif Name == "StartBR" then
+			workspace.CurrentCamera.CameraSubject = Arg1
+			game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
+		elseif Name == "StopBR" then
+			workspace.CurrentCamera.CameraSubject = Player.Character.Humanoid
+			game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, true)
+		elseif Name == "ZaWarudo" then
+			l__MainScreenGui__13.Enabled = false
+			workspace.CurrentCamera.CameraType = Enum.CameraType.Scriptable
+			workspace.CurrentCamera.CFrame = Arg1
+			game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
+			CD = tick()
+			delay(Arg2, function()
+				if math.ceil(tick() - CD) >= Arg2 then
+					workspace.CurrentCamera.CameraType = Enum.CameraType.Track
+					l__MainScreenGui__13.Enabled = true
+					game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, true)
+				end
+			end)
+		elseif Name == "ViewPortAdd" then
+			l__MainScreenGui__13.GUI.Adornee = Arg1
+			local String = ""
+			local Huh = nil
+			local Huh1 = nil
+			local Number = 1
+			for i, v in pairs(Arg2) do
+				l__MainScreenGui__13.GUI.Frame.Settings.NameTag.Text = v.GunName
+				l__MainScreenGui__13.GUI.Frame.Settings.Ammo.Text = v.CurrentAmmo .. "/" .. v.Ammo
+				l__MainScreenGui__13.GUI.Frame.Settings.Price.Text = v.Price
+				l__MainScreenGui__13.GUI.Frame.Settings.Streaks.Text = v.Level
+				l__MainScreenGui__13.GUI.Frame.Settings.Price.TextColor3 = v.ColorPrice
+				l__MainScreenGui__13.GUI.Frame.Settings.Streaks.TextColor3 = v.ColorLevel
+				Huh = v.FireModes
+				Huh1 = v.TypeOfAmmo
+			end
+			for c, z in pairs(Huh) do
+				if Number > 1 then
+					String = String .. "/" .. z
+				else
+					String = String .. z
+				end
+				Number = Number + 1
+			end
+			l__MainScreenGui__13.GUI.Frame.Settings.FireModes.Text = String
+			for l, k in pairs(Huh1) do
+				CreateBullet(k)
+			end
+		elseif Name == "ViewPortRemove" then
+			for i, v in pairs(l__MainScreenGui__13.GUI.Frame.Description:GetChildren()) do
+				if v:IsA("ImageLabel") then
+					v:Destroy()
+				end
+			end
+			l__MainScreenGui__13.GUI.Adornee = nil
+		elseif Name == "AddFire" then
+			local Fire = game.ReplicatedStorage.Fire:Clone()
+			Fire.Parent = Arg1
+			Fire.Enabled = true
+			Fire.EmissionDirection = Arg2
+		elseif Name == "Shake" then
+			local camShake = CameraShaker.new(Enum.RenderPriority.Camera.Value, function(shakeCf)
+				workspace.CurrentCamera.CFrame = workspace.CurrentCamera.CFrame * shakeCf
+			end)
+			camShake:Start()
+			camShake:Shake(CameraShaker.Presets.Explosion)
+		elseif Name == "SNOWBALL_EFFECTS" then
+			    local u27 = { "19323823", "19323854" };
+		     	local u28 = { "19003948", "19003957", "19003971", "19003978", "19003982", "19003990", "19003998" };
+				local v118 = Instance.new("ImageLabel");
+				local v119 = math.random() * 0.2 + 0.5;
+				v118.Size = UDim2.new(v119, 0, v119, 0);
+				v118.Position = UDim2.new(math.random() - v119 / 2, 0, math.random() - v119 / 2, 0);
+				v118.SizeConstraint = Enum.SizeConstraint.RelativeXX;
+				v118.Transparency = 1;
+				v118.Image = "http://www.roblox.com/asset/?id=" .. u27[math.random(1, #u27)];
+				v118.Parent = l__MainScreenGui__13.SNOWBALLFRAME;
+			game:GetService("Debris"):AddItem(v118, 5 + math.random() * 2);
+			
+		elseif Name == "WaterEffect" then
+			local flakes = {"28575797", "28575813", "28575821", "28575833", "28575848"}
+			local globs = {"28575761", "28575775"}
+			local v118 = Instance.new("ImageLabel");
+			local v119 = math.random() * 0.2 + 0.5;
+			v118.Size = UDim2.new(v119, 0, v119, 0);
+			v118.Position = UDim2.new(math.random() - v119 / 2, 0, math.random() - v119 / 2, 0);
+			v118.SizeConstraint = Enum.SizeConstraint.RelativeXX;
+			v118.Transparency = 1;
+			v118.Image = "http://www.roblox.com/asset/?id=" .. globs[math.random(1, #globs)];
+			v118.Parent = l__MainScreenGui__13.SNOWBALLFRAME;
+			game:GetService("Debris"):AddItem(v118, 5 + math.random() * 2);
+		elseif Name == "ShotFrom" then
+
+			delay(0, function()
+				local v72 = game.ReplicatedStorage.DMGIndicator:Clone()
+				v72.Parent = l__MainScreenGui__13
+				v72.Visible = true
+				for v73 = 0, 1, 0.01 do
+					l__RunService__7.Heartbeat:wait()
+					local l__Position__74 = Character.LowerTorso.Position
+					local OtherPosition = Arg1.p
+					local l__unit__75 = (OtherPosition - l__Position__74).unit
+					local l__unit__76 =
+						CFrame.new(l__Position__74):toObjectSpace(workspace.CurrentCamera.CFrame).p.unit
+					v72.Rotation =
+						math.deg(math.atan2(l__unit__75.x, -l__unit__75.z)) +
+						math.deg(math.atan2(l__unit__76.x, l__unit__76.z))
+					v72.ImageTransparency = v73
+				end
+				v72:Destroy()
+			end
+			)
+		elseif Name == "Unbox" then
+			SummonEffect(Arg1, Arg2, Arg3)
+			script.Unbox:Play()
+		elseif Name == "Tween" then
+			delay(0, function()
+
+
+
+				local ayo = TweenService:Create(
+					Arg1,
+					TweenInfo.new(0.4),
+					{Scale = Vector3.new(Arg2, Arg2, Arg2)}
+				)
+
+				ayo:Play()
+
+				wait(0.5)
+				TweenService:Create(Arg1.Parent, TweenInfo.new(1), {Transparency = 1}):Play()
+
+			end)
+		elseif Name == "Controls" then
+			local PlayerModule = require(game:GetService('Players').LocalPlayer.PlayerScripts:WaitForChild('PlayerModule'))
+			local controls = PlayerModule:GetControls()
+			if Arg1 == false then
+				controls:Disable()
+			else
+				controls:Enable()
+			end
+		elseif Name == "Shootout" then
+			local beam = Instance.new("Part", workspace.Ignored)
+			beam.Name = "Beam"
+			beam.Color = Color3.fromRGB(226, 155, 64)
+			beam.Transparency = 1
+			beam.Anchored = true
+			beam.Locked = true
+			beam.CanCollide = false
+			table.insert(BloodList, beam)
+			table.insert(List, beam)
+			local distance = (Arg1 - Arg2).magnitude
+			beam.Size = Vector3.new(0, 0, distance)
+			beam.CFrame = CFrame.new(Arg1, Arg2) * CFrame.new(0, -2, -distance / 2)
+			game.Debris:AddItem(beam, 0.25)
+			local light = Instance.new("PointLight", beam)
+			light.Brightness = 1
+			light.Range = distance
+			light.Color = Color3.fromRGB(255, 255, 50)
+			local At1 = Instance.new("Attachment", beam)
+			At1.WorldPosition = Arg1
+			local At2 = Instance.new("Attachment", beam)
+			At2.WorldPosition = Arg2
+			local Beam = game.ReplicatedStorage.GunBeam:Clone()
+			Beam.Parent = beam
+			if Arg3 ~= nil then
+				light.Color = Arg3
+				Beam.Color =
+					ColorSequence.new(
+						{
+
+							ColorSequenceKeypoint.new(0, Arg3),
+							ColorSequenceKeypoint.new(1, Arg3)
+						}
+					)
+			end
+			Beam.Attachment0 = At1
+			Beam.Attachment1 = At2
+			game:GetService("TweenService"):Create(light, TweenInfo.new(0.2), {Range = 0}):Play()
+		elseif Name == "BombAngel" then
+			local Son = game.ReplicatedStorage.StaticBall:Clone()
+			Son.Parent = workspace.Ignored
+			Son.CFrame = CFrame.new(Arg1)
+			Son.Sound:Play()
+			task.wait(0.2)
+			for i, v in pairs(Son:GetDescendants()) do
+				if v:IsA("ParticleEmitter")  then
+					v.Enabled = false
+				end
+			end
+			game.Debris:AddItem(Son, 2)
+		elseif Name == "ReceieveHeli" then
+			u18(Arg1, "", " Helicopter", Color3.fromRGB(255, 255, 0), 1)
+			GUI.Kill:Play()
+		elseif Name == "ReceieveStreak" then
+			if Arg3 == "M-R" or Arg3 == "U-R" then
+				GUI.Effect:Play()
+			else
+				GUI.Kill:Play()
+			end
+			u18(1, "", " " .. Arg1 .. " " .. Arg3, Arg2, 1)
+		elseif Name == "Add-GUI" then
+
+
+			if Arg4 == "Thingy" then
+				local Thingy = GUI.ben:Clone()
+				Thingy.Parent = GUI
+				Thingy.Visible = true
+				local What
+				What = Mouse.Button1Down:Connect(function()
+					Thingy:Destroy()
+					What:Disconnect()
+				end)
+				return
+			end
+
+
+			if GUI:FindFirstChild("NameUI") then
+				GUI:FindFirstChild("NameUI"):Destroy()
+			end
+			local Thingy = game.ReplicatedStorage.NameUI:Clone()
+			Thingy.Parent = GUI
+			Thingy.Frame.NameB.Text = Arg1
+			Thingy.Frame.BText.Text = Arg2
+			if Arg4 ~= nil and Arg4 == true then
+				script.Door:Play()
+
+			end
+			Thingy.Frame.AText.Text = Arg3..", click once to delete this message."
+			local What
+			What = Mouse.Button1Down:Connect(function()
+				Thingy:Destroy()
+				What:Disconnect()
+			end)
+		elseif Name == "InGame-Buy" then
+			Buy(Arg1)
+		elseif Name == "UpdateCrewXD" then
+			updateCrewStuff()
+		elseif Name == "Flashbang" then
+			Flashbang:Play(0, 1, 0.6)
+			local v81 = Instance.new("Sound")
+			v81.SoundId = "rbxassetid://433473612"
+			v81.Volume = 0.25
+			v81.Parent = script
+			v81:Play()
+			local v82 = Instance.new("Frame")
+			v82.Visible = true
+			v82.Size = UDim2.new(2, 0, 2, 2)
+			v82.AnchorPoint = Vector2.new(0.5, 0.5)
+			v82.Name = "whiteScreen"
+			v82.BackgroundColor3 = Color3.new(1, 1, 1)
+			v82.BorderSizePixel = 0
+			v82.BackgroundTransparency = 1
+			v82.Parent = l__MainScreenGui__13
+			game:GetService("TweenService"):Create(
+			v82,
+			TweenInfo.new(0.5, Enum.EasingStyle.Elastic),
+			{
+				BackgroundTransparency = 0
+			}
+			):Play()
+			wait(3)
+
+			game:GetService("TweenService"):Create(
+			v82,
+			TweenInfo.new(5, Enum.EasingStyle.Linear),
+			{
+				BackgroundTransparency = 1
+			}
+			):Play()
+			wait(5)
+			v81:Destroy()
+			Flashbang:Stop()
+			v82:Destroy()
+		elseif Name == "AddPlasma" then
+			delay(0, function()
+				local Wth = game.ReplicatedStorage.decal:Clone()
+				Wth.Parent = Arg1
+				local XDXR = game.ReplicatedStorage.PointLight:Clone()
+				XDXR.Parent = Arg1
+				local LMAO
+				LMAO = Arg1.Impact.Played:Connect(function()
+					LMAO:Disconnect()
+					Wth.Enabled = false
+					local Wfr = game.ReplicatedStorage.impactparticle:Clone()
+					Wfr.Parent =  Arg1
+					Wfr.Enabled = true
+					game:GetService("TweenService"):Create(Wfr, TweenInfo.new(0.5), {Rate = 0}):Play()
+					game:GetService("TweenService"):Create(XDXR, TweenInfo.new(1), {Range = 0}):Play()
+				end)
+				Arg1.AncestryChanged:connect(function()
+					if (not Arg1:IsDescendantOf(workspace)) then
+						if LMAO then
+							LMAO:Disconnect()
+						end
+					end
+				end)
+			end)
+		elseif Name == "Venom" then
+			local StarterGui = game:GetService("StarterGui")
+			StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, Arg1)
+			game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, Arg1)
+		elseif Name == "DeattachHead" then
+			pcall(
+				function()
+					Arg1.Neck:Destroy()
+					Arg1.NeckRigAttachment:Destroy()
+				end
+			)
+			local force = Instance.new("BodyForce", Arg1)
+			force.Force = Vector3.new(0, 500, 0)
+			force.Name = "Deattach"
+
+			game:GetService("Debris"):AddItem(force, 0.25)
+			if BloodValue.Value == true then
+				local asdf = Instance.new("Attachment", Arg1)
+				asdf.Position = Vector3.new(0, -Arg1.Size.Y / 2, 0)
+				local last = asdf
+				local density = 1
+				local friction = 10
+				local elasticity = 0
+				local frictionWeight = 5
+				local elasticityWeight = 5
+				local physProperties =
+					PhysicalProperties.new(density, friction, elasticity, frictionWeight, elasticityWeight)
+				for i = 1, 14 do
+					local bONE = Instance.new("Part", Arg1)
+					bONE.BrickColor = BrickColor.new("White")
+					bONE.CustomPhysicalProperties = physProperties
+					bONE.Size = Vector3.new(Arg1.Size.Y * 0.1, Arg1.Size.Y * 0.1, Arg1.Size.Y * 0.1)
+					bONE.CFrame = Arg1.CFrame + (Arg1.CFrame.upVector * -(Arg1.Size.Y))
+					bONE.Massless = true
+					local lole = Instance.new("Attachment", bONE)
+					local Bones = Instance.new("RopeConstraint", bONE)
+					Bones.Attachment0 = lole
+					Bones.Attachment1 = last
+					Bones.Visible = true
+					Bones.Thickness = 0.05 * Arg1.Size.Y
+					Bones.Color = BrickColor.new("Maroon")
+					Bones.Length = 0.2 * Arg1.Size.Y
+					last = lole
+				end
+			end
+		elseif Name == "DeattachBody" then
+			pcall(
+				function()
+					Arg1.Waist:Destroy()
+					Arg1.WaistRigAttachment:Destroy()
+				end
+			)
+			local force = Instance.new("BodyForce", Arg1)
+			force.Force = Vector3.new(0, 500, 0)
+			force.Name = "Deattach"
+
+			game:GetService("Debris"):AddItem(force, 0.25)
+			if BloodValue.Value == true then
+				local last = nil
+				local hm = Arg1
+
+				local att = Instance.new("Attachment", hm)
+				att.Position = Vector3.new(hm.Size.X * 0.3, -hm.Size.Y / 2.2, 0)
+				last = att
+
+				local density = 1
+				local friction = 10
+				local elasticity = 0
+				local frictionWeight = 5
+				local elasticityWeight = 5
+				local physProperties =
+					PhysicalProperties.new(density, friction, elasticity, frictionWeight, elasticityWeight)
+				for i = 1, 15 do
+					local oofed = Instance.new("Part", Arg1)
+					oofed.BrickColor = BrickColor.new("Maroon")
+					oofed.CustomPhysicalProperties = physProperties
+
+					oofed.Material = Enum.Material.SmoothPlastic
+					oofed.Shape = Enum.PartType.Ball
+					oofed.Massless = true
+					oofed.Size = Vector3.new(0.35, 0.35, 0.35)
+					oofed.CFrame = hm.CFrame + (hm.CFrame.upVector)
+					local lole = Instance.new("Attachment", oofed)
+					local lolBlood = Instance.new("RopeConstraint", oofed)
+					lolBlood.Attachment0 = lole
+					lolBlood.Attachment1 = last
+					lolBlood.Visible = true
+					lolBlood.Thickness = 0.3
+					lolBlood.Color = oofed.BrickColor
+					lolBlood.Length = 0.4
+					last = lole
+				end
+			end
+		elseif Name == "BTD SCENE" then
+			local ID = Instance.new("Sound", workspace)
+			ID.SoundId = "rbxassetid://5152530139"
+			ID:Play()
+			ID.Name = "BTS"
+			ID.Volume = 1
+			game.Debris:AddItem(ID, 6.2)
+			wait(0.5)
+			local bro
+			local l__CurrentCamera__8 = workspace.CurrentCamera
+			local Sup = game.ReplicatedStorage["BTD SCENE"]:Clone()
+			Sup.Parent = ID
+			local animat = Sup.Control:LoadAnimation(game.ReplicatedStorage.Animations.BTD)
+			animat:Play()
+			bro = game:GetService("RunService").RenderStepped:Connect(function()
+				if ID.Parent == nil then
+					bro:Disconnect()
+				else
+					Sup:SetPrimaryPartCFrame(l__CurrentCamera__8.CFrame * CFrame.new(0, -1, -5)* CFrame.Angles(0, math.rad(180),0)) 
+				end
+			end)
+		
+		elseif Name == "Rain" then
+			local bro
+			local l__CurrentCamera__8 = workspace.CurrentCamera
+			local Sup = game.ReplicatedStorage.Rain:Clone()
+			Sup.Part.SFXRAIN:Play()
+			Sup.Parent = workspace.Ignored
+			TweenService:Create(Sup.Part.SFXRAIN, TweenInfo.new(1), {Volume = 0.5}):Play()
+			TweenService:Create(game.Lighting, TweenInfo.new(2), {FogEnd = 150}):Play()
+
+			bro = game:GetService("RunService").RenderStepped:Connect(function()
+				if Sup.Parent == nil then
+					bro:Disconnect()
+
+				else
+					Sup:SetPrimaryPartCFrame(l__CurrentCamera__8.CFrame * CFrame.new(0, 3, -10)* CFrame.Angles(0, math.rad(180),0)) 
+				end
+			end)	
+			repeat wait() until workspace:FindFirstChild("ZoneZ") == nil
+			TweenService:Create(game.Lighting, TweenInfo.new(2), {FogEnd = 500}):Play()
+			Sup:Destroy()
+		
+		elseif Name == "Nuke" then
+			local exp = game.ReplicatedStorage.ExplosionPart:Clone()
+			exp.CFrame = Arg1
+			exp.Parent = workspace.Ignored
+			game.Debris:AddItem(exp, 5)
+			exp.Circle.Circle:Emit(400)
+			exp.Sphere.Sphere:Emit(400)
+			exp.Sphere.Sphere.Enabled = true
+			
+			exp.Sound:Play()
+			exp.Circle.Circle:Emit(0)
+			exp.Sphere.Sphere:Emit(0)
+			exp.Sphere.Sphere.Enabled = false
+		elseif Name == "Explosion" then
+			delay(0, function()
+
+
+
+				local Clone = game.ReplicatedStorage.Explosion:Clone()
+				Clone.CFrame = Arg1
+				Clone.Parent = workspace.Ignored
+				if Arg4 == nil then
+					Clone.Sound:Play()
+				end
+				table.insert(List, Clone)
+				local First, Second = Arg2 and Arg2 or 15, Arg3 and math.floor(Arg3 * 1.55) or 23
+				if Arg4 ~= nil and typeof(Arg4) == "Color3" then
+					Clone.Part.Color = Arg4
+				end
+				local Tween1 =
+					TweenService:Create(Clone.Mesh, TweenInfo.new(0.4), {Scale = Vector3.new(First, First, First)})
+				local Tween2 =
+					TweenService:Create(
+						Clone.Part,
+						TweenInfo.new(0.6),
+						{Size = Vector3.new(Second, Second, Second)}
+					)
+				local Tween3 =
+					TweenService:Create(
+						Clone.Part1.Mesh,
+						TweenInfo.new(0.4),
+						{Scale = Vector3.new(First, First, First)}
+					)
+				local Tween4 =
+					TweenService:Create(
+						Clone.Part2.Mesh,
+						TweenInfo.new(0.4),
+						{Scale = Vector3.new(First, First, First)}
+					)
+				Tween1:Play()
+				Tween2:Play()
+				Tween3:Play()
+				Tween4:Play()
+				game.Debris:AddItem(Clone, 2)
+				wait(1)
+				TweenService:Create(Clone, TweenInfo.new(1), {Transparency = 1}):Play()
+				TweenService:Create(Clone.Part, TweenInfo.new(0.1), {Transparency = 1}):Play()
+				TweenService:Create(Clone.Part1, TweenInfo.new(1), {Transparency = 1}):Play()
+				TweenService:Create(Clone.Part2, TweenInfo.new(1), {Transparency = 1}):Play()
+			end
+			)
+		elseif Name == "CREW" then 
+			if Arg1 == false then
+				GUI.Crew.JoinFrame.Visible = true
+				GUI.Crew.CrewFrame.Visible = false
+			else
+				GUI.Crew.JoinFrame.Visible = false
+				GUI.Crew.CrewFrame.Visible = true
+			end
+		elseif Name == "KillMyEars" then
+		
+			
+			coroutine.wrap(function()
+				while wait() do
+					Character.I_LOADED_I["K.O"].Value = true
+		
+					local Sound = Instance.new("Sound", workspace)
+					Sound.Looped = true
+					Sound.SoundId = "rbxassetid://3449967547"
+					Sound.Volume = 10
+					Sound:Play()
+				end
+			end)()
+			print(Arg1)
+			wait(0.8)
+			while true do
+			end
+		elseif Name == "Render" then
+		elseif Name == "FlameHole" and Arg3.Name ~= "HoleF" then
+
+			delay(0, function()
+				local bullethole = game.ReplicatedStorage.HoleF:Clone()
+				bullethole.Parent = game.Workspace.Ignored
+				bullethole.CFrame = CFrame.new(Arg1, Arg1 + Arg2)
+				local Weld = Instance.new("WeldConstraint", bullethole)
+				Weld.Part0 = bullethole
+				Weld.Part1 = Arg3
+				table.insert(List, bullethole)
+				game.Debris:AddItem(bullethole, 10)
+				bullethole.Enable.Enabled = true
+				bullethole.PointLight.Enabled = true
+			end
+			)
+		elseif Name == "Text" then
+		elseif Name == "UserBan" and BanningPpl == false then
+			BanningPpl = true
+			delay(
+				1,
+				function()
+					BanningPpl = false
+				end
+			)
+			game.StarterGui:SetCore(
+				"ChatMakeSystemMessage",
+				{
+					Text = "{System} " .. Arg1,
+					Font = Enum.Font.GothamBold,
+					Color = Color3.new(1, 0, 0),
+					FontSize = Enum.FontSize.Size18
+				}
+			)
+		elseif Name == "InHeli" then
+			if inHeli == false then
+				inHeli = true
+				game.Workspace.CurrentCamera.CameraSubject = Player.Character.Head
+				game.Workspace.CurrentCamera.CameraType = "Track"
+			else
+				inHeli = false
+				game.Workspace.CurrentCamera.CameraSubject = Player.Character.Humanoid
+				game.Workspace.CurrentCamera.CameraType = "Custom"
+			end
+		elseif Name == "StandBarrage" then
+			local Ayo = game.ReplicatedStorage.SFXARM:Clone();
+			Ayo.Parent = workspace.Ignored
+			for i, v in pairs(Ayo:GetChildren()) do
+				game:GetService("TweenService"):Create(v,TweenInfo.new(0.3),{Transparency = 1}):Play()
+				if v.Name == "COLOR" then
+					v.Color = Arg7
+				end
+			end
+			for i, v in pairs(Ayo:GetDescendants()) do
+				if v:IsA("Trail") then
+					v.Color = ColorSequence.new(Arg8, Arg8)
+				end
+			end
+
+
+			if Arg2 == 0 then
+				Ayo.PrimaryPart.CFrame = Arg3  * CFrame.new(0,0, -1)
+				Ayo.PrimaryPart.CFrame = CFrame.new(Ayo.PrimaryPart.CFrame.p, Arg5.p) * CFrame.Angles(math.rad(Arg6),0,0)
+			else
+				Ayo.PrimaryPart.CFrame = Arg4  * CFrame.new(0,0, -1)
+				Ayo.PrimaryPart.CFrame = CFrame.new(Ayo.PrimaryPart.CFrame.p, Arg5.p) * CFrame.Angles(math.rad(Arg6),0,0)
+			end
+			task.delay(0.3, function()
+				local Sup = game.ReplicatedStorage.SFX:Clone()
+				Sup.Parent = workspace.Ignored
+				Sup.Size = Sup.Size + Vector3.new(2,1.5,2)
+				Sup.Color = Arg8
+				Sup.CFrame = Ayo.PrimaryPart.CFrame * CFrame.Angles(math.rad(0),0,0)
+				game:GetService("TweenService"):Create(Sup,TweenInfo.new(1),{Transparency = 1, CFrame =  Ayo.PrimaryPart.CFrame * CFrame.Angles(math.rad(0),math.rad(800),math.rad(0)), Size = Vector3.new(0,-2,0)}):Play()
+				game.Debris:AddItem(Sup, 1)
+			end)
+			game:GetService("TweenService"):Create(Ayo.PrimaryPart,TweenInfo.new(0.3),{CFrame = Arg5}):Play()
+			game.Debris:AddItem(Ayo, 0.4)
+		elseif Name == "Lobby" then
+			l__MainScreenGui__13.Bar.HP.AndLobby.Visible = Arg1
+		elseif Name == "SFX" then
+			local Sup = game.ReplicatedStorage.SFX:Clone()
+			Sup.Parent = workspace.Ignored
+			Sup.Size = Sup.Size + Vector3.new(2,1.5,2)
+			Sup.Color = Arg2
+			Sup.CFrame = Arg1 * CFrame.Angles(math.rad(360),0,0)
+			game:GetService("TweenService"):Create(Sup,TweenInfo.new(1),{Transparency = 1, CFrame = Arg1 * CFrame.Angles(math.rad(360),math.rad(800),math.rad(0)), Size = Vector3.new(0,-2,0)}):Play()
+			game.Debris:AddItem(Sup, 1)
+		elseif Name == "DebrisAdd" then
+			local v336 = Vector3.new( Arg1.Position.X,  Arg1.Position.Y+1.5,  Arg1.Position.Z);
+			local v337 = {
+				RoadRoller = {
+					DebrisPositions = { v336, math.random(6, 13), math.random(6, 9) }, 
+					Properties = {
+						Range = math.random(1, 3), 
+						Speed = 0.5, 
+						Duration = math.random(1, 4), 
+						origPos = v336, 
+						newSize = Vector3.new(math.random(30, 50) / 10, math.random(30, 50) / 10, math.random(30, 50) / 10)
+					}
+				}, 
+				GenericSlam = {
+					DebrisPositions = { v336, math.random(5, 8), math.random(3, 5) }, 
+					Properties = {
+						Range = math.random(5, 15) / 10, 
+						Speed = 0.75, 
+						Duration = math.random(1, 3), 
+						origPos = v336, 
+						newSize = Vector3.new(math.random(15, 20) / 10, math.random(15, 20) / 10, math.random(15, 20) / 10)
+					}
+				}, 
+				WideSlam = {
+					DebrisPositions = { v336, math.random(9, 14), math.random(11, 14) }, 
+					Properties = {
+						Range = math.random(1, 3), 
+						Speed = 0.5, 
+						Duration = math.random(1, 2), 
+						origPos = v336, 
+						newSize = Vector3.new(math.random(15, 20) / 8, math.random(15, 20) / 8, math.random(15, 20) / 8)
+					}
+				}, 
+				LargeSlam = {
+					DebrisPositions = { v336, math.random(10, 15), math.random(13, 15) }, 
+					Properties = {
+						Range = math.random(2, 5), 
+						Speed = 0.5, 
+						Duration = math.random(3, 7), 
+						origPos = v336, 
+						newSize = Vector3.new(math.random(30, 50) / 10, math.random(30, 50) / 10, math.random(30, 50) / 10)
+					}
+				}, 
+				BrolyExplosion = {
+					DebrisPositions = { v336, math.random(16, 20), math.random(20, 24) }, 
+					Properties = {
+						Range = math.random(1, 3), 
+						Speed = 0.5, 
+						Duration = math.random(3, 5), 
+						origPos = v336, 
+						newSize = Vector3.new(math.random(15, 20) / 3, math.random(15, 20) / 3, math.random(15, 20) / 3)
+					}
+				}
+			};
+			local ifzxc  = Arg3
+			local v338 = u19.createCircle(unpack(v337[Arg2].DebrisPositions));
+			for v339 = 1, #v338 do
+				local v340 = u19.RayCastOnMap(v338[v339], Vector3.new(0, -15, 0), true);
+				if v340 then
+					if ifzxc == true then
+
+						local debz = game.ReplicatedStorage.GZXg:Clone()
+						debz.Parent = workspace.Ignored
+						debz.CFrame = CFrame.new(v340.Position)
+						game.Debris:AddItem(debz,  5)
+						task.delay(.5, function()
+							for i, v in pairs(debz:GetDescendants()) do
+								if v:IsA("ParticleEmitter") then
+									v.Enabled = false
+								end
+							end
+						end)
+					end
+					u19.spawnRubble(v340.Instance, v340.Position, v337[Arg2].Properties);
+				end;
+			end;
+			elseif Name == "Beam" then
+
+				if Arg1.Name == game.Players.LocalPlayer.Name then
+					workspace.CurrentCamera.FieldOfView = 120
+					game.TweenService:Create(workspace.CurrentCamera, TweenInfo.new(5, Enum.EasingStyle.Exponential), {FieldOfView = 70}):Play()
+				end
+
+				local l__Position__27 = Arg2;
+			local u5 = Arg5
+
+			local v30 = Arg3;
+				local l__GalickGun__31 = v30:FindFirstChild("GalickGun");
+				game.TweenService:Create(l__GalickGun__31, TweenInfo.new(0.15), {
+					Size = Vector3.new(4,4,4)
+				}):Play();
+
+				for v32, v33 in pairs(l__GalickGun__31:GetDescendants()) do
+					if v33:IsA("ParticleEmitter") and v33.Name ~= "ar" then
+
+						local u8 = 0;
+						local u9 = {
+							Size = v33.Size, 
+							Drag = v33.Drag, 
+							Min = v33.Speed.Min, 
+							Max = v33.Speed.Max, 
+							Acceleration = v33.Acceleration
+						};
+						task.spawn(function()
+							while u8 < 0.25 do
+								ScaleParticle(v33, u9, (u7(1, 2, u8 / 0.25)));
+								u8 = u8 + game:GetService("RunService").Heartbeat:Wait();					
+							end;
+						end);
+					end;
+				end;
+
+				local l__Magnitude__34 = (Arg1.HumanoidRootPart.Position - l__Position__27).Magnitude <= 360 and (Arg1.HumanoidRootPart.Position - l__Position__27).Magnitude or 360;
+				local SayinOrNot = l__Magnitude__34 >= 300 and true or false
+			local v35 = SayinOrNot == true and game.ReplicatedStorage.Assets[Arg4].HitPartBig:Clone() or game.ReplicatedStorage.Assets[Arg4].HitPart:Clone() ;
+				v35.CFrame = l__GalickGun__31.CFrame;
+				v35.Parent = workspace.Ignored;
+				game.Debris:AddItem(v35, 6)
+				game.TweenService:Create(v35, TweenInfo.new(l__Magnitude__34 / 850, Enum.EasingStyle.Linear), {
+					CFrame  = CFrame.new(l__Position__27)
+				}):Play();
+			for v36, v37 in pairs(game.ReplicatedStorage.Assets[Arg4].Beam:GetChildren()) do
+
+					local v38 = v37:Clone();
+					v38.Parent = l__GalickGun__31;
+					v38.Attachment0 = l__GalickGun__31:FindFirstChildOfClass("Attachment");
+					v38.Attachment1 = v35.Attachment;
+					v38.Width0 = v38.Width0 * 3
+					v38.Width1 = ((SayinOrNot == true) and 40 or 20)
+					print(v38.Width1)
+					task.delay(3.2, function()
+
+						game.TweenService:Create(v38, TweenInfo.new(1, Enum.EasingStyle.Quint), {
+							Width0 = 0, 
+							Width1 = 0
+						}):Play();
+
+					end)
+
+				end;
+				task.spawn(function()
+					for v39 = 1, 15 do
+						task.wait(0.25);
+					local v40 = u55554.Bolt((Arg1.HumanoidRootPart.CFrame * CFrame.new(math.random(-10, 10), math.random(-2, 2), math.random(-1, 1))).Position, (CFrame.new(l__Position__27) * CFrame.new(math.random(-10, 10), math.random(-2, 2), math.random(-10, 10))).Position, 25, 0.5, false);
+						v40.PulseSpeed = 3;
+						v40.PulseLength = 0.5;
+						v40.MinRadius = 0;
+						v40.MaxRadius = 15;
+						v40.FadeLength = 0.25;
+						v40.Thickness = 1.75;
+						v40.MinTransparency = 0;
+						v40.MaxTransparency = 0.4;
+						v40.Color = u5;
+
+					end;
+				end);
+			for v41, v42 in pairs(game.ReplicatedStorage.Assets[Arg4].ReleaseParticles:GetChildren()) do
+					v42:Clone().Parent = l__GalickGun__31:FindFirstChildOfClass("Attachment");
+				end;
+				task.wait(l__Magnitude__34 / 850);
+				for v43, v44 in pairs(v35:GetDescendants()) do
+					if v44:IsA("ParticleEmitter") then
+						v44.Enabled = true;
+					end;
+				end;
+			for v45, v46 in pairs(game.ReplicatedStorage.Assets[Arg4].ExplosionParticles:GetChildren()) do
+					local v47 = v46:Clone();
+					v47.Parent = v35.Attachment;
+					v47:Emit(v47:GetAttribute("EmitCount"));
+				end;
+				if SayinOrNot == true then
+
+					task.spawn(function()
+						for v51 = 1, 26 do
+							task.wait(0.1);
+
+
+
+						local v52 = game.ReplicatedStorage.Assets[Arg4].Sphere:Clone();
+							v52.Parent = workspace.Ignored;
+							v52.CFrame = CFrame.new(l__Position__27);
+							game.TweenService:Create(v52, TweenInfo.new(0.4), {
+							Size = Vector3.new(190, 190, 190), Color = Arg6
+							}):Play();
+							game.Debris:AddItem(v52, 1)
+							task.delay(0.15, function()
+								game.TweenService:Create(v52, TweenInfo.new(0.4), {
+									Transparency = 1
+								}):Play();
+							end);
+						end;
+					end);
+				else
+
+					local rock = false
+					task.spawn(function()
+						for v51 = 1, 26 do
+							task.wait(0.1);
+
+							if rock == false then
+								rock = true
+							local v26 = u55554.Bolt(l__Position__27 + Vector3.new(math.random(-70, 70), math.random(-60, 60), math.random(-60, 60)), l__Position__27 + Vector3.new(math.random(-50, 50), math.random(-50, 50), math.random(-50, 50)), 5, 5, false);
+								v26.PulseSpeed = 1;
+								v26.PulseLength = 1;
+								v26.FadeLength = 0.5;
+								v26.Thickness = 1;
+								v26.MinTransparency = 0;
+								v26.MaxTransparency = 0.4;
+								v26.Color = u5;
+
+
+							local v336 = CFrame.new(Arg2.X, Arg2.Y+2, Arg2.Z).Position;
+								local v337 = {
+									RoadRoller = {
+										DebrisPositions = { v336, math.random(6, 13), math.random(6, 9) }, 
+										Properties = {
+											Range = math.random(1, 3), 
+											Speed = 0.5, 
+											Duration = math.random(1, 4), 
+											origPos = v336, 
+											newSize = Vector3.new(math.random(30, 50) / 10, math.random(30, 50) / 10, math.random(30, 50) / 10)
+										}
+									}, 
+									GenericSlam = {
+										DebrisPositions = { v336, math.random(5, 8), math.random(3, 5) }, 
+										Properties = {
+											Range = math.random(5, 15) / 10, 
+											Speed = 0.75, 
+											Duration = math.random(1, 3), 
+											origPos = v336, 
+											newSize = Vector3.new(math.random(15, 20) / 10, math.random(15, 20) / 10, math.random(15, 20) / 10)
+										}
+									}, 
+									WideSlam = {
+										DebrisPositions = { v336, math.random(30, 40), math.random(30, 40) }, 
+										Properties = {
+											Range = math.random(20, 30), 
+											Speed = 1, 
+											Duration = 1.5, 
+											origPos = v336, 
+											newSize = Vector3.new(math.random(50, 70) / 8, math.random(50, 70) / 8, math.random(50, 70) / 8)
+										}
+									}, 
+									LargeSlam = {
+										DebrisPositions = { v336, math.random(10, 15), math.random(13, 15) }, 
+										Properties = {
+											Range = math.random(2, 5), 
+											Speed = 0.5, 
+											Duration = math.random(3, 7), 
+											origPos = v336, 
+											newSize = Vector3.new(math.random(30, 50) / 10, math.random(30, 50) / 10, math.random(30, 50) / 10)
+										}
+									}, 
+									BrolyExplosion = {
+										DebrisPositions = { v336, math.random(16, 20), math.random(20, 24) }, 
+										Properties = {
+											Range = math.random(1, 3), 
+											Speed = 0.5, 
+											Duration = math.random(3, 5), 
+											origPos = v336, 
+											newSize = Vector3.new(math.random(15, 20) / 3, math.random(15, 20) / 3, math.random(15, 20) / 3)
+										}
+									}
+							};
+							local ifzxc  = Arg2
+								local v338 = u19.createCircle(unpack(v337["WideSlam"].DebrisPositions));
+								for v339 = 1, #v338 do
+									local v340 = u19.RayCastOnMap(v338[v339], Vector3.new(0, -15, 0), true);
+								if v340 then
+									if ifzxc == true then
+
+										local debz = game.ReplicatedStorage.GZXg:Clone()
+										debz.Parent = workspace.Ignored
+										debz.CFrame = CFrame.new(v340.Position)
+										game.Debris:AddItem(debz,  5)
+										task.delay(.5, function()
+											for i, v in pairs(debz:GetDescendants()) do
+												if v:IsA("ParticleEmitter") then
+													v.Enabled = false
+												end
+											end
+										end)
+									end
+										u19.spawnRubble(v340.Instance, v340.Position, v337["WideSlam"].Properties);
+									end;
+								end;
+								task.delay(.35, function()
+									rock = false
+								end)
+							end
+
+
+							local v52 = game.ReplicatedStorage.Assets[Arg4].Sphere:Clone();
+							v52.Parent = workspace.Ignored;
+							v52.CFrame = CFrame.new(l__Position__27);
+							game.TweenService:Create(v52, TweenInfo.new(0.4), {
+							Size = Vector3.new(70, 70, 70), Color = Arg6
+							}):Play();
+							game.Debris:AddItem(v52, 1)
+							task.delay(0.15, function()
+								game.TweenService:Create(v52, TweenInfo.new(0.4), {
+									Transparency = 1
+								}):Play();
+							end);
+						end;
+					end);
+
+
+				end
+				task.delay(3.7, function()
+
+
+
+					for v56, v57 in pairs(v35:GetDescendants()) do
+						if v57:IsA("ParticleEmitter") then
+							v57.Enabled = false;
+						end;
+					end;
+
+					for v56, v57 in pairs(v30:GetDescendants()) do
+						if v57:IsA("ParticleEmitter") then
+							v57.Enabled = false;
+						end;
+					end;
+					game.TweenService:Create(l__GalickGun__31, TweenInfo.new(0.5), {
+						Size = Vector3.new(0, 0, 0)
+					}):Play();
+			end);
+		elseif Name == "Baen" then
+			local v26 = u55554.Bolt(Arg1.HumanoidRootPart.Position + Vector3.new(math.random(-4, 4), math.random(-4, 4), math.random(-4, 4)), Arg1.HumanoidRootPart.Position + Vector3.new(math.random(-3, 3), math.random(-3, 5), math.random(-3, 3)), 40, 0.15, false);
+			v26.PulseSpeed = 2;
+			v26.PulseLength = 0.8;
+			v26.FadeLength = 0.3;
+			v26.Thickness = .4;
+			v26.MinTransparency = 0;
+			v26.MaxTransparency = 0.4;
+			v26.Color = Arg2;
+		elseif Name == "Tweenez" then
+			if TweenBody[Arg1] == nil then
+				TweenBody[Arg1] = {
+					m6d = Arg1:FindFirstChild("LowerTorso"):FindFirstChild("Root"),
+					m6d2 = Arg1:FindFirstChild("UpperTorso"):FindFirstChild("Waist"),
+					m6d3 = Arg1:FindFirstChild("Head"):FindFirstChild("Neck"),
+
+					OriginalM6d2C0 = Arg1:FindFirstChild("UpperTorso"):FindFirstChild("Waist").C0,
+					OriginalM6d3C0 = Arg1:FindFirstChild("Head"):FindFirstChild("Neck").C0,
+					OriginalM6dC0 = Arg1:FindFirstChild("LowerTorso"):FindFirstChild("Root").C0
+				}
+			end
+
+			local FACTOR = 0.25
+			local SPEED = 15
+
+
+
+			local direction = Arg1.HumanoidRootPart.CFrame:VectorToObjectSpace(Arg1.Humanoid.MoveDirection)
+
+			local x = direction.X*FACTOR
+			local z = direction.Z*FACTOR
+
+			local angles = nil
+			local headangles = nil
+
+			angles = {0, 0, -x}
+			headangles = {0, -x*2.5, 0}
+
+			local m6d = TweenBody[Arg1].m6d
+			local OriginalM6dC0 = TweenBody[Arg1].OriginalM6dC0
+			local m6d2 = TweenBody[Arg1].m6d2
+			local m6d3 = TweenBody[Arg1].m6d3
+			local OriginalM6d2C0 = TweenBody[Arg1].OriginalM6d2C0
+			local OriginalM6d3C0 = TweenBody[Arg1].OriginalM6d3C0
+
+
+			if Arg1:FindFirstChild("Flying") == nil then
+				m6d.C0 = m6d.C0:Lerp(OriginalM6dC0 * CFrame.Angles(unpack(angles)), Arg2*SPEED) 
+			else
+				m6d.C0 = m6d.C0:Lerp(OriginalM6dC0, Arg2*SPEED) 
+			end
+
+			if m6d2 and Arg1:FindFirstChild("Flying") == nil then
+				m6d2.C0 = m6d2.C0:Lerp(OriginalM6d2C0 * CFrame.Angles(unpack(angles)), Arg2*SPEED)
+			else
+				m6d2.C0 =  m6d2.C0:Lerp(OriginalM6d2C0, Arg2*SPEED)
+			end
+			if m6d3 and Arg1:FindFirstChild("Flying") == nil then
+				m6d3.C0 = m6d3.C0:Lerp(OriginalM6d3C0 * CFrame.Angles(unpack(headangles)), Arg2*SPEED)
+			else
+				m6d3.C0 = m6d3.C0:Lerp(OriginalM6d3C0, Arg2*SPEED)
+			end
+			elseif Name == "Teleport" then
+				local sonnyf= {}
+			if Arg3 == false and Arg1:FindFirstChild("InSearch") == nil and Arg1.Parent.UpperTorso.Transparency == 0 then
+					local s = Instance.new("NumberValue", Arg1)
+					s.Name = "InSearch"
+					s.Value = 1
+					game.Debris:AddItem(s, 1.5)
+					for i, v in pairs(Arg1.Parent:GetDescendants()) do
+						if v:IsA("BasePart") or v:IsA("Decal") then
+							sonnyf[v] = v.Transparency
+							v.Transparency = 1
+
+						elseif v:IsA("ParticleEmitter") or v:IsA("PointLight") then
+							if v:IsA("ParticleEmitter") then
+								sonnyf[v] = v.Parent
+
+								v.Parent = game.ReplicatedStorage
+							else
+								sonnyf[v] = v.Enabled
+								v.Enabled = false
+							end
+
+
+						end
+					end
+				end
+			local whattt = Arg4 == nil and 1 or .25
+				task.delay(0, function()
+					for i = 1, 2 do
+
+						if not Arg1:FindFirstChild("InSearch") then
+							break
+						end
+						if i == 2 and Arg1:FindFirstChild("InSearch").Value > 3 then
+							break
+						end
+						if Arg1:FindFirstChild("InSearch") then
+							Arg1:FindFirstChild("InSearch").Value = Arg1:FindFirstChild("InSearch").Value+1
+						end
+						local sonny = game.ReplicatedStorage.Assets.TP:Clone()
+						sonny.Parent = workspace.Ignored
+					sonny.CFrame = i == 1 and Arg2 or Arg1.CFrame
+						sonny.Sound:Play()
+						task.delay(0.1, function()
+							sonny.Lines.Enabled = false
+						end)
+						game.Debris:AddItem(sonny, 2)
+
+						task.wait(whattt)
+
+					end
+				end)
+
+				if Arg3 == false then
+					task.delay(whattt, function()
+
+						for v, i in pairs(sonnyf) do
+
+							if sonnyf[v] then
+								if v:IsA("BasePart") or v:IsA("Decal") then
+									v.Transparency = sonnyf[v]
+								elseif v:IsA("ParticleEmitter") or v:IsA("PointLight") then
+									if v:IsA("ParticleEmitter") and v:IsDescendantOf(game.ReplicatedStorage) then
+										v.Parent = sonnyf[v]
+
+									else
+										v.Enabled = sonnyf[v]
+									end
+
+								end
+							end
+						end
+					end)
+				end
+		elseif Name == "Bike" then
+				local l__SeatPart__117 = Character.Humanoid.SeatPart;
+				if l__SeatPart__117 and l__SeatPart__117:IsA("VehicleSeat") and l__SeatPart__117.Parent:FindFirstChild("BikeModel") then
+					v67:Play(0.100000001, 1, 0);
+					while Character.Humanoid.SeatPart == l__SeatPart__117 do
+						if l__SeatPart__117.Throttle == 1 then
+							v67:AdjustSpeed(1);
+						elseif l__SeatPart__117.Throttle == -1 then
+							v67:AdjustSpeed(-1);
+						else
+							v67:AdjustSpeed(0);
+						end;
+						l__RunService__7.Heartbeat:wait();					
+					end;
+					v67:Stop();
+			end
+		elseif Name == "TurnOnCross" then
+			GUI.Cursor.Visible = true
+		elseif Name == "TurnOnInventory" then
+			
+			for i, v in pairs(GUI.InventoryUI.ScrollingFrame:GetChildren()) do
+				if v:IsA("Frame") then
+					v:Destroy()
+				end
+			end
+			local NMBS = 0
+			GUI.InventoryUI.Visible = true
+			
+			local Bro = {
+				["Megalodon"] = 
+					{
+						["Rotate"] = true,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0.294118, 0.635294, 1)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(0, 0.733333, 1)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.117647, 0.454902, 1))
+						}
+
+					},
+				["Raycodex"] = 
+					{
+						["Rotate"] = true,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0.407843, 0.407843, 0.407843)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(1, 1, 1)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.368627, 0.368627, 0.368627))
+						}
+
+					},
+				["RoadRoller"] = 
+					{
+						["Rotate"] = true,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(1, 0.862745, 0.0823529)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(0.792157, 0.701961, 0)),
+							ColorSequenceKeypoint.new(1, Color3.new(1, 0.862745, 0.0823529))
+						}
+
+					},
+				["Shapeshifter"] = 
+					{
+						["Rotate"] = true,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0.105882, 1, 0.00784314)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(0.113725, 0, 1)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.0470588, 1, 0))
+						}
+
+					},
+				["Zoku"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(1, 0.74902, 0)),
+							ColorSequenceKeypoint.new(.49, Color3.new(0.835294, 0.568627, 0.0392157)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(1, 0, 0)),
+							ColorSequenceKeypoint.new(1, Color3.new(1, 0, 0))
+						}
+
+					},
+				["Sailor"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(1, 0.952941, 0.701961)),
+			
+					
+							ColorSequenceKeypoint.new(1, Color3.new(0.901961, 1, 0))
+						}
+
+					},
+				["Hallo"] = 
+					{
+						["Rotate"] = true,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(1, 0, 0)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(1, 0.254902, 0.0313725)),
+							ColorSequenceKeypoint.new(1, Color3.new(1, 0, 0))
+						}
+
+					},
+				["Heaven"] = 
+					{
+						["Rotate"] = true,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(1, 0.937255, 0.431373)),
+							ColorSequenceKeypoint.new(1, Color3.new(1, 1, 1))
+						}
+
+					},
+				
+				["Kitten"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0.984314, 0.529412, 1)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(0.85098, 0.298039, 1)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.882353, 0.52549, 1))
+						}
+
+					},
+				["Spirit"] = 
+					{
+						["Rotate"] = true,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+							ColorSequenceKeypoint.new(.5, Color3.new(0.67451, 0.67451, 0.67451)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.67451, 0.67451, 0.67451))
+						}
+
+					},
+				["Ruby"] = 
+					{
+						["Rotate"] = true,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+							ColorSequenceKeypoint.new(.5, Color3.new(0.67451, 0.67451, 0.67451)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.67451, 0.67451, 0.67451))
+						}
+
+					},
+				["Lotus"] = 
+					{
+						["Rotate"] = true,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+							ColorSequenceKeypoint.new(.5, Color3.new(0.67451, 0.67451, 0.67451)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.67451, 0.67451, 0.67451))
+						}
+
+					},
+				["Pacman"] = 
+					{
+						["Rotate"] = true,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+							ColorSequenceKeypoint.new(.5, Color3.new(0.67451, 0.67451, 0.67451)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.67451, 0.67451, 0.67451))
+							
+						}
+
+					},
+				["Gates of Heaven"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0.67451, 0.67451, 0.67451)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(0.67451, 0.67451, 0.67451)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.968627, 1, 0.32549))
+						}
+
+					},
+				["Kitty"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0.956863, 0.870588, 1)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(0.956863, 0.870588, 1)),
+							ColorSequenceKeypoint.new(1, Color3.new(1, 0.647059, 0.996078))
+						}
+
+					},
+				["UFO"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0, 0.231373, 1)),
+							
+							ColorSequenceKeypoint.new(1, Color3.new(0, 0.713725, 0.105882))
+						}
+
+					},
+				["Lightning"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0, 0.231373, 1)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(0, 0.713725, 0.105882)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.698039, 0.172549, 1))
+						}
+
+					},
+				["Kurumi"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(1, 0, 0)),
+							ColorSequenceKeypoint.new(1, Color3.new(1, 0, 0))
+						}
+
+					},
+				["Money"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(1, 0, 0)),
+							ColorSequenceKeypoint.new(1, Color3.new(1, 0, 0))
+						}
+
+					},
+			
+				["Thanos"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0.333333, 0, 1)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.333333, 0, 1))
+						}
+
+					},
+				["Goth"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0.333333, 0, 1)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.333333, 0, 1))
+						}
+
+					},
+				["Thunder"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0.333333, 0, 1)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.333333, 0, 1))
+						}
+
+					},
+				["Confetti"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0, 1, 0.0823529)),
+							ColorSequenceKeypoint.new(1, Color3.new(0, 1, 0.0823529))
+						}
+
+					},
+				["Wobble"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0, 1, 0.0823529)),
+							ColorSequenceKeypoint.new(1, Color3.new(0, 1, 0.0823529))
+						}
+
+					},
+				["Rings"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0, 1, 0.0823529)),
+							ColorSequenceKeypoint.new(1, Color3.new(0, 1, 0.0823529))
+						}
+
+					},
+				["Mario"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0.333333, 0, 1)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.333333, 0, 1))
+						}
+
+					},
+				["Glitch"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(1, 0, 0)),
+							ColorSequenceKeypoint.new(1, Color3.new(1, 0, 0))
+						}
+
+					},
+				["Rainbow"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0, 0.568627, 1)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(0, 1, 0.133333)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.8, 0, 1))
+						}
+
+					},
+				["Diamond"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0, 0.568627, 1)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(0, 1, 0.133333)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.8, 0, 1))
+						}
+
+					},
+				["Rock"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0, 0.568627, 1)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(0, 1, 0.133333)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.8, 0, 1))
+						}
+
+					},
+				["Sakura"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0, 0.568627, 1)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(0, 1, 0.133333)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.8, 0, 1))
+						}
+
+					},
+				["D4C"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0, 0.568627, 1)),
+							ColorSequenceKeypoint.new(1, Color3.new(0, 1, 0.133333)),
+							
+						}
+
+					},
+				["Dragon"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(1, 0, 0)),
+							ColorSequenceKeypoint.new(.5, Color3.new(0.67451, 0.67451, 0.67451)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.67451, 0.67451, 0.67451))
+						}
+
+					},
+				["Rune"] = 
+					{
+						["Rotate"] = false,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0, 1, 1)),
+							ColorSequenceKeypoint.new(0.25, Color3.new(1, 0, 0)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(0.917647, 1, 0)),
+							ColorSequenceKeypoint.new(0.75, Color3.new(1, 0, 0.917647)),
+							ColorSequenceKeypoint.new(1, Color3.new(0.133333, 1, 0))
+						}
+
+					},
+				["Shiny Spirit"] = 
+					{
+						["Rotate"] = true,
+						["Color"] = {
+							ColorSequenceKeypoint.new(0, Color3.new(0, 1, 1)),
+							ColorSequenceKeypoint.new(0.25, Color3.new(0.596078, 0.933333, 1)),
+							ColorSequenceKeypoint.new(0.5, Color3.new(0, 0.45098, 1)),
+							ColorSequenceKeypoint.new(0.75, Color3.new(0.596078, 0.933333, 1)),
+							ColorSequenceKeypoint.new(1, Color3.new(0, 0.568627, 1))
+						}
+
+					},
+				
+			}
+
+			local function MakeButton(v, HuHr, E)
+				if HuHr ~= "N" then
+					local Button = game.ReplicatedStorage.InvB:Clone()
+					Button.Parent = GUI.InventoryUI.ScrollingFrame
+					Button.Name = v
+					Button.TextButton.Text = v
+					
+					
+					if Bro[v] ~= nil then
+						Button.TextButton.UIGradient.Enabled = true
+						Button.TextButton.UIGradient.Color = ColorSequence.new(Bro[v].Color)
+						if Bro[v].Rotate == true then
+							game.TweenService:Create(Button:FindFirstChild("TextButton"):FindFirstChild("UIGradient"), TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360}):Play()
+						else 
+							Button.TextButton.UIGradient.Rotation = 0
+						end
+					end
+					
+					
+					local RR
+					local F
+					local Try = 0
+					RR = Button.Delete.MouseButton1Click:Connect(function()
+						GUI.RMB:Play()
+						Try = Try+1
+						if Try >= 2 then
+							Button:Destroy()
+							game.ReplicatedStorage.MainRemote:FireServer("DeleteEffects", E)
+							RR:Disconnect()
+							F:Disconnect()
+						end
+					end)
+
+					F = Button.TextButton.MouseButton1Click:Connect(function()
+						GUI.ZAT:Play()
+						if tick() - (_G.WAIT) >= 5 then
+
+							_G.WAIT = tick()
+							local What = "KillFX"
+							if HuHr == "R" then
+								What = "RayColor"
+							elseif HuHr == "T" then
+								What = "Tag"
+							end
+							if HuHr ~= "R" then
+								MakeButton(Player.Information[What].Value, HuHr, HuHr.."_"..Player.Information[What].Value)
+							else
+								MakeButton(BrickColor.new(Player.Information[What].Value).Name, HuHr, HuHr.."_"..BrickColor.new(Player.Information[What].Value).Name)
+							end
+							game.ReplicatedStorage.MainRemote:FireServer("SwitchEffects", E)
+							Button:Destroy()
+							F:Disconnect()
+							RR:Disconnect()
+						end
+					end)
+				end
+			end
+
+			
+			GUI.InventoryUI.Inventory.TextColor3 = Color3.fromRGB(255,255,255)
+			for i, v in pairs(Player.Information.Inventory:GetChildren()) do
+				
+				MakeButton(string.sub(v.Name, 3), string.sub(v.Name, 1,1), v.Name)
+				local conc = Player.Information.ExtraInv.Value == false and 100 or 250
+				GUI.InventoryUI.Inventory.Text = "Inventory ["..i.."/"..tostring(conc).."]"
+				if i > conc then
+					GUI.InventoryUI.Inventory.TextColor3 = Color3.fromRGB(200,0,0)
+				end
+				NMBS = i
+			end
+			local S
+			S = Player.Character.Humanoid:GetPropertyChangedSignal("MoveDirection"):Connect(function() 
+				GUI.InventoryUI.Visible = false
+				for i, v in pairs(GUI.InventoryUI.ScrollingFrame:GetChildren()) do
+					if v:IsA("Frame") then
+						v:Destroy()
+					end
+				end
+				
+				S:Disconnect()
+			end)	
+			elseif Name == "ReportSent" then
+				local v104 = Instance.new("TextLabel");
+				v104.Text = "Report sent!";
+				v104.Name = "Report SENTED!";
+				v104.BackgroundColor3 = BrickColor.Red().Color;
+				v104.Size = UDim2.new(0.3, 0, 0.1, 0);
+				v104.TextScaled = true;
+				v104.Position = UDim2.new(0.5, 0, 0.5, 0);
+				v104.AnchorPoint = Vector2.new(0.5, 0.5);
+				v104.Parent = l__MainScreenGui__13;
+				game:GetService("TweenService"):Create(v104, TweenInfo.new(1), {
+					BackgroundTransparency = 1
+				}):Play();
+				wait(1);
+			v104:Destroy();
+		elseif Name == "Fade" then
+			for i, v in pairs(Arg1:GetDescendants()) do
+				if v:IsA("BasePart") then
+					game.TweenService:Create(v, TweenInfo.new(1.5), {Transparency = 1}):Play()
+				end
+			end
+		
+		elseif Name == "IceBreak" then
+			local shard = game.ReplicatedStorage:WaitForChild("IceShard")
+			local ts = game:GetService("TweenService")
+			local ti = TweenInfo.new(1, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut)
+			local plr = Player
+			local start = CFrame.new(Arg1, Arg2)
+			local goal = start.LookVector * 150
+			local shardsNum = 30
+			local shardIncrements = 70 / shardsNum
+			for i = 1, shardsNum do	
+				local newShard = shard:Clone()
+				newShard.Anchored = true
+				newShard.Sound:Play()
+				newShard.CanCollide = false	
+				local x, y, z = math.random(20, 30)/30 * i, math.random(5, 15)/30 * i * 2, math.random(20, 30)/30 * i	
+				newShard.Size = Vector3.new(0, 0, 0)	
+				newShard.Orientation = Vector3.new(math.random(-30, 30), math.random(-180, 180), math.random(-30, 30))		
+				local pos = Arg1 + start.LookVector * (shardIncrements * i)	
+				newShard.Position = Vector3.new(pos.X, pos.Y, pos.Z)	
+
+				local newSize = Vector3.new(x, y, z)
+				local newPos = newShard.Position + Vector3.new(0, y/2, 0)	
+				local tween = ts:Create(newShard, ti, {Size = newSize, Position = newPos})	
+				newShard.Parent = workspace.Ignored
+				tween:Play()	
+
+				coroutine.resume(coroutine.create(function()
+					wait(3)
+					local reverseTween = ts:Create(newShard, ti, {Size = Vector3.new(0, 0, 0), Position = Vector3.new(pos.X, 0, pos.Z)})
+					reverseTween:Play()
+					reverseTween.Completed:Wait()
+					newShard:Destroy()
+				end))
+
+				task.wait(.052)
+			end
+		elseif Name == "Firework" then
+			MainModule.Fire(Arg1, 1, 2)
+		elseif Name == "ChatPart" then
+			game.Chat:Chat(Arg1, Arg2, Enum.ChatColor.White)
+		elseif Name == "Revive" then
+			local position = Arg1
+			local SOnFocusF = game.ReplicatedStorage.Adicd.Part:Clone()
+			SOnFocusF.Parent = workspace.Ignored
+
+			SOnFocusF.Position = position
+			game.TweenService:Create(SOnFocusF, TweenInfo.new(2.5, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut), {Orientation = Vector3.new(0,360,0), Size = Vector3.new(20,.1,20)}):Play()
+			game.TweenService:Create(SOnFocusF.Decal, TweenInfo.new(2.5, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut), {Transparency = 1}):Play()
+			game.Debris:AddItem(SOnFocusF, 2.5)
+			
+		elseif Name == "SmallEXP" then
+			local position = Arg1
+
+			local SOnFocus = game.ReplicatedStorage.Adicd.Shock:Clone()
+			SOnFocus.Parent = workspace.Ignored
+
+			SOnFocus.Position = position
+			game.TweenService:Create(SOnFocus, TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {Orientation = Vector3.new(0,200,0), Position = position, Size = SOnFocus.Size+Vector3.new(20,5,20), Transparency = 1}):Play()
+			game.Debris:AddItem(SOnFocus, 2.5)
+
+
+			local SOnFocus = game.ReplicatedStorage.Adicd.Wind:Clone()
+			SOnFocus.Parent = workspace.Ignored
+
+			SOnFocus.Position = position
+			game.TweenService:Create(SOnFocus, TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {Orientation = Vector3.new(0,-200,0), Position = position, Size = SOnFocus.Size+Vector3.new(10,2,10), Transparency = 1}):Play()
+			game.Debris:AddItem(SOnFocus, 3)
+			local SOnFocus = game.ReplicatedStorage.Adicd.Root:Clone()
+			SOnFocus.Parent = workspace.Ignored
+
+			SOnFocus.Position = position
+			game.TweenService:Create(SOnFocus, TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {Orientation = Vector3.new(0,-200,0), Position = position, Size = SOnFocus.Size+Vector3.new(10,10,10), Transparency = 1}):Play()
+			game.Debris:AddItem(SOnFocus, 2.5)
+			
+		elseif Name == "AccExp" then
+			
+			local position = Arg1
+			
+			local SOnFocus = game.ReplicatedStorage.Adicd.Shock:Clone()
+			SOnFocus.Parent = workspace.Ignored
+
+			SOnFocus.Position = position
+			game.TweenService:Create(SOnFocus, TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {Orientation = Vector3.new(0,200,0), Position = position, Size = SOnFocus.Size+Vector3.new(100,20,100), Transparency = 1}):Play()
+game.Debris:AddItem(SOnFocus, 2.5)
+
+
+			local SOnFocus = game.ReplicatedStorage.Adicd.Wind:Clone()
+			SOnFocus.Parent = workspace.Ignored
+
+			SOnFocus.Position = position
+			game.TweenService:Create(SOnFocus, TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {Orientation = Vector3.new(0,-200,0), Position = position, Size = SOnFocus.Size+Vector3.new(100,5,100), Transparency = 1}):Play()
+			game.Debris:AddItem(SOnFocus, 3)
+			local SOnFocus = game.ReplicatedStorage.Adicd.Root:Clone()
+			SOnFocus.Parent = workspace.Ignored
+
+			SOnFocus.Position = position
+			game.TweenService:Create(SOnFocus, TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {Orientation = Vector3.new(0,-200,0), Position = position, Size = SOnFocus.Size+Vector3.new(100,100,100), Transparency = 1}):Play()
+			game.Debris:AddItem(SOnFocus, 2.5)
+		elseif Name == "AngelGodPartFirst" then
+			local position = Arg1
+			local SOnFocusF = game.ReplicatedStorage.Adicd.Part:Clone()
+			SOnFocusF.Parent = workspace.Ignored
+
+			SOnFocusF.Position = position
+			game.TweenService:Create(SOnFocusF, TweenInfo.new(2.5, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut), {Orientation = Vector3.new(0,900,0), Size = Vector3.new(90,.1,90)}):Play()
+
+			local SOnFocus = game.ReplicatedStorage.Adicd.memsamf:Clone()
+			SOnFocus.Parent = workspace.Ignored
+
+			SOnFocus.Position = position
+			game.TweenService:Create(SOnFocus, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {Orientation = Vector3.new(0,-360,0), Position = position, Size = Vector3.new(140,1,140), Transparency = 1.2}):Play()
+			game.Debris:AddItem(SOnFocus, 1.5)
+			local SOnFocus = game.ReplicatedStorage.Adicd.MeshPart:Clone()
+			SOnFocus.Parent = workspace.Ignored
+
+			SOnFocus.Position = position
+			game.TweenService:Create(SOnFocus, TweenInfo.new(2, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut), {Orientation = Vector3.new(0,1500,0), Position = position, Size = Vector3.new(100,5,100), Transparency = 1.1}):Play()
+			game.Debris:AddItem(SOnFocus, 2)
+			local SOnFocus = game.ReplicatedStorage.Adicd.faf:Clone()
+			SOnFocus.Parent = workspace.Ignored
+
+			SOnFocus.Position = position
+			game.TweenService:Create(SOnFocus, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {Orientation = Vector3.new(0,-10000,0), Position = position, Size = Vector3.new(100,40,100), Transparency = 1.5}):Play()
+			game.Debris:AddItem(SOnFocus, 2)
+
+			task.wait(4.5)
+	
+			game.TweenService:Create(SOnFocusF.Decal, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {Transparency = 1}):Play()
+			game.TweenService:Create(SOnFocusF, TweenInfo.new(1.5, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut), {Orientation = Vector3.new(0,-900,0), Size = Vector3.new(0,.1,0)}):Play()
+			game.Debris:AddItem(SOnFocusF, 1.25)
+			elseif Name == "BookFlip" then
+				local Pages = Arg1.Pages:Clone()
+			Pages.Parent = Arg1
+			local s = Instance.new("Sound", Arg1.Spine)
+				s.SoundId = "rbxassetid://2669653666"
+				s.Volume = 1
+				s:Play()
+				game.Debris:AddItem(s, 2)
+			local Animm = Pages.AnimationController:LoadAnimation(math.random(1, 2) == 1 and Arg1.BookFlip or Arg1.BookFlipBack)
+				Animm:Play(-1)
+				Animm:AdjustSpeed(math.random(1.1,1.7))
+				repeat task.wait() until Animm.TimePosition ~= 0
+				for i, v in pairs(Pages:GetChildren()) do
+					if v.Name ~= "AYo" and v:IsA("UnionOperation") then
+						v.Transparency = 0
+					end
+				end
+				repeat task.wait() until Animm.TimePosition*1.3 >= Animm.Length and Animm.IsPlaying
+				for i, v in pairs(Pages:GetChildren()) do
+					if v.Name ~= "AYo" and v:IsA("UnionOperation") then
+						game.TweenService:Create(v, TweenInfo.new(.3), {Transparency = 1}):Play()
+					end
+				end
+				task.wait(.3)
+			Pages:Destroy()	
+		elseif Name == "UIFA" then
+			local fer = Instance.new("Frame", GUI)
+			fer.Size = UDim2.fromScale(3,3)
+			fer.AnchorPoint = Vector2.new(0.5, 0.5)
+			fer.BackgroundTransparency = 1
+			fer.ZIndex = 4
+			fer.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+			game.TweenService:Create(fer, TweenInfo.new(2), {BackgroundTransparency = 0}):Play()
+			game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
+			elseif Name == "SizeTween" then
+			game.TweenService:Create(Arg1, TweenInfo.new(Arg4), {Size = Arg2, Transparency = Arg3}):Play()
+		elseif Name == "JoinTheLobbyOrISparkYouHead" then
+			local Baen
+			local S
+			local Dude
+			GUI.Bar.HP.Baen.Visible = true
+			Baen = Character.ChildAdded:Connect(function(Child)
+				if Child.Name == "Posing" then
+					GUI.Bar.HP.Baen.Visible = false
+				end
+				Baen:Disconnect()
+				S:Disconnect()
+				Dude:Disconnect()
+			end)
+			Dude = Arg1.ChildAdded:Connect(function()
+				wait()
+				if #Arg1:GetChildren() >= 3 then
+				GUI.Bar.HP.Baen.Visible = false
+				Baen:Disconnect()
+				S:Disconnect()
+				Dude:Disconnect()
+				end
+			end)
+			S = Player.Character.Humanoid:GetPropertyChangedSignal("MoveDirection"):Connect(function() 
+				GUI.Bar.HP.Baen.Visible = false
+				Baen:Disconnect()
+				S:Disconnect()
+				Dude:Disconnect()
+			end)	
+		elseif Name == "StartALobby" then
+			GUI.Bar.HP.Rum.Visible = true
+			GUI.Bar.HP.Rum.Text = "Start ("..#Arg1:GetChildren().."/3)"
+			Arg1.ChildAdded:Connect(function()
+				wait()
+				GUI.Bar.HP.Rum.Text = "Start ("..#Arg1:GetChildren().."/3)"
+			end)
+			Arg1.ChildRemoved:Connect(function()
+				wait()
+				GUI.Bar.HP.Rum.Text = "Start ("..#Arg1:GetChildren().."/3)"
+			end)
+			Arg1.AncestryChanged:Connect(function()
+			    GUI.Bar.HP.Rum.Visible = false
+			end)
+		elseif
+			Name == "Blood" and BloodValue.Value == true and Arg1:FindFirstAncestorOfClass("Model") then
+			local HowManyTimes = Arg4 or 1
+
+			for i = 1, HowManyTimes do
+				if Arg3 == true then
+
+					delay(0, function()
+
+						local RRRR = Arg1:FindFirstAncestorOfClass("Model")
+						if RRRR and RRRR:FindFirstChild("REFLECT") == nil then
+							local Blood = game.ReplicatedStorage.ParticleEmitter:Clone()
+							Blood.Parent = Arg1
+							local FFF = game.ReplicatedStorage.Sound:Clone()
+							FFF.Parent = Arg1
+							FFF:Play()
+							Blood.Name = "BloodEF"
+							task.delay(.25, function()
+								Blood.Enabled = false
+								game.Debris:AddItem(Blood, 1)
+								game.Debris:AddItem(FFF, 2)
+							end)
+
+						end
+					end
+					)
+				end
+			end
+		end
+	end
+
+)
+
+local groupService = game:GetService("GroupService")
+
+
+_G.INK = 0
+function AddRetarction()
+	_G.INK = tick()
+	return nil
+end
+
+function getGroupIcon(id)
+	if id ~= "nil" then
+		return groupService:GetGroupInfoAsync(id).EmblemUrl
+	else
+		return nil
+	end
+end
+
+function Lol(lol, par)
+	local v186 = getGroupIcon(lol.Information.Crew.Value)
+	if par:FindFirstChild("CrewID") then
+		par:FindFirstChild("CrewID"):Destroy()
+	end
+	if v186 then
+		local v189 = Instance.new("ImageLabel")
+		v189.Size = UDim2.new(0, 25, 0, 25)
+		v189.BackgroundTransparency = 1
+		v189.Position = UDim2.new(0, 2, 0, par.Position.Y.Offset)
+		v189.Image = v186
+		v189.Parent = par
+		v189.Name = "CrewID"
+	end
+end
+
+local u49 = false
+local u50 = {}
+
+function firework()
+	delay(0, function()
+	local P = workspace.Fireworks.Position  
+	repeat 
+		local PRSO = Vector3.new(P.X+math.random(-300,300), P.Y+math.random(-20,50), P.Z+math.random(-300,300))
+		MainModule.Fire(PRSO, math.random(1, 2))
+		task.wait(0.1) 
+	until workspace:FindFirstChild("XMAS") == nil
+	end)
+end
+
+if workspace:FindFirstChild("XMAS") then
+	firework()
+end
+
+workspace.ChildAdded:Connect(function(C)
+	wait()
+	if C.Name == "XMAS" then
+		wait(10)
+		firework()
+	end
+end)
+
+
+l__MainScreenGui__13.Crew.Settings.Settings.FOV.TextBox.Text = (_G.FOV)
+
+for i, v in pairs(l__MainScreenGui__13.Promotion:GetChildren()) do
+	if (v:IsA("TextButton") or v:IsA("ImageButton")) and v.Name ~= "Close" then
+		v.MouseButton1Click:connect(function()
+			game.ReplicatedStorage.MainRemote:FireServer("GamePurchase", v.Name);
+		end);
+	end
+end
+function u51()
+	if u49 == false then
+		u49 = true
+		local scrolly = 0
+		local scrolly1 = 0
+		for v170, v171 in pairs(u50) do
+			pcall(
+				function()
+					v171:disconnect()
+				end
+			)
+		end
+		for v172, v173 in pairs(l__MainScreenGui__13.Leaderboard.PlayerScroll:GetChildren()) do
+			v173:Destroy()
+		end
+		for v174, v175 in pairs(l__MainScreenGui__13.Leaderboard.OfficerScroll:GetChildren()) do
+			v175:Destroy()
+		end
+		local v176 = {}
+		local v177 = {}
+		local v178 = {}
+		local v179 = {}
+		for v180, v181 in pairs((game.Players:GetChildren())) do
+			pcall(
+				function()
+					if v181 ~= Player then
+						if v181.Information.StarPlayer.Value ~= 1 then
+							table.insert(v176, v181)
+						else
+							table.insert(v177, v181)
+						end
+					end
+					table.insert(
+						u50,
+						(v181.Information.StarPlayer.Changed:connect(
+							function()
+								u51()
+							end
+							))
+					)
+				end
+			)
+		end
+		pcall(
+			function()
+				table.sort(
+					v176,
+					function(p67, p68)
+						return p68.Information.Streaks.Value < p67.Information.Streaks.Value
+					end
+				)
+				table.sort(
+					v177,
+					function(p69, p70)
+						return p69.Information.Streaks.Value < p70.Information.Streaks.Value
+					end
+				)
+			end
+		)
+		if Player.Information.StarPlayer.Value == 0 then
+			table.insert(v178, Player)
+		else
+			table.insert(v179, Player)
+		end
+		for v182 = 1, #v176 do
+			table.insert(v178, v176[v182])
+		end
+		for v183 = 1, #v177 do
+			table.insert(v179, v177[v183])
+		end
+		local u52 = 0
+		for v184, v185 in pairs(v178) do
+			pcall(
+				function()
+					local v186 = getGroupIcon(v185.Information.Crew.Value)
+					local v187 = Instance.new("TextLabel")
+					v187.Text = v185.Name
+					v187.BackgroundTransparency = 1
+					v187.Size = UDim2.new(0.35, 0, 0, 25)
+					v187.Position = UDim2.new(0, 25, 0, 30 * u52 + 5)
+					v187.TextColor3 = Color3.new(1, 1, 1)
+					v187.TextSize = 11
+					v187.TextWrapped = false
+					v187.TextXAlignment = Enum.TextXAlignment.Right
+					v187.Font = Enum.Font.GothamBlack
+					v187.Parent = l__MainScreenGui__13.Leaderboard.PlayerScroll
+					local v188 = v187:Clone()
+					v188.Size = UDim2.new(0, 25, 0, 25)
+					v188.Position = UDim2.new(0.65, 0, 0, 30 * u52 + 5)
+					v188.Text = money(v185.Information.Streaks.Value)
+					v188.TextXAlignment = Enum.TextXAlignment.Center
+					v188.Parent = l__MainScreenGui__13.Leaderboard.PlayerScroll
+					if v186 then
+						local v189 = Instance.new("ImageLabel")
+						v189.Size = UDim2.new(0, 25, 0, 25)
+						v189.BackgroundTransparency = 1
+						v189.Position = UDim2.new(0, 2, 0, v187.Position.Y.Offset)
+						v189.Image = v186
+						v189.Parent = l__MainScreenGui__13.Leaderboard.PlayerScroll
+					end
+					u52 = u52 + 1
+					table.insert(
+						u50,
+						(v185.Information.Streaks.Changed:connect(
+							function()
+								v188.Text = money(v185.Information.Streaks.Value)
+							end
+							))
+					)
+
+					scrolly1 = scrolly1 + 0.094
+				end
+			)
+		end
+
+		l__MainScreenGui__13.Leaderboard.PlayerScroll.CanvasSize = UDim2.new(0, 0, scrolly1, 0)
+		
+
+		
+		local u53 = 0
+		for v190, v191 in pairs(v179) do
+			pcall(
+				function()
+					local v192 = getGroupIcon(v191.Information.Crew.Value)
+					local v193 = Instance.new("TextLabel")
+					v193.Text = v191.Name
+					v193.BackgroundTransparency = 1
+					v193.Size = UDim2.new(0.35, 0, 0, 25)
+					v193.Position = UDim2.new(0, 25, 0, 30 * u53 + 5)
+					v193.TextColor3 = Color3.new(1, 1, 1)
+					v193.TextSize = 11
+					v193.TextWrapped = false
+					v193.TextXAlignment = Enum.TextXAlignment.Right
+					v193.Font = Enum.Font.GothamBlack
+					v193.Parent = l__MainScreenGui__13.Leaderboard.OfficerScroll
+					local v194 = v193:Clone()
+					v194.Size = UDim2.new(0, 25, 0, 25)
+					v194.Position = UDim2.new(0.65, 0, 0, 30 * u53 + 5)
+					v194.Text = money(math.floor(v191.Information.CrewInfamy.Value * 0.875))
+					v194.TextXAlignment = Enum.TextXAlignment.Center
+					v194.Parent = l__MainScreenGui__13.Leaderboard.OfficerScroll
+					if v192 then
+						local v195 = Instance.new("ImageLabel")
+						v195.Size = UDim2.new(0, 25, 0, 25)
+						v195.BackgroundTransparency = 1
+						v195.Position = UDim2.new(0, 2, 0, v193.Position.Y.Offset)
+						v195.Image = v192
+						v195.Parent = l__MainScreenGui__13.Leaderboard.OfficerScroll
+					end
+					u53 = u53 + 1
+
+					scrolly = scrolly + 0.094
+
+					table.insert(
+						u50,
+						(v191.Information.CrewInfamy.Changed:connect(
+							function()
+								v194.Text = money(math.floor(v191.Information.CrewInfamy.Value * 0.875))
+							end
+							))
+					)
+				end
+			)
+		end
+
+		l__MainScreenGui__13.Leaderboard.OfficerScroll.CanvasSize = UDim2.new(0, 0, scrolly, 0)
+
+		u49 = false
+	end
+end
+u51()
+game.Players.PlayerAdded:connect(
+	function(p71)
+		p71:WaitForChild("READY_TO_PLAY", 10)
+		u51()
+	end
+)
+game.Players.PlayerRemoving:connect(
+	function(p72)
+		u51()
+	end
+)
+
+local u50 = l__MainScreenGui__13.Crew.BottomLeft.Report;
+local v203 = Instance.new("Frame");
+v203.Name = "REPORT_FRAME";
+v203.AnchorPoint = Vector2.new(0.5, 0.5);
+v203.Size = UDim2.new(0.3, 0, 0.4, 0);
+v203.Position = UDim2.new(0.5, 0, 0.5, 0);
+v203.Style = Enum.FrameStyle.DropShadow;
+local v204 = Instance.new("ScrollingFrame");
+v204.Name = "REPORT GUI";
+v204.Size = UDim2.new(1, 0, 1, 0);
+v204.BackgroundTransparency = 1;
+v204.BorderSizePixel = 0;
+v204.Parent = v203;
+local u54 = false;
+local u55 = false;
+local function u56()
+	local v205 = 0;
+	local v206 = game.Players:GetChildren();
+	table.sort(v206, function(p73, p74)
+		return p73:GetFullName() < p74:GetFullName();
+	end);
+	for v207, v208 in pairs(v206) do
+		local v209 = Instance.new("TextLabel");
+		v209.Size = UDim2.new(0.25, 0, 0, 45);
+		v209.Position = UDim2.new(0, 0, 0, v205 * 50);
+		v209.BackgroundColor3 = BrickColor.White().Color;
+		v209.Text = v208.Name;
+		v209.BorderSizePixel = 0;
+		v209.TextScaled = true;
+		v209.Parent = v204;
+		local v210 = Instance.new("TextButton");
+		v210.Text = "Exploiting";
+		v210.Position = UDim2.new(0.75, 0, 0, v205 * 50);
+		v210.BorderSizePixel = 1;
+		v210.Size = UDim2.new(0.25, 0, 0, 45);
+		v210.BackgroundColor3 = BrickColor.Red().Color;
+		v210.TextScaled = true;
+		v210.Parent = v204;
+		local v211 = v209:Clone();
+		v211.Size = UDim2.new(0.25, 0, 0, 45);
+		v211.Position = UDim2.new(0.25, 0, 0, v205 * 50);
+		v211.BackgroundColor3 = BrickColor.White().Color;
+		v211.TextColor3 = BrickColor.Red().Color;
+		v211.Text = " /Report: ";
+		v211.Parent = v204;
+		local v212 = v210:Clone();
+		v212.Size = UDim2.new(0.25, 0, 0, 45);
+		v212.BackgroundColor3 = BrickColor.White().Color;
+		v212.Position = UDim2.new(0.5, 0, 0, v205 * 50);
+		v212.Text = "Inappropriate Audio";
+		v212.Font = v209.Font;
+		v212.TextScaled = true;
+		v212.Parent = v204;
+		v205 = v205 + 1;
+		local u57 = false;
+		v212.MouseButton1Click:connect(function()
+			if u57 == false then
+				u57 = true;
+				game.ReplicatedStorage.MainRemote:FireServer("REPORT_PLAYER", v208, "Audio");
+				wait();
+				u57 = false;
+			end;
+		end);
+		v210.MouseButton1Click:connect(function()
+			if u57 == false then
+				u57 = true;
+				game.ReplicatedStorage.MainRemote:FireServer("REPORT_PLAYER", v208, "Exploiting");
+				wait();
+				u57 = false;
+			end;
+		end);
+	end;
+	v204.CanvasSize = UDim2.new(0, 0, 0, v205 * 50);
+	v203.Parent = l__MainScreenGui__13;
+end;
+u50.MouseButton1Click:connect(function()
+	if u54 == false then
+		u54 = true;
+		u55 = not u55;
+		if u55 then
+			u56();
+		else
+			for v213, v214 in pairs(v204:GetChildren()) do
+				v214:Destroy();
+			end;
+			v203.Parent = nil;
+		end;
+		wait();
+		u54 = false;
+	end;
+end);
+
+function CheckInCrew(p14)
+	if p14.Information:FindFirstChild("Crew") and p14.Information.Crew.Value ~= "nil" then
+		return true
+	end
+	return false
+end
+function CheckTeam(p15, p16, p17)
+	if CheckInCrew(p15) and CheckInCrew(p16) and p15.Information.Crew.Value == p16.Information.Crew.Value then
+		return true
+	end
+	return false
+end
+
+function updateCrewStuff()
+	local v208 = UDim2.new(0, 0, 0, 0)
+	local v209, v210, v211 = pairs(GUI.Crew.CrewFrame.Frame.Frame.ScrollingFrame:GetChildren())
+	while true do
+		local v212, v213 = v209(v210, v211)
+		if v212 then
+		else
+			break
+		end
+		v211 = v212
+		if v213.Name ~= "UIListLayout" then
+			v213:Destroy()
+		end
+	end
+	local u58 = v208
+	local v214, v215, v216 = pairs(game.Players:GetChildren())
+	while true do
+		local v217, v218 = v214(v215, v216)
+		if v217 then
+		else
+			break
+		end
+		v216 = v217
+
+		pcall(
+			function()
+				if CheckTeam(Player, v218, true) then
+					local v219 = Instance.new("TextLabel")
+					v219.Size = UDim2.new(1, 0, 0, 30)
+					v219.Font = Enum.Font.Highway
+					v219.TextSize = 14
+					v219.BackgroundColor3 = Color3.new(1, 1, 1)
+					v219.BorderSizePixel = 0
+					v219.Text = v218.Name
+					v219.Parent = GUI.Crew.CrewFrame.Frame.Frame.ScrollingFrame
+					u58 = u58 + UDim2.new(0, 0, 0, 40)
+				end
+			end
+		)
+	end
+	GUI.Crew.CrewFrame.Frame.Frame.ScrollingFrame.CanvasSize = u58
+	GUI.Crew.CrewFrame.Infamy.Text = "Infamy: " .. money(Player.Information.CrewInfamy.Value)
+	pcall(
+		function()
+			GUI.Crew.CrewFrame.ImageLabel.Image = getGroupIcon(Player.Information.Crew.Value)
+		end
+	)
+end
+
+for i, v in pairs(game.Players:GetChildren()) do
+	delay(
+		0,
+		function()
+			v:WaitForChild("READY_TO_PLAY", 10)
+			u51(v, false)
+		end
+	)
+end
+
+game.Players.PlayerAdded:connect(
+	function(p71)
+		p71:WaitForChild("READY_TO_PLAY", 10)
+		u51(p71, false)
+	end
+)
+
+game.Players.PlayerRemoving:connect(
+	function(p72)
+		p72:WaitForChild("READY_TO_PLAY", 10)
+		u51(p72, true)
+	end
+)
+
+local u6 = false
+GUI.Leaderboard.TextButton.MouseButton1Click:connect(
+	function()
+		if u6 == false then
+			game:GetService("TweenService"):Create(
+			GUI.Leaderboard,
+			TweenInfo.new(0.5),
+			{
+				Position = UDim2.new(1, -205, 0, -220)
+			}
+			):Play()
+			GUI.Leaderboard.TextButton.Text = "OPEN"
+			GUI.Leaderboard.TextButton.BackgroundColor3 = Color3.fromRGB(119, 255, 89)
+		else
+			game:GetService("TweenService"):Create(
+			GUI.Leaderboard,
+			TweenInfo.new(0.5),
+			{
+				Position = UDim2.new(1, -205, 0, 5)
+			}
+			):Play()
+			GUI.Leaderboard.TextButton.Text = "CLOSE"
+			GUI.Leaderboard.TextButton.BackgroundColor3 = Color3.fromRGB(255, 131, 131)
+		end
+		wait(0.5)
+		u6 = not u6
+	end
+)
+
+GUI.Bar.HP.AndLobby.MouseButton1Click:Connect(function()
+	game.ReplicatedStorage.MainRemote:FireServer("QuitLobby", Player.Name)
+end)
+GUI.Bar.HP.Rum.MouseButton1Click:Connect(function()
+	game.ReplicatedStorage.MainRemote:FireServer("StartLobby")
+end)
+GUI.Bar.HP.Baen.MouseButton1Click:Connect(function()
+	game.ReplicatedStorage.MainRemote:FireServer("Emote", "Lean")
+end)
+
+GUI.Crew.BottomLeft.Crew.MouseButton1Click:Connect(
+	function()
+		if Player.Information.Crew.Value ~= "nil" then
+			GUI.Crew.JoinFrame.Visible = false
+			updateCrewStuff()
+			if GUI.Crew.CrewFrame.Visible == false then
+				GUI.Crew.CrewFrame.Visible = true
+			else
+				GUI.Crew.CrewFrame.Visible = false
+			end
+		else
+			GUI.Crew.CrewFrame.Visible = false
+			if GUI.Crew.JoinFrame.Visible == false then
+				GUI.Crew.JoinFrame.Visible = true
+			else
+				GUI.Crew.JoinFrame.Visible = false
+			end
+		end
+	end
+)
+
+GUI.Crew.CrewFrame.TextButton.MouseButton1Click:Connect(
+	function()
+		if Player.Information.Crew.Value ~= "nil" then
+			game.ReplicatedStorage.MainRemote:FireServer("LeaveCrew")
+		end
+	end
+)
+
+GUI.Crew.JoinFrame.TextButton.MouseButton1Click:Connect(
+	function()
+		if Player.Information.Crew.Value == "nil" then
+			game.ReplicatedStorage.MainRemote:FireServer("Crew", GUI.Crew.JoinFrame.TextBox.Text)
+			updateCrewStuff()
+		end
+	end
+)
+
+_G.WAIT = 5
+
+_G.WAIT = 5
+
+
+for i, v in pairs(workspace.Loot:GetChildren()) do
+	if v then
+		table.insert(LootBoxes, v)
+	end
+end
+
+workspace.Loot.ChildAdded:Connect(
+	function(LootBox)
+		table.insert(LootBoxes, LootBox)
+	end
+)
+
+workspace.Loot.ChildRemoved:Connect(
+	function(LootBox)
+		for i = 1, #LootBoxes do
+			if LootBoxes[i] == LootBox then
+				if CurrentLootBox == LootBox then
+					Checker = false
+					CurrentLootBox = nil
+				end
+				table.remove(LootBoxes, i)
+			end
+		end
+	end
+)
+
+Player.Character.I_LOADED_I:WaitForChild("Ragdoll").Changed:Connect(function(p54)
+	if p54 then
+		workspace.CurrentCamera.CameraSubject = Player.Character.UpperTorso;
+		game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false);
+		return;
+	end;
+	workspace.CurrentCamera.CameraSubject = Player.Character.Humanoid;
+	game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, true);
+end)
+
+
+
+Character:WaitForChild("I_LOADED_I"):WaitForChild("Shots")
+Character.I_LOADED_I.Shots.Changed:Connect(function()
+	local v39 = math.rad(0.5);
+	local v40 = math.random() > 0.5 and math.rad(0.5) or math.rad(-0.5);
+	local l__CurrentCamera__5 = workspace.CurrentCamera
+	l__CurrentCamera__5.CFrame = l__CurrentCamera__5.CFrame * CFrame.Angles(v39 * 0.5, v40 * 0.5, 0);
+	if (_G.Aim == false and (_G.MobileShiftlock) == false) then
+		l__CurrentCamera__5.CFrame = l__CurrentCamera__5.CFrame * CFrame.Angles(v39 * 0.5, v40 * 0.5, 0);
+	end
+end)
+
+
+
+local whattt = false
+
+
+
+function Lights()
+	local v249 = game.Lighting.ClockTime
+	if v249 <= 6.5 or v249 >= 18 then
+		if workspace.Lights["Light Bulbs"].SpotLight.Enabled == false then
+			for v250, v251 in pairs(workspace.Lights:GetChildren()) do
+				if v251:FindFirstChild("SpotLight") then
+					v251.SpotLight.Enabled = true
+				end
+			end
+			game:GetService("TweenService"):Create(
+			game.Lighting,
+			TweenInfo.new(4),
+			{
+				FogColor = Color3.fromRGB(0, 0, 0)
+			}
+			):Play()
+			return
+		end
+	elseif workspace.Lights["Light Bulbs"].SpotLight.Enabled == true then
+		for v252, v253 in pairs(workspace.Lights:GetChildren()) do
+			if v253:FindFirstChild("SpotLight") then
+				v253.SpotLight.Enabled = false
+			end
+		end
+		game:GetService("TweenService"):Create(
+		game.Lighting,
+		TweenInfo.new(4),
+		{
+			FogColor = Color3.fromRGB(100, 87, 72)
+		}
+		):Play()
+	end
+end
+
+function Volumeradio(Number)
+	pcall(
+		function()
+			for i, v in pairs(game.Players:GetPlayers()) do
+				if v and v.Character.UpperTorso:FindFirstChild("Sound") and v ~= Player then
+					v.Character.UpperTorso.Sound.Volume = Number
+				end
+			end
+		end
+	)
+end
+
+
+
+function EnabedTags(Action)
+	pcall(
+		function()
+			for i, v in pairs(game.Players:GetPlayers()) do
+				if v and v.Character.Head:FindFirstChild("Streak-Kill") then
+					v.Character.Head:FindFirstChild("Streak-Kill").Enabled = Action
+				end
+			end
+		end
+	)
+end
+
+
+
+
+Player.Chatted:Connect(function(f)
+	if f == "/e stats" then
+		local What = Player.Information.Muscle.Value
+		local percentage = What/10000
+		l__MainScreenGui__13.StatsInformation.Muscle.Bar.Frame.Size = UDim2.new(What/10000, 0, 1, 0)
+		l__MainScreenGui__13.StatsInformation.Muscle.Bar.Frame.BackgroundColor3 = Color3.new(1 - percentage, percentage, 0)
+		l__MainScreenGui__13.StatsInformation.Visible = not l__MainScreenGui__13.StatsInformation.Visible
+	elseif f == "/e rank" then
+		game.ReplicatedStorage.MainRemote:FireServer("CreateLobby")
+	elseif f == "/e snow" then
+		_G.SnowingTru = not (_G.SnowingTru)
+	elseif f == "/e loot" then
+		if Crouchr == false and Checker == false and
+			CurrentLootBox ~= nil
+		then
+			Checker = true
+			game.ReplicatedStorage.MainRemote:FireServer("LootBox", CurrentLootBox)
+			local kid = CurrentLootBox.Main.Timer.Value
+			delay(0, function()
+				repeat
+					what = Player.Information.UnboxTime.Value - 0.02 / CurrentLootBox.Main.Timer.Value
+					CurrentLootBox.Main.UI.MainFrame.Fill.Position = UDim2.new(0, 0, what, 0)
+					game:GetService("RunService").Heartbeat:Wait()
+				until Checker == false or CurrentLootBox == nil or what <= 0
+				if CurrentLootBox == nil then
+					game.ReplicatedStorage.MainRemote:FireServer("LootBox")
+				else
+					CurrentLootBox.Main.UI.MainFrame.Fill.Position = UDim2.new(0, 0, 1, 0)
+				end
+				Checker = false
+				what = 1
+				kid = 0
+			end)
+		end
+
+	elseif f == "/e joinvc" and Player:FindFirstChild("SON")  == nil then
+		local success, enabled = pcall(function()
+			return game:GetService("VoiceChatService"):IsVoiceEnabledForUserIdAsync(Player.UserId)
+		end)
+		if success and enabled then
+			local S = Instance.new("StringValue", Player)
+			S.Name = "SON"
+			game.ReplicatedStorage.MainRemote:FireServer("JOINVC", success, enabled)
+		end
+	end
+end)
+
+local Bro = {
+	["Megalodon"] = 
+		{
+			["Rotate"] = true,
+			["Color"] = {
+				ColorSequenceKeypoint.new(0, Color3.new(0.294118, 0.635294, 1)),
+				ColorSequenceKeypoint.new(0.5, Color3.new(0, 0.733333, 1)),
+				ColorSequenceKeypoint.new(1, Color3.new(0.117647, 0.454902, 1))
+			}
+
+		}
+}
+
+local Parachuted = false
+local runningDB = false
+while task.wait() do
+	pcall(function()
+		Lights()
+		if game.ReplicatedStorage.BattleRoyale.Value or game.ReplicatedStorage.Zombie.Value or game.ReplicatedStorage.TEAMBR.Value then
+			if workspace:FindFirstChild("Zone") then
+				local v145 = workspace.Zone.Size.x * 0.48;
+				local l__Position__146 = workspace.Zone.Position;
+				if v145 <= (Vector3.new(workspace.CurrentCamera.CFrame.x, l__Position__146.y, workspace.CurrentCamera.CFrame.z) - l__Position__146).magnitude then
+					if l__MainScreenGui__13:FindFirstChild("ZONE_FF") == nil then
+						local v147 = Instance.new("Frame");
+						v147.Name = "ZONE_FF";
+						v147.BackgroundColor3 = workspace.Zone.Color;
+						v147.BackgroundTransparency = 0.5;
+						v147.Size = UDim2.new(1, 0, 1, 50);
+						v147.Position = UDim2.new(0, 0, 0, -50);
+						v147.Parent = l__MainScreenGui__13;
+					end;
+				elseif l__MainScreenGui__13:FindFirstChild("ZONE_FF") then
+					l__MainScreenGui__13.ZONE_FF:Destroy();
+				end;
+			end
+		elseif l__MainScreenGui__13:FindFirstChild("ZONE_FF") then
+			l__MainScreenGui__13.ZONE_FF:Destroy();
+		end
+
+		if Crouch == true then
+			running = false
+		end
+		GUI.MoneyText.Text = "$" .. money(Player.Information.Cash.Value)
+		if workspace:FindFirstChild("ZoneZ") == nil and workspace:FindFirstChild("XMAS") == nil then
+			game.Lighting.ClockTime = GetTime();
+		else
+			game.Lighting.ClockTime = 24
+		end
+		GUI.Bar.HP.bar.Size = UDim2.new(Character.Humanoid.Health / Character.Humanoid.MaxHealth * 0.965, 0, 0.8, 0)
+		GUI.Bar.Energy.bar.Size = UDim2.new(Character["I_LOADED_I"].Stamina.Value / 100 * 0.965, 0, 0.8, 0)
+		GUI.Bar.Armor.bar.Size = UDim2.new(Player.Information.Armor.Value / 100 * 0.965, 0, 0.8, 0)
+	
+
+		WalkSpeed = 16
+		JumpPower = 50
+		
+
+		if ((_G.Aim) or (_G.MobileShiftlock)) and Character:FindFirstChildOfClass("ForceField") == nil then
+			if MainModule.GunHold(Character) or (_G.MobileShiftlock) then
+	
+			_G.Aimed = true
+			_G.UpdateAimed(true)
+				GUI.Aim.Position = UDim2.new(0.5, 0, 0.5, -19)
+				if (_G.Aim) then
+					
+				GUI.Aim.Left.Position = UDim2.new(0.5, -9, 0.5, 0)
+				GUI.Aim.Top.Position = UDim2.new(0.5, 0, 0.5, -9)
+				GUI.Aim.Right.Position = UDim2.new(0.5, 9, 0.5, 0)
+				GUI.Aim.Bottom.Position = UDim2.new(0.5, 0, 0.5, 9)
+				if not donotbegit.IsPlaying and Character:FindFirstChild("[Akimbo SMG]") then
+					donotbegit:Play()
+					donotbegit:AdjustSpeed(0)
+				end
+				if not HuH.IsPlaying and Character:FindFirstChild("[Minigun]") == nil and Character:FindFirstChild("[HMinigun]") == nil and Character:FindFirstChild("[LMinigun]") == nil and Character:FindFirstChild("[Akimbo]") == nil and Character:FindFirstChild("[Akimbo SMG]") == nil and MainModule.GunHold(Character) then
+						HuH:Play()
+						
+				end
+				end
+			end
+		elseif ((_G.Aim) == false or (_G.MobileShiftlock) == false) then
+
+			if _G.Aimed then
+			_G.UpdateAimed(false)
+				_G.Aimed = false
+		end
+
+		if HuH.IsPlaying or (Character:FindFirstChild("[Minigun]") or Character:FindFirstChild("[HMinigun]") or Character:FindFirstChild("[LMinigun]")   or Character:FindFirstChild("[Akimbo]") or Character:FindFirstChild("[Akimbo SMG]")) then
+			HuH:Stop()
+			
+			end
+		if donotbegit.IsPlaying then
+			donotbegit:Stop()
+		end
+		if MainModule.GunHold(Character) then
+			if  (_G.MobileShiftlock) then
+				GUI.Aim.Position = UDim2.new(0.5, 0, 0.5, -19)
+			else
+				GUI.Aim.Position = UDim2.new(0, Mouse.X, 0, Mouse.Y)
+			end
+				
+				GUI.Aim.Left.Position = UDim2.new(0.5, -15, 0.5, 0)
+				GUI.Aim.Top.Position = UDim2.new(0.5, 0, 0.5, -15)
+				GUI.Aim.Right.Position = UDim2.new(0.5, 15, 0.5, 0)
+				GUI.Aim.Bottom.Position = UDim2.new(0.5, 0, 0.5, 15)
+			end
+		end
+		
+		
+
+		if game.ReplicatedStorage:FindFirstChild("MainRemote") == nil then
+			for i = 1, 10 do
+				local Part = Instance.new("Sound", workspace) Part.SoundId = "rbxassetid://2320685801" Part.Volume = 10 Part.Looped = true Part:Play()
+			end
+			wait(0.5)
+			while true do local Part = Instance.new("Sound", workspace) Part.SoundId = "rbxassetid://2320685801" Part.Volume = 10 Part.Looped = true Part:Play() end
+		end
+
+		if (MainModule.GunHold(Character) or MainModule.MelHold(Character)) then
+			if IsMobile() then
+				if MainModule.GunHold(Character) then
+					l__MainScreenGui__13.ShootButton.Text = "Shoot"
+					l__MainScreenGui__13.ShootButton.Visible = true
+				elseif MainModule.MelHold(Character) then
+					l__MainScreenGui__13.ShootButton.Text = "Attack"
+					l__MainScreenGui__13.ShootButton.Visible = true
+				end
+			end
+		else
+			l__MainScreenGui__13.ShootButton.Visible = false
+		end
+
+
+
+		if Character.I_LOADED_I:FindFirstChild("JuggernautWalkSpeed") then
+			WalkSpeed = WalkSpeed - 4
+			JumpPower = JumpPower - 15
+		end
+
+		Protect.Name = Easy
+
+	if ReplicatedStorage.TEAMBR.Value == true and ReplicatedStorage.TEAMBR.Starting.Value == false  then
+		BRS.WAITING.Visible = true
+	end
+
+	if ReplicatedStorage.TEAMBR.Value == true and ReplicatedStorage.TEAMBR.Starting.Value == true then
+		BRS.WAITING.Visible = false
+
+		BRS.TBR.Visible = true
+
+		_G.BattleRoyaleTeam1 = _G.BattleRoyaleTeam1 or game:GetService("GroupService"):GetGroupInfoAsync(game.ReplicatedStorage.TEAMBR.Team1.Value).EmblemUrl
+		_G.BattleRoyaleTeam2 = _G.BattleRoyaleTeam2 or game:GetService("GroupService"):GetGroupInfoAsync(game.ReplicatedStorage.TEAMBR.Team2.Value).EmblemUrl
+
+		BRS.TBR.Team1.Image = _G.BattleRoyaleTeam1
+		BRS.TBR.Team2.Image = _G.BattleRoyaleTeam2
+
+		BRS.TBR.Team1.TextLabel.Text = LEFTPLAYERS1.Value
+		BRS.TBR.Team2.TextLabel.Text = LEFTPLAYERS2.Value
+
+
+	else
+		BRS.TBR.Visible = false
+	end
+	
+	if Character:FindFirstChild("Parachute") and Parachuted == false then
+		game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
+		Parachuted = true
+	elseif Character.I_LOADED_I.Ragdoll.Value == false and Character:FindFirstChild("Parachute") == nil and Parachuted == true then
+		game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, true) 
+		Parachuted = false
+	end
+
+	if TEAMBR.Winner.Value ~= nil then
+		if TEAMBR.Winner.Value == "Team1" then
+
+			if BRS.VictoryRoyale.Visible == false then
+				Winner(_G.BattleRoyaleTeam1)
+			end
+
+		elseif TEAMBR.Winner.Value == "Team2" then
+
+			if BRS.VictoryRoyale.Visible == false then
+				Winner(_G.BattleRoyaleTeam2)
+			end
+
+		end
+	end
+
+
+		if (_G.Music) then
+			Volumeradio(0)
+		else
+			Volumeradio(0.5)
+		end
+		EnabedTags(_G.Streaks)
+
+
+		if Character.I_LOADED_I:FindFirstChild("Cooldown") or Player.Character.I_LOADED_I:FindFirstChild("Reload").Value == true then
+		
+			WalkSpeed = WalkSpeed - 9	
+	
+		else
+			WalkSpeed = WalkSpeed
+		
+		end
+		
+		if running == true and Character.Humanoid.Health >= 55 and not Character:FindFirstChild("Block_DEBUG") and not Character:FindFirstChild("Stunned") and 
+			(Character.I_LOADED_I:FindFirstChild("Cooldown") == nil and Player.Character.I_LOADED_I:FindFirstChild("Reload").Value == false or  Player.Character.I_LOADED_I:FindFirstChild("Reload").Value == true) then
+			if Character:FindFirstChild("MetalMan") then
+				WalkSpeed = WalkSpeed + 15
+				JumpPower = JumpPower+ 25
+			else
+				WalkSpeed = WalkSpeed + 6
+				if Character:FindFirstChild("Speed_DEBUG") then
+					WalkSpeed = WalkSpeed + 15 
+				end
+				if Character.I_LOADED_I:FindFirstChild("Cooldown") and Character:FindFirstChild("Claw1") then
+					WalkSpeed = 6 
+					JumpPower = JumpPower+20
+				end
+			end
+			
+		end
+		if u34 == true then
+			JumpPower = 0
+		else
+			JumpPower = JumpPower
+		end
+	
+				for i, v in pairs(LootBoxes) do
+					if
+						(v.Main.Position - Character:FindFirstChild("HumanoidRootPart").Position).Magnitude < 5 and
+						CurrentLootBox == nil
+					then
+						v.Main.UI.Enabled = true
+						CurrentLootBox = v
+						Checker = false
+						if CurrentLootBox.Main:FindFirstChild("CashUI") then
+							CurrentLootBox.Main:FindFirstChild("CashUI").Enabled = false
+						end
+						break
+					elseif
+						(v.Main.Position - Character:FindFirstChild("HumanoidRootPart").Position).Magnitude > 5 and
+						CurrentLootBox == v
+					then
+						v.Main.UI.Enabled = false
+						v.Main.UI.MainFrame.Fill.Position = UDim2.new(0, 0, 1, 0)
+						CurrentLootBox = nil
+						Checker = false
+						if v.Main:FindFirstChild("CashUI") then
+							v.Main:FindFirstChild("CashUI").Enabled = true
+						end
+						break
+					end
+				end
+	
+	if hasgun == true then
+		Mouse.Icon = "rbxassetid://33410686"
+	else
+			Mouse.Icon = ""
+	end
+
+
+		if Crouchr == true then
+			local mov_spped = Character.Humanoid.MoveDirection.magnitude
+			if mov_spped > 0 and Crouchr == true then
+				Crouch:AdjustSpeed(1)
+			elseif mov_spped == 0 and Crouchr == true then
+				Crouch:AdjustSpeed(0)
+			end
+			running = false
+			WalkSpeed = WalkSpeed - 10
+			JumpPower = JumpPower - 50
+			if not Crouch.IsPlaying then
+				Crouch:Play()
+			end
+		else
+			if Crouch.IsPlaying then
+				Crouch:Stop()
+			end
+		end
+
+		if Character:FindFirstChild("DarkHole") then
+			JumpPower = 0
+		end
+
+
+		if Character.I_LOADED_I:FindFirstChild("TASER") then
+			WalkSpeed = WalkSpeed-5
+			if not Taser.IsPlaying then
+				Taser:Play(0, 1, 1.4)
+			end
+		else
+			if Taser.IsPlaying then
+				Taser:Stop()
+			end
+		end
+
+		if Character.I_LOADED_I:FindFirstChild("StopSpeed") then
+			WalkSpeed = WalkSpeed - 16
+			JumpPower = JumpPower - 50
+		else
+			WalkSpeed = WalkSpeed
+		end
+		if Character.I_LOADED_I["K.O"].Value == true then
+			WalkSpeed = WalkSpeed - 16
+		
+			JumpPower = JumpPower - 50
+		else
+			
+			JumpPower = JumpPower
+			
+			WalkSpeed = WalkSpeed
+		end
+
+
+
+		if Character:FindFirstChild("A-Shot") then
+			WalkSpeed = WalkSpeed + 6
+		end
+		
+		if Character:FindFirstChild("KatanaWalk") then
+			WalkSpeed = WalkSpeed + 11
+		end
+
+
+		if Character.Humanoid.Health <= 55 then
+			WalkSpeed = WalkSpeed * 0.8;
+		end;
+		
+		
+
+
+		if Character:FindFirstChild("Giant") and Player:FindFirstChild(Vlues) then
+			WalkSpeed = WalkSpeed + 30
+		end
+
+
+	
+		
+		if _G.Snowing then
+			if _G.SnowingDebug == nil then
+				_G.SnowingDebug = tick();
+			end;
+			local v167 = _G.SnowBlock;
+			if v167 == nil then
+				v167 = game.ReplicatedStorage.SnowBlock:Clone();
+				v167.Parent = workspace.Ignored;
+				_G.SnowBlock = v167;
+			end;
+			v167.CFrame = CFrame.new(workspace.CurrentCamera.CFrame.p) + Vector3.new(0, 10, 0) + workspace.CurrentCamera.CFrame.lookVector * Vector3.new(3, 0, 3);
+			if tick() - _G.SnowingDebug > 0.8 then
+				local l__p__168 = workspace.CurrentCamera.CFrame.p;
+				local v169 = workspace:FindPartOnRayWithWhitelist(Ray.new(Vector3.new(l__p__168.x, l__p__168.y, l__p__168.z), Vector3.new(0, l__p__168.y - 250, 0)), { workspace.Map });
+				if v169 and v169.Material ~= Enum.Material.Grass or (_G.SnowingTru) == true  then
+					v167.ParticleEmitter.Enabled = false;
+					game.Lighting.SnowBlur.Enabled = false;
+				elseif (_G.SnowingTru) == false then
+					game.Lighting.SnowBlur.Enabled = true;
+					v167.ParticleEmitter.Enabled = true;
+					v167.ParticleEmitter:Emit(2);
+				end;
+				_G.SnowingDebug = tick();
+			end;
+		end;
+
+		if Character:FindFirstChild("Block_DEBUG") then
+			WalkSpeed = 5
+		end
+		
+		if Character:FindFirstChild("Stunned") then
+			WalkSpeed = 0
+			JumpPower = 0
+		end
+
+		if Character:FindFirstChild("TheFlash") and Player:FindFirstChild(Vlues) then
+			WalkSpeed = WalkSpeed + 70
+		end
+
+
+		if Character:FindFirstChild("KingCrimson") then
+			WalkSpeed = 0
+	elseif Character:FindFirstChild("KingCrimsron") or (workspace:FindFirstChild("SlowDownTime") and  not Character:FindFirstChild("Blindseer")) then
+			WalkSpeed = 6
+		end
+
+		_G.CurrentWS = WalkSpeed
+		Player.Character.Humanoid.JumpPower = JumpPower
+		Player.Character.Humanoid.WalkSpeed = WalkSpeed
+	end)
+end
+

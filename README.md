@@ -1,7 +1,8 @@
 # storage
-Last updated September 27th, 2022
+Last updated September 29th, 2022
 
 What's New:
-- Added Da Hood Modded leaks (courtesy of **`rokudo#0001`**)
+- Added exports of DHM leaks server channel
+(I'm unsure of who exported this but thanks to whoever did!)
 
 This repository is updated periodically!

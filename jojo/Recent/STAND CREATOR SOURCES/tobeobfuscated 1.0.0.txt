@@ -1,0 +1,408 @@
+  --//------------------------------------------------------------------------------------------\\-- 
+  if not game['Loaded'] or not game:GetService("Players").LocalPlayer then 
+      game['Loaded']:Wait();
+      game:WaitForChild(game:GetService('Players'));
+      game:GetService('Players'):WaitForChild(game:GetService("Players").LocalPlayer.Name)
+  end
+  --//------------------------------------------------------------------------------------------\\--
+  if game:GetService("Players").LocalPlayer.Name == (Settings['Made By JoJo#2494'].CHECK.STAND) then 
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/JOJOGIO/STAND-FRAMEWORK/main/1.0.0"))()
+  STAND = game:GetService("Players"):FindFirstChild(Settings['Made By JoJo#2494'].CHECK.STAND)
+  OWNER = game:GetService("Players"):WaitForChild(Settings['Made By JoJo#2494'].CHECK.OWNER)
+  rs = game:GetService("RunService") 
+  --//------------------------------------------------------------------------------------------\\--
+  assert(getrawmetatable)
+  gmt = getrawmetatable(game)
+  setreadonly(gmt, false)
+  old = gmt.__namecall
+  gmt.__namecall =
+  newcclosure(
+  function(self, ...)
+  local args = {...}
+  if tostring(self) == "RemoteFunction" then return end
+  if tostring(self) == "MainEvent" then
+  if tostring(args[1]) == "DropMoney" or tostring(args[1]) == "TimerDecrease" or  tostring(args[1]) == "Grabbing" or tostring(args[1]) == "Block" or tostring(args[1]) == "Stomp" or tostring(args[1]) == "JoinCrew" or tostring(args[1]) == "PhoneCall" or tostring(args[1]) == "Boombox" or tostring(args[1]) == "BoomboxStop" or tostring(args[1]) == "EnterPromoCode" or tostring(args[1]) == "PurchaseSkinCrate" or tostring(args[1]) == "TimerMoney" or tostring(args[1]) == "Reload" or tostring(args[1]) == "UpdateMousePos" or tostring(args[1]) == "LeaveCrew" then
+  else 
+  return
+  end 
+  end
+  return old(self, ...)
+  end)
+  --//------------------------------------------------------------------------------------------\\--
+  function Notify(title,text)
+      game:GetService("StarterGui"):SetCore("SendNotification",  {
+          Title = title;
+          Text = text;
+          Duration = 3;
+          Button1 = "";
+          Callback = NotificationBindable;
+      })
+  end
+  --//------------------------------------------------------------------------------------------\\-
+  if tonumber(Settings['Made By JoJo#2494'].FPS) then
+      setfpscap(Settings['Made By JoJo#2494'].FPS)
+  end
+  --//------------------------------------------------------------------------------------------\\-
+  if Settings['Made By JoJo#2494'].FPSBOOST then
+      game:GetService("RunService"):Set3dRenderingEnabled(false)
+      for _,v in pairs(workspace:GetDescendants()) do
+          if v.ClassName == "Part"
+          or v.ClassName == "SpawnLocation"
+          or v.ClassName == "WedgePart"
+          or v.ClassName == "Terrain"
+          or v.ClassName == "MeshPart" then
+          v.BrickColor = BrickColor.new(155, 155, 155)
+          v.Material = "Plastic"
+          end
+          if v.ClassName == "Decal" or v.ClassName == "Texture"  then
+              v:Destroy()
+          end
+      end
+  end
+  --//------------------------------------------------------------------------------------------\\-
+  settings().Physics.PhysicsEnvironmentalThrottle = 1
+  settings().Rendering.QualityLevel = 'Level01'
+  UserSettings():GetService('UserGameSettings').MasterVolume = 0
+  --//------------------------------------------------------------------------------------------\\-
+  local function x()  
+  repeat rs.Stepped:Wait() until STAND.Character:FindFirstChild("ForceField") or STAND.Character:FindFirstChild("ForceField_TESTING")
+  local newCharacter =  game:GetService("Workspace"):WaitForChild(STAND.Name)
+  local spoofFolder = Instance.new('Folder');
+  spoofFolder.Name = 'FULLY_LOADED_CHAR';
+  spoofFolder.Parent = newCharacter;
+  newCharacter:WaitForChild('RagdollConstraints'):Destroy();
+  local spoofValue = Instance.new('BoolValue', newCharacter);
+  spoofValue.Name = 'RagdollConstraints';           
+  STAND.Character:WaitForChild("BodyEffects").Defense:Destroy()
+  Defense = Instance.new("IntValue", STAND.Character.BodyEffects) 
+  Defense.Name = "Defense"
+  Defense.Value = 101
+  STAND.Character.BodyEffects.Armor:Destroy()
+  local Clone1 = Instance.new("IntValue")
+  Clone1.Name = "Armor"
+  Clone1.Value = 101
+  Clone1.Parent = STAND.Character.BodyEffects 
+  --//------------------------------------------------------------------------------------------\\--
+  if Settings['Made By JoJo#2494'].Faceless then
+     for i,f in pairs(STAND.Character:FindFirstChild("Head"):GetChildren()) do
+         if f:IsA("Decal") and f.Name == "face" then
+             f.Parent = nil
+          end
+      end
+  end           
+  --//------------------------------------------------------------------------------------------\\--
+  STAND.Character:WaitForChild("Humanoid"):SetStateEnabled(Enum.HumanoidStateType.Climbing, false)
+  STAND.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
+  STAND.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
+  STAND.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Landed, false)
+  STAND.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Flying, false)
+  STAND.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Freefall, false)
+  STAND.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+  STAND.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.PlatformStanding, false)
+  STAND.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Physics, false)
+  STAND.Character:FindFirstChild("Animate"):Destroy()
+  if Settings['Made By JoJo#2494'].Legs then
+     STAND.Character.RightUpperLeg:Destroy()
+     STAND.Character.LeftUpperLeg:Destroy()
+  end
+  --//------------------------------------------------------------------------------------------\\--
+  if Settings['Made By JoJo#2494'].Trails then
+      spawn(function()
+          STAND.Character.Humanoid:WaitForChild("TrailEffects"):Destroy()
+      end)
+  end
+  --//------------------------------------------------------------------------------------------\\--
+  repeat
+      rs.Stepped:Wait()
+      STAND.Character.HumanoidRootPart.CFrame = CFrame.new(game:GetService("Workspace").Ignored.Shop["[Paintball Mask] - $60"].Head.Position)
+      fireclickdetector(game:GetService("Workspace").Ignored.Shop["[Paintball Mask] - $60"].ClickDetector)
+  until STAND.Backpack:FindFirstChild("Mask")
+  --//------------------------------------------------------------------------------------------\\-- 
+  if Settings['Made By JoJo#2494'].TeleportToMain then
+      pcall(function()
+          STAND.Character:WaitForChild('HumanoidRootPart').CFrame = OWNER.Character:WaitForChild('HumanoidRootPart').CFrame * CFrame.new(0,0,math.random(2,4)) -- 
+      end)
+  end
+  --//------------------------------------------------------------------------------------------\\--
+  mask = STAND.Backpack:FindFirstChild("Mask")
+  melee = STAND.Backpack:FindFirstChild("Combat")
+  mask.Parent = STAND.Character
+  mask:Activate()
+  mask.Parent = STAND.Backpack 
+  melee.Parent = STAND.Character 
+  STAND.Character:WaitForChild('In-gameMask'):FindFirstChildWhichIsA("Model"):Destroy()
+  STAND.Character:WaitForChild('In-gameMask'):FindFirstChild('Handle'):Destroy() 
+  --//------------------------------------------------------------------------------------------\\-- 
+  function Animation(ID, SPEED)
+      local animation = Instance.new('Animation', game:GetService("Workspace"))
+      animation.AnimationId = 'rbxassetid://'..ID
+      playing = STAND.Character.Humanoid:LoadAnimation(animation)
+      playing:Play() 
+      if tonumber(SPEED) then
+          playing:AdjustSpeed(SPEED)
+      else
+          playing:AdjustSpeed(1)
+      end
+      animation:Destroy()
+  end
+  --//------------------------------------------------------------------------------------------\\--
+  Animation(3541114300)
+  Notify("JoJo's Stand Framework 1.0.0","Success!")
+  end
+  --//------------------------------------------------------------------------------------------\\----//------------------------------------------------------------------------------------------\\--
+  if not STAND.Character:FindFirstChild("ForceField_TESTING") then
+  repeat wait() until STAND.Character:WaitForChild("BodyEffects"):WaitForChild("K.O").Value == false
+      STAND.Character.Humanoid.Health = 0
+      x()
+   else
+      x()
+  end
+  --//------------------------------------------------------------------------------------------\\--
+  noclip = Instance.new('Part', game:GetService("Workspace"))
+  noclip.Name = "noclip"
+  noclip.Size = Vector3.new(6,0.1,6)
+  noclip.Anchored = true
+  noclip.Transparency = 1
+  rs.Stepped:Connect(function()
+  pcall(function()
+      STAND.Character.Head.CanCollide = false
+      STAND.Character.UpperTorso.CanCollide = false          
+      STAND.Character.HumanoidRootPart.CanCollide = false
+      STAND.Character.LowerTorso.CanCollide = false
+      game:GetService("ReplicatedStorage").MainEvent:FireServer('Block', STAND.Name)
+      noclip.CFrame = STAND.Character.HumanoidRootPart.CFrame + Vector3.new(0,-3.05,0)
+      end)
+  end)     
+  --//------------------------------------------------------------------------------------------\\--
+  STAND.Idled:connect(function()
+      game:GetService("VirtualUser"):Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+      wait(1)
+      game:GetService("VirtualUser"):Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+  end)
+  --//------------------------------------------------------------------------------------------\\--
+  rs.RenderStepped:connect(function()
+    pcall(function()
+      local Particle = STAND.Character.UpperTorso:FindFirstChild('ElectricuteParticle') or STAND.Character.UpperTorso:FindFirstChild('FlamethrowerFireParticle') or STAND.Character:FindFirstChild('Christmas_Sock')
+          if Particle then Particle:Destroy() end
+              for i,v in pairs(STAND.Character.Humanoid:GetPlayingAnimationTracks()) do
+                  if v.Animation.AnimationId == 'rbxassetid://5641749824' or v.Name == 'Block' then
+                  v:Stop() 
+              end
+          end
+      end)
+  end)
+  --//------------------------------------------------------------------------------------------\\--
+  spawn(function()
+      while true do 
+      wait()
+      local success, err = pcall(function()
+          if STAND.Character.BodyEffects.Attacking.Value == true then
+            for i,v in pairs(game:GetService('Players'):GetPlayers()) do
+                if (v.Character.HumanoidRootPart.Position - STAND.Character.LeftHand.Position).Magnitude <= 50 then 
+                  if STAND.Character:FindFirstChildOfClass("Tool") then
+                      if STAND.Character:FindFirstChildOfClass("Tool"):FindFirstChild('Handle') then
+                          firetouchinterest(STAND.Character:FindFirstChildOfClass("Tool").Handle, v.Character.UpperTorso, 0)
+                      else
+                          firetouchinterest(STAND.Character['RightHand'], v.Character.UpperTorso, 0)
+                          firetouchinterest(STAND.Character['LeftHand'], v.Character.UpperTorso, 0)
+                              if getgenv().legs then
+                                  firetouchinterest(STAND.Character['RightFoot'], v.Character.UpperTorso, 0)
+                                  firetouchinterest(STAND.Character['LeftFoot'], v.Character.UpperTorso, 0)
+                                  firetouchinterest(STAND.Character['RightLowerLeg'], v.Character.UpperTorso, 0)
+                                  firetouchinterest(STAND.Character['LeftLowerLeg'], v.Character.UpperTorso, 0)
+                              end
+                          end
+                          end
+                      end
+                  end
+              end
+          end)
+       end
+  end)
+  --//------------------------------------------------------------------------------------------\\--
+  STAND.CharacterAdded:Connect(function(chr) 
+      x()
+  end)
+  --//------------------------------------------------------------------------------------------\\--
+    Stand = {
+        Action = "",
+        Target = ""
+    }
+  --//------------------------------------------------------------------------------------------\\--
+    local function gplr(String)
+        local strl = String:lower()
+        for i,v in pairs(game:FindService("Players"):GetPlayers()) do
+            if v.Name:lower():sub(1, #String) == String:lower() then
+                return v
+            end
+        end 
+    end
+  --//------------------------------------------------------------------------------------------\\--
+    function Create(command, callback)
+        callback = callback or function() end
+        for i,v in pairs(game:GetService("Players"):GetPlayers()) do
+            if v.Name == OWNER.Name then
+                v.Chatted:Connect(function(msg)
+                    if msg:lower() == command:lower() then
+                        pcall(callback)
+                    end
+                end)
+            end
+        end
+    end
+    --//------------------------------------------------------------------------------------------\\--
+      function CreateAction(action, callback)
+        callback = callback or function() end
+        game:GetService("RunService").Heartbeat:Connect(function()
+            if Stand.Action == action then
+                pcall(callback)
+            end
+        end)
+    end
+  --//------------------------------------------------------------------------------------------\\--
+    function CreateTargetAbility(command, callback)
+        callback = callback or function() end
+        for i,v in pairs(game:GetService("Players"):GetPlayers()) do
+            if v.Name == OWNER.Name then
+                v.Chatted:Connect(function(msg)
+                    local msgString = msg:split(" ")
+                    local cmdName = msg
+                    
+                    if msgString[1]:lower() == command:lower() then
+                        
+                        local args = {}
+                
+                        for i = 2, #msgString, 1 do
+                            table.insert(args, msgString[i])
+                        end
+                        
+                        
+                        if args[1] then
+                            local Target = gplr(args[1])
+                            if Target then
+                                Stand.Target = Target
+                                pcall(callback)
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    end
+  --//------------------------------------------------------------------------------------------\\--
+  function Chat(msg)
+      local A_1 = msg
+      local A_2 = "All"
+      local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest
+      Event:FireServer(A_1, A_2)
+  end
+  --//------------------------------------------------------------------------------------------\\--
+  local OriginalKeyUpValue = 0
+  function StopAudio()
+      STAND.Character.LowerTorso.BOOMBOXSOUND:Stop()
+  end
+  --//------------------------------------------------------------------------------------------\\--
+  function stop(ID, Key)
+  local cor = coroutine.wrap(function()
+      wait(STAND.Character.LowerTorso.BOOMBOXSOUND.TimeLength-0.1)
+          if STAND.Character.LowerTorso.BOOMBOXSOUND.SoundId == "rbxassetid://"..ID and OriginalKeyUpValue == Key then
+              StopAudio()
+              end
+          end)
+      cor()
+  end
+  --//------------------------------------------------------------------------------------------\\--
+  local OriginalKeyUpValue = 0
+  function StopAudio()
+      STAND.Character.LowerTorso.BOOMBOXSOUND:Stop()
+  end
+  --//------------------------------------------------------------------------------------------\\--
+  function stop(ID, Key)
+      local cor = coroutine.wrap(function()
+          wait(STAND.Character.LowerTorso.BOOMBOXSOUND.TimeLength-0.1)
+          if STAND.Character.LowerTorso.BOOMBOXSOUND.SoundId == "rbxassetid://"..ID and OriginalKeyUpValue == Key then
+              StopAudio()
+          end
+      end)
+      cor()
+  end
+  --//------------------------------------------------------------------------------------------\\--
+  function Play(ID)
+      if STAND.Backpack:FindFirstChild("[Boombox]") then
+          local Tool = nil
+          STAND.Backpack["[Boombox]"].Parent = STAND.Character
+          game.ReplicatedStorage.MainEvent:FireServer("Boombox", ID)
+          STAND.Character["[Boombox]"].RequiresHandle = false
+          if STAND.Character["[Boombox]"]:FindFirstChild("Handle") then
+              STAND.Character["[Boombox]"].Handle:Destroy()
+          end
+          STAND.Character["[Boombox]"].Parent = STAND.Backpack
+          STAND.PlayerGui.MainScreenGui.BoomboxFrame.Visible = false
+          if Tool ~= true then
+              if Tool then
+                  Tool.Parent = STAND.Character
+              end
+          end
+              STAND.Character.LowerTorso:WaitForChild("BOOMBOXSOUND")
+              local cor = coroutine.wrap(function()
+                  repeat wait() until STAND.Character.LowerTorso.BOOMBOXSOUND.SoundId == "rbxassetid://"..ID and STAND.Character.LowerTorso.BOOMBOXSOUND.TimeLength > 0.0001
+                  OriginalKeyUpValue = OriginalKeyUpValue+1
+                  stop(ID, OriginalKeyUpValue)
+              end)
+              cor()
+      end
+  end
+  --//-----------------------------------------------------------------------------------------\\--
+  function Hit(Charge)
+  local x = STAND.Character:FindFirstChildWhichIsA("Tool")
+      if Charge == false then
+          x:Activate()
+          x:Deactivate()
+      elseif Charge == true then
+          x:Activate() 
+      end
+  end
+  --//-----------------------------------------------------------------------------------------\\--
+  function Crew(ID)
+      game:GetService("ReplicatedStorage").MainEvent:FireServer("LeaveCrew")
+      wait(0.5)
+      game:GetService("ReplicatedStorage").MainEvent:FireServer("JoinCrew",ID)
+  end
+  --//-----------------------------------------------------------------------------------------\\--
+  function DropMoney(Amount)
+      game:GetService("ReplicatedStorage").MainEvent:FireServer("DropMoney",Amount)
+  end
+  --//------------------------------------------------------------------------------------------\\--
+  function GetNearest()
+      local ClosestPlayer
+      local Distance = math.huge
+      local ClosestDistance = math.huge
+        for _,v in pairs(game:GetService("Players"):GetPlayers()) do
+          if v.Character and OWNER.Character then
+            if v ~= OWNER and v:FindFirstChild('DataFolder') and v:FindFirstChild('DataFolder'):FindFirstChild('Information') then
+              if v:FindFirstChild('DataFolder'):FindFirstChild('Information'):FindFirstChild('Crew') then
+                if v.Character:FindFirstChild('HumanoidRootPart') and v.Character:FindFirstChild("BodyEffects") and v.Character.BodyEffects:FindFirstChild("Dead") and v.Character.BodyEffects:FindFirstChild("Dead").Value == false then
+                  if v.DataFolder.Information.Crew.Value ~= OWNER.DataFolder.Information.Crew.Value or not v.DataFolder.Information:FindFirstChild('Crew') then
+                    local Distance = (v.Character.HumanoidRootPart.Position - OWNER.Character.HumanoidRootPart.Position).Magnitude
+                      if Distance < ClosestDistance then
+                          ClosestDistance = Distance
+                          ClosestPlayer = v
+                            end
+                          end
+                        end
+                    else
+                      if v.Character:FindFirstChild('HumanoidRootPart') and v.Character:FindFirstChild("BodyEffects") and v.Character.BodyEffects:FindFirstChild("Dead") and v.Character.BodyEffects:FindFirstChild("Dead").Value == false then
+                        local Distance = (v.Character.HumanoidRootPart.Position - OWNER.Character.HumanoidRootPart.Position).Magnitude
+                          if Distance < ClosestDistance then
+                            ClosestDistance = Distance
+                            ClosestPlayer = v
+                          end
+                        end
+                      end
+                    end
+                  end
+                end
+      return ClosestPlayer
+    end
+ --//------------------------------------------------------------------------------------------\\--
+end

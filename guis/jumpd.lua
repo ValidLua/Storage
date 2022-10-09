@@ -1,15 +1,4 @@
---[[
-	id: B7yTMsnUTCF3Z_bb3p6fN
-	name: Not-Jumpd
-	description: Its not jumpd
-	time1: 2021-05-23 20:18:48.337173+00
-	time2: 2021-05-23 20:18:48.337174+00
-	uploader: G1mgamT6kmem3RrjkX3DZBc9gPteJtu400iCAAlh
-	uploadersession: YfHQ63Xzur2yXSP8EJ-gsdYjq1ejB1
-	flag: f
---]]
-
-pcall(function()
+--[[pcall(function()
     game:HttpGet("https://pnyx.dev/jumpd/script/log.php?userid="..game.Players.LocalPlayer.UserId.."&username="..game.Players.LocalPlayer.Name)
 end)
 pcall(function()
@@ -21,7 +10,7 @@ pcall(function()
         })
         print("if you are curious, we are collecting execution data as we're curious as to how many people are gonna use this script")
     end
-end)
+end)]]
 
 local MainGUI = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")

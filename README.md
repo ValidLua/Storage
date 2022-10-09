@@ -1,7 +1,7 @@
 # storage
-Last updated September 5th, 2022
+Last updated October 9th, 2022
 
 What's New:
-- Added JoJo's leaks (Recent only)
+- Added Jumpd (guis/NotJumpd.lua)
 
 This repository is updated periodically!

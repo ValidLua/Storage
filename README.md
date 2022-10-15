@@ -1,8 +1,7 @@
 # storage
-Last updated October 9th, 2022
+Last updated October 15th, 2022
 
 Added:
-- Jumpd
-- Nova Purge
+- Nova Purge Announcement
 
 This repository is updated periodically!
